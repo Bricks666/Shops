@@ -1,5 +1,5 @@
 import { Component } from "react";
-import { renderList } from "./renderList";
+import { renderList } from "../Shared/renderList";
 import { ShopCardConnect } from "./ShopCard/ShopCardConnect";
 
 export class ShopsList extends Component {

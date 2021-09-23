@@ -1,8 +1,8 @@
-export const dislikeComment = (address, CASId) => {
+export const cancelBuyerRequest = (requestId) => {
   return async (dispatch, getState) => {
     try {
       await getState()
-        .contract.methods.DisikeComplaints(address, CASId)
+        .contract.methods.CancelRequestShoper(requestId)
         .send({ from: getState().user.address });
     } catch (e) {
       console.log(e.message);

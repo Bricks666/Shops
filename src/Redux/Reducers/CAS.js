@@ -1,6 +1,7 @@
 import {
   ADD_CAS,
   ADD_SHOP,
+  CHANGE_MARK,
   SET_COMPLAINS_AND_SUGGESTIONS,
   SET_SALESMEN,
   SET_SHOPS,
@@ -18,7 +19,6 @@ export const CAS = (state = initialState.CAS, action) => {
       return newState;
     }
     case SET_SALESMEN: {
-      debugger;
       const newState = { ...state };
 
       for (let salesman of action.salesmen) {
@@ -34,16 +34,32 @@ export const CAS = (state = initialState.CAS, action) => {
       return newState;
     }
     case ADD_CAS: {
-      debugger;
       const newState = { ...state };
-      newState[action.address].push(action.CAS);
+      newState[action.address] = [...newState[action.address], action.CAS];
 
       return newState;
     }
     case SET_COMPLAINS_AND_SUGGESTIONS: {
       const newState = { ...state };
-      console.log(typeof action.address);
       newState[action.address] = action.book;
+
+      return newState;
+    }
+    case CHANGE_MARK: {
+      const newState = { ...state };
+
+      for (let CAS in newState) {
+        if (CAS === action.address) {
+          newState[CAS] = [...newState[CAS]];
+          newState[CAS][action.complainId] = {
+            ...newState[CAS][action.complainId],
+            mark:
+              +newState[CAS][action.complainId].mark +
+              (+action.changes ? 1 : -1),
+          };
+          newState[CAS][action.complainId].users.push(action.changer);
+        }
+      }
 
       return newState;
     }

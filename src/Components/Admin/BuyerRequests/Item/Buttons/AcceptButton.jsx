@@ -1,10 +1,10 @@
 import { connect } from "react-redux";
-import { LIKE_BUTTON } from "../../../../../Redux/ComponentConstants";
 import { mapStateToProps } from "../../../../../Redux/ToProps/mapStateToProps";
 import { mapDispatchToProps } from "../../../../../Redux/ToProps/mapDispatchToProps";
+import { ACCEPT_BUYER_REQUEST } from "../../../../../Redux/ComponentConstants";
 import { Button } from "../../../../Shared/Button/Button";
 
-export const LikeButton = connect(
-  mapStateToProps(LIKE_BUTTON),
-  mapDispatchToProps(LIKE_BUTTON)
+export const AcceptButton = connect(
+  mapStateToProps(ACCEPT_BUYER_REQUEST),
+  mapDispatchToProps(ACCEPT_BUYER_REQUEST)
 )(Button);

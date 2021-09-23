@@ -1,14 +1,13 @@
 import { BottomWindow } from "../../Shared/BottomWindow/BottomWindow";
-import { ComplaintAndSuggestionsButton } from "./ComplainsAndSuggestionsButton/ComplainsAndSuggestionButton";
 import { SalesmenListConnect } from "./SalesmenList/SalesmenListConnnect";
 import { ShowSalesmenButton } from "./ShowSalesmenButton/ShowSalesmenButton";
-import { CASListConnect } from "./CASList/CASListConnect";
+import { CASListConnect } from "../../Shared/CASList/CASListConnect";
 import { ModalWindow } from "../../Shared/ModalWindow/ModalWindow";
 import { NewCommentConnect } from "./NewComment/NewCommentConnect";
 import { Button } from "../../Shared/Button/Button";
+import { BeShopsSalesman } from "./BeShopsSalesman/BeSalesman";
 
 export const ShopCard = (props) => {
-
   return (
     <article>
       <h3>{props.addresShop}</h3>
@@ -16,23 +15,24 @@ export const ShopCard = (props) => {
       <ShowSalesmenButton shopId={props.id}>
         {props.showSalesmen ? "Hidden salesmen" : "Show Salesmen"}
       </ShowSalesmenButton>
-      <ComplaintAndSuggestionsButton
-        address={props.addresShop}
-        shopId={props.id}
-      >
+      <Button address={props.addresShop} onClick={props.toggleCAS}>
         {`${props.showCAS ? "Hidden" : "Show"} Complain And Suggestion`}
-      </ComplaintAndSuggestionsButton>
-      <Button onClick={props.show}>Создать новый комментарий</Button>
+      </Button>
+      <Button onClick={props.toggleComment}>Создать новый комментарий</Button>
+      {props.isBuyer ? (
+        <BeShopsSalesman shopId={props.id}>
+          Стать продавцом магазина
+        </BeShopsSalesman>
+      ) : (
+        ""
+      )}
       <BottomWindow condition={props.showSalesmen}>
         <SalesmenListConnect shopId={props.id} salesmen={props.salesmen} />
       </BottomWindow>
       <BottomWindow condition={props.showCAS}>
-        <CASListConnect
-          shopId={props.id}
-          address={props.addresShop}
-        />
+        <CASListConnect address={props.addresShop} />
       </BottomWindow>
-      <ModalWindow condition={props.condition} close={props.close}>
+      <ModalWindow condition={props.showComment} close={props.toggleComment}>
         <NewCommentConnect address={props.addresShop} />
       </ModalWindow>
     </article>

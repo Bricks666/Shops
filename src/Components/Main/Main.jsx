@@ -2,8 +2,9 @@ import { Component } from "react";
 import { Redirect, Route, Switch } from "react-router";
 import { LoginConnect } from "../Login/LoginConnect";
 import { AccountConnect } from "../Account/AccountConnect";
-import { ShopsConnect } from "../ShopsList/ShopsConnect";
 import { RegistrationConnect } from "../Registration/RegistrationConnect";
+import { ContentRedirect } from "../ContentRedirect/ContentRedirect";
+import { Content } from "../Content/Content";
 
 export class Main extends Component {
   componentDidMount() {
@@ -19,6 +20,7 @@ export class Main extends Component {
         ) : (
           <Redirect to="/login" />
         )}
+        <ContentRedirect role={this.props.role} />
         <Switch>
           <Route path="/login">
             <LoginConnect />
@@ -26,9 +28,9 @@ export class Main extends Component {
           <Route path="/registration">
             <RegistrationConnect />
           </Route>
-          <Route exact path="/">
+          <Route path="/">
             <AccountConnect />
-            <ShopsConnect />
+            <Content />
           </Route>
         </Switch>
       </main>

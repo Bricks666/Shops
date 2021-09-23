@@ -8,7 +8,7 @@ export const requestComplainsAndSuggestions = (address) => {
     const novalidBook = await state.contract.methods
       .getShopComplainAndSuggestion(address)
       .call();
-    debugger;
+
     const book = novalidBook.map(toValidComplainAndSuggestion);
 
     dispatch(setBook(book, address));

@@ -10,26 +10,21 @@ export class SalesmenItemClass extends Component {
     };
   }
 
-  closeComment() {
-    this.setState({ showWindow: false });
-  }
-  showComment() {
-    this.setState({ showWindow: true });
+  toggleComment() {
+    this.setState({ showWindow: !this.state.showWindow });
   }
   toggleCAS() {
-    debugger;
     this.setState({ showCAS: !this.state.showCAS });
   }
   render() {
-    debugger;
+
     return (
       <SalesmenItem
         {...this.props}
         showComment={this.state.showWindow}
         showCAS={this.state.showCAS}
         toggleCAS={this.toggleCAS.bind(this)}
-        openComment={this.showComment.bind(this)}
-        closeComment={this.closeComment.bind(this)}
+        toggleComment={this.toggleComment.bind(this)}
       />
     );
   }

@@ -1,39 +1,39 @@
 import { Component } from "react";
 import { connect } from "react-redux";
-import { SHOP_CARD } from "../../../Redux/ActionsConstants";
-import { mapDispatchToProps } from "../../../Redux/ToProps/mapDispatchToProps";
 import { mapStateToProps } from "../../../Redux/ToProps/mapStateToProps";
+import { SHOP_CARD } from "../../../Redux/ComponentConstants";
 import { ShopCard } from "./ShopCard";
 
-class ShopCardClass extends Component {
+export class ShopCardClass extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      showWindow: false,
+      showComment: false,
+      showCAS: false,
     };
   }
-  close() {
-    this.setState({ showWindow: false });
+  toggleComment() {
+    this.setState({ showComment: !this.state.showComment });
   }
 
-  show() {
-    this.setState({ showWindow: true });
+  toggleCAS() {
+    this.setState({ showCAS: !this.state.showCAS });
   }
 
   render() {
     return (
       <ShopCard
         {...this.props}
-        condition={this.state.showWindow}
-        close={this.close.bind(this)}
-        show={this.show.bind(this)}
+        showComment={this.state.showComment}
+        showCAS={this.state.showCAS}
+        toggleComment={this.toggleComment.bind(this)}
+        toggleCAS={this.toggleCAS.bind(this)}
       />
     );
   }
 }
 
-export const ShopCardConnect = connect(
-  mapStateToProps(SHOP_CARD),
-  mapDispatchToProps(SHOP_CARD)
-)(ShopCardClass);
+export const ShopCardConnect = connect(mapStateToProps(SHOP_CARD))(
+  ShopCardClass
+);

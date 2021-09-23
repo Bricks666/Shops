@@ -6,7 +6,6 @@ import { startInitialThunk } from "../Actions/StartInitial/startInitialThunk";
 import { beSalesmanThunk } from "../Actions/Account/Be/beSalesmanThunk";
 import { beAdminThunk } from "../Actions/Account/Be/beAdminThunk";
 import { requestComplainsAndSuggestions } from "../Actions/Shops/requsetComplainsAndSuggestions";
-import { toggleShowCAS } from "../Actions/Shops/toggleShowCAS";
 import { inputNewComment } from "../Actions/NewMessage/inputNewComment";
 import { inputNewMark } from "../Actions/NewMessage/inputNewMark";
 
@@ -21,7 +20,6 @@ import {
   SALESMEN_LIST,
   SHOPS_LIST,
   SHOW_SALESMEN_BUTTON,
-  SHOW_COMPLAINS_AND_SUGGESTION_BUTTON,
   CAS_LIST,
   LIKE_BUTTON,
   REG_BUTTON,
@@ -32,8 +30,11 @@ import {
   COMMENT_FIELD,
   MARK_FIELD,
   SEND_COMMENT_BUTTON,
-  SHOW_NEW_COMMENT,
-  NEW_COMMENT,
+  BE_BUYER_FOREVER,
+  BE_SALESMAN_OF_SHOP,
+  BUYER_REQUESTS,
+  CANCEL_BUYER_REQUEST,
+  ACCEPT_BUYER_REQUEST,
 } from "../ComponentConstants";
 import { requestShopsThunk } from "../Actions/Shops/requestShopsThunk";
 import { toggleShowSalesmen } from "../Actions/Shops/toggleShowSalesmen";
@@ -46,7 +47,11 @@ import { inputLoginReg } from "../Actions/Reg/inputLoginReg";
 import { dislikeComment } from "../Actions/Shops/dislikeComment";
 import { sendComment } from "../Actions/NewMessage/sendComment";
 import { toggleShowWindow } from "../Actions/NewMessage/toggleShowWindow";
-import { SHOP_CARD } from "../ActionsConstants";
+import { beBuyerForever } from "../Actions/Account/Be/beBuyerForeverThunk";
+import { beSalesmanForever } from "../Actions/Account/Be/beSalesmanForever";
+import { loadBuyerRequests } from "../Actions/Requests/loadBuyerRequests";
+import { cancelBuyerRequest } from "../Actions/Requests/cancelBuyerRequest";
+import { acceptBuyerRequest } from "../Actions/Requests/acceptBuyerRequest";
 
 export const mapDispatchToProps = (component) => {
   switch (component) {
@@ -93,6 +98,11 @@ export const mapDispatchToProps = (component) => {
         onClick: beAdminThunk,
       };
     }
+    case BE_BUYER_FOREVER: {
+      return {
+        onClick: beBuyerForever,
+      };
+    }
     case SHOPS_LIST: {
       return {
         loadShops: requestShopsThunk,
@@ -115,21 +125,6 @@ export const mapDispatchToProps = (component) => {
           },
           close() {
             dispatch(toggleShowWindow());
-          },
-        };
-      };
-    }
-    case SHOW_COMPLAINS_AND_SUGGESTION_BUTTON: {
-      return (dispatch, ownProps) => {
-        return {
-          onClick() {
-            dispatch(
-              toggleShowCAS(
-                ownProps.address,
-                ownProps.shopId,
-                ownProps.isSalesman
-              )
-            );
           },
         };
       };
@@ -212,14 +207,44 @@ export const mapDispatchToProps = (component) => {
       return (dispatch, ownProps) => {
         return {
           onClick(evt) {
-
             evt.preventDefault();
             dispatch(sendComment(ownProps.address));
           },
         };
       };
     }
-
+    case BE_SALESMAN_OF_SHOP: {
+      return (dispatch, ownProps) => {
+        return {
+          onClick() {
+            dispatch(beSalesmanForever(ownProps.shopId));
+          },
+        };
+      };
+    }
+    case BUYER_REQUESTS: {
+      return {
+        loadRequests: loadBuyerRequests,
+      };
+    }
+    case CANCEL_BUYER_REQUEST: {
+      return (dispatch, ownProps) => {
+        return {
+          onClick() {
+            dispatch(cancelBuyerRequest(ownProps.requestId));
+          },
+        };
+      };
+    }
+    case ACCEPT_BUYER_REQUEST: {
+      return (dispatch, ownProps) => {
+        return {
+          onClick() {
+            dispatch(acceptBuyerRequest(ownProps.requestId));
+          },
+        };
+      };
+    }
     default: {
       return {};
     }

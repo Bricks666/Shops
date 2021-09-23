@@ -1,6 +1,6 @@
 import { Component } from "react";
-import { renderList } from "../../renderList";
-import { CASItem } from "./CASItem/CASItem";
+import { renderList } from "../renderList";
+import { CASItemConnect } from "./CASItem/CASItemConnect";
 
 export class CASList extends Component {
   componentDidMount() {
@@ -10,12 +10,12 @@ export class CASList extends Component {
   }
 
   render() {
-    console.log(this.props.CAS);
+    ;
     return (
       <>
         <p>Отзывы</p>
         <ul>
-          {renderList(this.props.CAS, CASItem, {
+          {renderList(this.props.CAS, CASItemConnect, {
             address: this.props.address,
           })}
         </ul>

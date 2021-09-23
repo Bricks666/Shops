@@ -2,808 +2,914 @@ export const initialState = {
   web3: null,
   contract: { unsubscribe: [] },
   dataForContract: {
-    address: "0x909826d69e371cE3B51110b5AB43E49E50e498d9",
+    address: "0xD3b5F92bdCcF2cD427cb0386d174b8f326252825",
     abi: [
       {
-        inputs: [],
-        stateMutability: "nonpayable",
-        type: "constructor",
+        "inputs": [],
+        "stateMutability": "nonpayable",
+        "type": "constructor"
       },
       {
-        anonymous: false,
-        inputs: [
+        "anonymous": false,
+        "inputs": [
           {
-            indexed: true,
-            internalType: "address",
-            name: "user",
-            type: "address",
+            "indexed": true,
+            "internalType": "address",
+            "name": "user",
+            "type": "address"
           },
           {
-            indexed: false,
-            internalType: "uint256",
-            name: "role",
-            type: "uint256",
-          },
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "role",
+            "type": "uint256"
+          }
         ],
-        name: "ChangeRole",
-        type: "event",
+        "name": "ChangeRole",
+        "type": "event"
       },
       {
-        anonymous: false,
-        inputs: [
+        "anonymous": false,
+        "inputs": [
           {
-            indexed: false,
-            internalType: "address",
-            name: "shopAddress",
-            type: "address",
+            "indexed": false,
+            "internalType": "address",
+            "name": "shopAddress",
+            "type": "address"
           },
           {
-            indexed: false,
-            internalType: "uint256",
-            name: "complaintsId",
-            type: "uint256",
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "complaintsId",
+            "type": "uint256"
           },
           {
-            indexed: false,
-            internalType: "uint256",
-            name: "mark",
-            type: "uint256",
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "mark",
+            "type": "uint256"
           },
+          {
+            "indexed": false,
+            "internalType": "address",
+            "name": "changer",
+            "type": "address"
+          }
         ],
-        name: "MarkComplaint",
-        type: "event",
+        "name": "MarkComplaint",
+        "type": "event"
       },
       {
-        anonymous: false,
-        inputs: [
+        "anonymous": false,
+        "inputs": [
           {
-            indexed: false,
-            internalType: "address",
-            name: "bookAddress",
-            type: "address",
+            "indexed": false,
+            "internalType": "address",
+            "name": "bookAddress",
+            "type": "address"
           },
           {
-            indexed: false,
-            internalType: "uint256",
-            name: "complaintsId",
-            type: "uint256",
-          },
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "complaintsId",
+            "type": "uint256"
+          }
         ],
-        name: "NewComplaint",
-        type: "event",
+        "name": "NewComplaint",
+        "type": "event"
       },
       {
-        anonymous: false,
-        inputs: [
+        "anonymous": false,
+        "inputs": [
           {
-            indexed: true,
-            internalType: "address",
-            name: "user",
-            type: "address",
+            "indexed": false,
+            "internalType": "string",
+            "name": "requestType",
+            "type": "string"
           },
           {
-            indexed: false,
-            internalType: "uint256",
-            name: "role",
-            type: "uint256",
-          },
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "id",
+            "type": "uint256"
+          }
         ],
-        name: "NewRole",
-        type: "event",
+        "name": "NewRequest",
+        "type": "event"
       },
       {
-        inputs: [
+        "anonymous": false,
+        "inputs": [
           {
-            internalType: "uint256",
-            name: "requestId",
-            type: "uint256",
+            "indexed": true,
+            "internalType": "address",
+            "name": "user",
+            "type": "address"
           },
+          {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "role",
+            "type": "uint256"
+          }
         ],
-        name: "AccRequestAdmin",
-        outputs: [],
-        stateMutability: "nonpayable",
-        type: "function",
+        "name": "NewRole",
+        "type": "event"
       },
       {
-        inputs: [
+        "anonymous": false,
+        "inputs": [
           {
-            internalType: "uint256",
-            name: "shopId",
-            type: "uint256",
+            "indexed": false,
+            "internalType": "string",
+            "name": "requestType",
+            "type": "string"
           },
+          {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "id",
+            "type": "uint256"
+          }
         ],
-        name: "AccRequestBank",
-        outputs: [],
-        stateMutability: "payable",
-        type: "function",
+        "name": "RequestFinished",
+        "type": "event"
       },
       {
-        inputs: [
+        "anonymous": false,
+        "inputs": [],
+        "name": "ShopAdded",
+        "type": "event"
+      },
+      {
+        "inputs": [
           {
-            internalType: "uint256",
-            name: "requestId",
-            type: "uint256",
-          },
+            "internalType": "uint256",
+            "name": "requestId",
+            "type": "uint256"
+          }
         ],
-        name: "AccRequestSalesman",
-        outputs: [],
-        stateMutability: "nonpayable",
-        type: "function",
+        "name": "AccRequestAdmin",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
       },
       {
-        inputs: [
+        "inputs": [
           {
-            internalType: "uint256",
-            name: "requestId",
-            type: "uint256",
-          },
+            "internalType": "uint256",
+            "name": "shopId",
+            "type": "uint256"
+          }
         ],
-        name: "AccRequestShoper",
-        outputs: [],
-        stateMutability: "nonpayable",
-        type: "function",
+        "name": "AccRequestBank",
+        "outputs": [],
+        "stateMutability": "payable",
+        "type": "function"
       },
       {
-        inputs: [
+        "inputs": [
           {
-            internalType: "address",
-            name: "shopAddress",
-            type: "address",
-          },
-          {
-            internalType: "string",
-            name: "comment",
-            type: "string",
-          },
-          {
-            internalType: "uint256",
-            name: "mark",
-            type: "uint256",
-          },
+            "internalType": "uint256",
+            "name": "requestId",
+            "type": "uint256"
+          }
         ],
-        name: "AddComplaints",
-        outputs: [],
-        stateMutability: "nonpayable",
-        type: "function",
+        "name": "AccRequestSalesman",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
       },
       {
-        inputs: [
+        "inputs": [
           {
-            internalType: "address payable",
-            name: "addressShop",
-            type: "address",
-          },
-          {
-            internalType: "string",
-            name: "city",
-            type: "string",
-          },
+            "internalType": "uint256",
+            "name": "requestId",
+            "type": "uint256"
+          }
         ],
-        name: "AddShop",
-        outputs: [],
-        stateMutability: "nonpayable",
-        type: "function",
+        "name": "AccRequestShoper",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
       },
       {
-        inputs: [
+        "inputs": [
           {
-            internalType: "uint256",
-            name: "",
-            type: "uint256",
+            "internalType": "address",
+            "name": "shopAddress",
+            "type": "address"
           },
+          {
+            "internalType": "string",
+            "name": "comment",
+            "type": "string"
+          },
+          {
+            "internalType": "int256",
+            "name": "mark",
+            "type": "int256"
+          }
         ],
-        name: "BankRequestShop",
-        outputs: [
+        "name": "AddComplaints",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      {
+        "inputs": [
           {
-            internalType: "bool",
-            name: "",
-            type: "bool",
+            "internalType": "address payable",
+            "name": "addressShop",
+            "type": "address"
           },
+          {
+            "internalType": "string",
+            "name": "city",
+            "type": "string"
+          }
         ],
-        stateMutability: "view",
-        type: "function",
+        "name": "AddShop",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
       },
       {
-        inputs: [],
-        name: "BeAdmin",
-        outputs: [],
-        stateMutability: "nonpayable",
-        type: "function",
-      },
-      {
-        inputs: [],
-        name: "BeSalesman",
-        outputs: [],
-        stateMutability: "nonpayable",
-        type: "function",
-      },
-      {
-        inputs: [],
-        name: "BeShoper",
-        outputs: [],
-        stateMutability: "nonpayable",
-        type: "function",
-      },
-      {
-        inputs: [],
-        name: "BeShoperForSalesman",
-        outputs: [],
-        stateMutability: "nonpayable",
-        type: "function",
-      },
-      {
-        inputs: [
+        "inputs": [
           {
-            internalType: "uint256",
-            name: "requestId",
-            type: "uint256",
-          },
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+          }
         ],
-        name: "CancelRequestAdmin",
-        outputs: [],
-        stateMutability: "nonpayable",
-        type: "function",
+        "name": "BankRequestShop",
+        "outputs": [
+          {
+            "internalType": "bool",
+            "name": "",
+            "type": "bool"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
       },
       {
-        inputs: [
-          {
-            internalType: "uint256",
-            name: "requestId",
-            type: "uint256",
-          },
-        ],
-        name: "CancelRequestSalesman",
-        outputs: [],
-        stateMutability: "nonpayable",
-        type: "function",
+        "inputs": [],
+        "name": "BeAdmin",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
       },
       {
-        inputs: [
-          {
-            internalType: "uint256",
-            name: "requestId",
-            type: "uint256",
-          },
-        ],
-        name: "CancelRequestShoper",
-        outputs: [],
-        stateMutability: "nonpayable",
-        type: "function",
+        "inputs": [],
+        "name": "BeSalesman",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
       },
       {
-        inputs: [
-          {
-            internalType: "uint256",
-            name: "shopId",
-            type: "uint256",
-          },
-        ],
-        name: "DeleteShop",
-        outputs: [],
-        stateMutability: "nonpayable",
-        type: "function",
+        "inputs": [],
+        "name": "BeShoper",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
       },
       {
-        inputs: [
-          {
-            internalType: "address",
-            name: "shopAddress",
-            type: "address",
-          },
-          {
-            internalType: "uint256",
-            name: "complaintsId",
-            type: "uint256",
-          },
-        ],
-        name: "DisikeComplaints",
-        outputs: [],
-        stateMutability: "nonpayable",
-        type: "function",
+        "inputs": [],
+        "name": "BeShoperForSalesman",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
       },
       {
-        inputs: [
+        "inputs": [
           {
-            internalType: "address",
-            name: "shopAddress",
-            type: "address",
-          },
-          {
-            internalType: "uint256",
-            name: "complaintsId",
-            type: "uint256",
-          },
+            "internalType": "uint256",
+            "name": "requestId",
+            "type": "uint256"
+          }
         ],
-        name: "LikeComplaints",
-        outputs: [],
-        stateMutability: "nonpayable",
-        type: "function",
+        "name": "CancelRequestAdmin",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
       },
       {
-        inputs: [
+        "inputs": [
           {
-            internalType: "string",
-            name: "login",
-            type: "string",
-          },
-          {
-            internalType: "string",
-            name: "password",
-            type: "string",
-          },
+            "internalType": "uint256",
+            "name": "requestId",
+            "type": "uint256"
+          }
         ],
-        name: "LoginUser",
-        outputs: [
-          {
-            internalType: "bool",
-            name: "",
-            type: "bool",
-          },
-        ],
-        stateMutability: "view",
-        type: "function",
+        "name": "CancelRequestSalesman",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
       },
       {
-        inputs: [],
-        name: "RequestToAdminCount",
-        outputs: [
+        "inputs": [
           {
-            internalType: "uint256",
-            name: "",
-            type: "uint256",
-          },
+            "internalType": "uint256",
+            "name": "requestId",
+            "type": "uint256"
+          }
         ],
-        stateMutability: "view",
-        type: "function",
+        "name": "CancelRequestShoper",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
       },
       {
-        inputs: [],
-        name: "RequestToAdminFunc",
-        outputs: [],
-        stateMutability: "nonpayable",
-        type: "function",
+        "inputs": [
+          {
+            "internalType": "uint256",
+            "name": "shopId",
+            "type": "uint256"
+          }
+        ],
+        "name": "DeleteShop",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
       },
       {
-        inputs: [],
-        name: "RequestToSalesmanCount",
-        outputs: [
+        "inputs": [
           {
-            internalType: "uint256",
-            name: "",
-            type: "uint256",
+            "internalType": "address",
+            "name": "shopAddress",
+            "type": "address"
           },
+          {
+            "internalType": "uint256",
+            "name": "complaintsId",
+            "type": "uint256"
+          }
         ],
-        stateMutability: "view",
-        type: "function",
+        "name": "DisikeComplaints",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
       },
       {
-        inputs: [
+        "inputs": [
           {
-            internalType: "uint256",
-            name: "shopId",
-            type: "uint256",
+            "internalType": "address",
+            "name": "shopAddress",
+            "type": "address"
           },
+          {
+            "internalType": "uint256",
+            "name": "complaintsId",
+            "type": "uint256"
+          }
         ],
-        name: "RequestToSalesmanFunc",
-        outputs: [],
-        stateMutability: "nonpayable",
-        type: "function",
+        "name": "LikeComplaints",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
       },
       {
-        inputs: [],
-        name: "RequestToShoperCount",
-        outputs: [
+        "inputs": [
           {
-            internalType: "uint256",
-            name: "",
-            type: "uint256",
+            "internalType": "string",
+            "name": "login",
+            "type": "string"
           },
+          {
+            "internalType": "string",
+            "name": "password",
+            "type": "string"
+          }
         ],
-        stateMutability: "view",
-        type: "function",
+        "name": "LoginUser",
+        "outputs": [
+          {
+            "internalType": "bool",
+            "name": "",
+            "type": "bool"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
       },
       {
-        inputs: [],
-        name: "RequestToShoperFunc",
-        outputs: [],
-        stateMutability: "nonpayable",
-        type: "function",
+        "inputs": [],
+        "name": "RequestToAdminFunc",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
       },
       {
-        inputs: [
+        "inputs": [
           {
-            internalType: "uint256",
-            name: "shopId",
-            type: "uint256",
-          },
+            "internalType": "uint256",
+            "name": "shopId",
+            "type": "uint256"
+          }
         ],
-        name: "ShowSalesmanOfStore",
-        outputs: [
-          {
-            internalType: "address[]",
-            name: "",
-            type: "address[]",
-          },
-        ],
-        stateMutability: "view",
-        type: "function",
+        "name": "RequestToSalesmanFunc",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
       },
       {
-        inputs: [
-          {
-            internalType: "uint256",
-            name: "shopId",
-            type: "uint256",
-          },
-        ],
-        name: "ToBankRequest",
-        outputs: [],
-        stateMutability: "nonpayable",
-        type: "function",
+        "inputs": [],
+        "name": "RequestToShoperFunc",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
       },
       {
-        inputs: [
+        "inputs": [
           {
-            internalType: "address",
-            name: "",
-            type: "address",
-          },
-          {
-            internalType: "uint256",
-            name: "",
-            type: "uint256",
-          },
+            "internalType": "uint256",
+            "name": "shopId",
+            "type": "uint256"
+          }
         ],
-        name: "bookOfComplaintsAndSuggestions",
-        outputs: [
+        "name": "ShowSalesmanOfStore",
+        "outputs": [
           {
-            internalType: "uint256",
-            name: "complaintsId",
-            type: "uint256",
-          },
-          {
-            internalType: "bytes32",
-            name: "login",
-            type: "bytes32",
-          },
-          {
-            internalType: "string",
-            name: "comment",
-            type: "string",
-          },
-          {
-            internalType: "uint256",
-            name: "mark",
-            type: "uint256",
-          },
+            "internalType": "address[]",
+            "name": "",
+            "type": "address[]"
+          }
         ],
-        stateMutability: "view",
-        type: "function",
+        "stateMutability": "view",
+        "type": "function"
       },
       {
-        inputs: [
+        "inputs": [
           {
-            internalType: "address",
-            name: "addressShop",
-            type: "address",
-          },
+            "internalType": "uint256",
+            "name": "shopId",
+            "type": "uint256"
+          }
         ],
-        name: "getShopComplainAndSuggestion",
-        outputs: [
+        "name": "ToBankRequest",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      {
+        "inputs": [
           {
-            components: [
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+          }
+        ],
+        "name": "bookOfComplaintsAndSuggestions",
+        "outputs": [
+          {
+            "internalType": "uint256",
+            "name": "complaintsId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "login",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "string",
+            "name": "comment",
+            "type": "string"
+          },
+          {
+            "internalType": "int256",
+            "name": "mark",
+            "type": "int256"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "inputs": [],
+        "name": "getBeAdminRequests",
+        "outputs": [
+          {
+            "components": [
               {
-                internalType: "uint256",
-                name: "complaintsId",
-                type: "uint256",
+                "internalType": "uint256",
+                "name": "id",
+                "type": "uint256"
               },
               {
-                internalType: "bytes32",
-                name: "login",
-                type: "bytes32",
+                "internalType": "address",
+                "name": "addressUser",
+                "type": "address"
               },
               {
-                internalType: "string",
-                name: "comment",
-                type: "string",
-              },
-              {
-                internalType: "uint256",
-                name: "mark",
-                type: "uint256",
-              },
-              {
-                internalType: "address[]",
-                name: "like",
-                type: "address[]",
-              },
-              {
-                internalType: "address[]",
-                name: "dislike",
-                type: "address[]",
-              },
+                "internalType": "bool",
+                "name": "finished",
+                "type": "bool"
+              }
             ],
-            internalType: "struct Shoping.ComplaintsAndSuggestions[]",
-            name: "",
-            type: "tuple[]",
-          },
+            "internalType": "struct Shoping.RequestToAdmin[]",
+            "name": "",
+            "type": "tuple[]"
+          }
         ],
-        stateMutability: "view",
-        type: "function",
+        "stateMutability": "view",
+        "type": "function"
       },
       {
-        inputs: [],
-        name: "getShopsAddress",
-        outputs: [
+        "inputs": [],
+        "name": "getBeBuyerRequests",
+        "outputs": [
           {
-            internalType: "address[]",
-            name: "",
-            type: "address[]",
-          },
+            "components": [
+              {
+                "internalType": "uint256",
+                "name": "id",
+                "type": "uint256"
+              },
+              {
+                "internalType": "address",
+                "name": "addressSalesman",
+                "type": "address"
+              },
+              {
+                "internalType": "bool",
+                "name": "finished",
+                "type": "bool"
+              }
+            ],
+            "internalType": "struct Shoping.RequestToShoper[]",
+            "name": "",
+            "type": "tuple[]"
+          }
         ],
-        stateMutability: "view",
-        type: "function",
+        "stateMutability": "view",
+        "type": "function"
       },
       {
-        inputs: [
+        "inputs": [],
+        "name": "getBeSalesmanRequests",
+        "outputs": [
           {
-            internalType: "string",
-            name: "FIO",
-            type: "string",
-          },
-          {
-            internalType: "string",
-            name: "password",
-            type: "string",
-          },
-          {
-            internalType: "string",
-            name: "login",
-            type: "string",
-          },
+            "components": [
+              {
+                "internalType": "uint256",
+                "name": "id",
+                "type": "uint256"
+              },
+              {
+                "internalType": "address",
+                "name": "addressShoper",
+                "type": "address"
+              },
+              {
+                "internalType": "uint256",
+                "name": "shopId",
+                "type": "uint256"
+              },
+              {
+                "internalType": "bool",
+                "name": "finished",
+                "type": "bool"
+              }
+            ],
+            "internalType": "struct Shoping.RequestToSalesman[]",
+            "name": "",
+            "type": "tuple[]"
+          }
         ],
-        name: "regUser",
-        outputs: [],
-        stateMutability: "nonpayable",
-        type: "function",
+        "stateMutability": "view",
+        "type": "function"
       },
       {
-        inputs: [
+        "inputs": [
           {
-            internalType: "uint256",
-            name: "",
-            type: "uint256",
-          },
+            "internalType": "address",
+            "name": "addressShop",
+            "type": "address"
+          }
         ],
-        name: "requestToAdmin",
-        outputs: [
+        "name": "getShopComplainAndSuggestion",
+        "outputs": [
           {
-            internalType: "uint256",
-            name: "id_requestToAdmin",
-            type: "uint256",
-          },
-          {
-            internalType: "address",
-            name: "addressUser",
-            type: "address",
-          },
-          {
-            internalType: "bool",
-            name: "finished",
-            type: "bool",
-          },
+            "components": [
+              {
+                "internalType": "uint256",
+                "name": "complaintsId",
+                "type": "uint256"
+              },
+              {
+                "internalType": "bytes32",
+                "name": "login",
+                "type": "bytes32"
+              },
+              {
+                "internalType": "string",
+                "name": "comment",
+                "type": "string"
+              },
+              {
+                "internalType": "int256",
+                "name": "mark",
+                "type": "int256"
+              },
+              {
+                "internalType": "address[]",
+                "name": "like",
+                "type": "address[]"
+              },
+              {
+                "internalType": "address[]",
+                "name": "dislike",
+                "type": "address[]"
+              }
+            ],
+            "internalType": "struct Shoping.ComplaintsAndSuggestions[]",
+            "name": "",
+            "type": "tuple[]"
+          }
         ],
-        stateMutability: "view",
-        type: "function",
+        "stateMutability": "view",
+        "type": "function"
       },
       {
-        inputs: [
+        "inputs": [],
+        "name": "getShopsAddress",
+        "outputs": [
           {
-            internalType: "uint256",
-            name: "",
-            type: "uint256",
-          },
+            "internalType": "address[]",
+            "name": "",
+            "type": "address[]"
+          }
         ],
-        name: "requestToSalesman",
-        outputs: [
-          {
-            internalType: "uint256",
-            name: "id_requestToSalesman",
-            type: "uint256",
-          },
-          {
-            internalType: "address",
-            name: "addressShoper",
-            type: "address",
-          },
-          {
-            internalType: "uint256",
-            name: "shopId",
-            type: "uint256",
-          },
-          {
-            internalType: "bool",
-            name: "finished",
-            type: "bool",
-          },
-        ],
-        stateMutability: "view",
-        type: "function",
+        "stateMutability": "view",
+        "type": "function"
       },
       {
-        inputs: [
+        "inputs": [
           {
-            internalType: "uint256",
-            name: "",
-            type: "uint256",
+            "internalType": "string",
+            "name": "FIO",
+            "type": "string"
           },
+          {
+            "internalType": "string",
+            "name": "password",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "login",
+            "type": "string"
+          }
         ],
-        name: "requestToShoper",
-        outputs: [
-          {
-            internalType: "uint256",
-            name: "id_requestToShoper",
-            type: "uint256",
-          },
-          {
-            internalType: "address",
-            name: "addressSalesman",
-            type: "address",
-          },
-          {
-            internalType: "bool",
-            name: "finished",
-            type: "bool",
-          },
-        ],
-        stateMutability: "view",
-        type: "function",
+        "name": "regUser",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
       },
       {
-        inputs: [
+        "inputs": [
           {
-            internalType: "uint256",
-            name: "",
-            type: "uint256",
-          },
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+          }
         ],
-        name: "shop",
-        outputs: [
+        "name": "requestToAdmin",
+        "outputs": [
           {
-            internalType: "uint256",
-            name: "shopId",
-            type: "uint256",
+            "internalType": "uint256",
+            "name": "id",
+            "type": "uint256"
           },
           {
-            internalType: "address payable",
-            name: "addresShop",
-            type: "address",
+            "internalType": "address",
+            "name": "addressUser",
+            "type": "address"
           },
           {
-            internalType: "string",
-            name: "city",
-            type: "string",
-          },
-          {
-            internalType: "bool",
-            name: "shopStatus",
-            type: "bool",
-          },
-          {
-            internalType: "bool",
-            name: "bankMoney",
-            type: "bool",
-          },
+            "internalType": "bool",
+            "name": "finished",
+            "type": "bool"
+          }
         ],
-        stateMutability: "view",
-        type: "function",
+        "stateMutability": "view",
+        "type": "function"
       },
       {
-        inputs: [
+        "inputs": [
           {
-            internalType: "uint256",
-            name: "",
-            type: "uint256",
-          },
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+          }
         ],
-        name: "shopAddress",
-        outputs: [
+        "name": "requestToSalesman",
+        "outputs": [
           {
-            internalType: "address",
-            name: "",
-            type: "address",
+            "internalType": "uint256",
+            "name": "id",
+            "type": "uint256"
           },
+          {
+            "internalType": "address",
+            "name": "addressShoper",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "shopId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bool",
+            "name": "finished",
+            "type": "bool"
+          }
         ],
-        stateMutability: "view",
-        type: "function",
+        "stateMutability": "view",
+        "type": "function"
       },
       {
-        inputs: [
+        "inputs": [
           {
-            internalType: "address",
-            name: "",
-            type: "address",
-          },
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+          }
         ],
-        name: "user",
-        outputs: [
+        "name": "requestToShoper",
+        "outputs": [
           {
-            internalType: "address",
-            name: "user_address",
-            type: "address",
+            "internalType": "uint256",
+            "name": "id",
+            "type": "uint256"
           },
           {
-            internalType: "string",
-            name: "FIO",
-            type: "string",
+            "internalType": "address",
+            "name": "addressSalesman",
+            "type": "address"
           },
           {
-            internalType: "bytes32",
-            name: "login",
-            type: "bytes32",
-          },
-          {
-            internalType: "bytes32",
-            name: "password",
-            type: "bytes32",
-          },
-          {
-            internalType: "uint256",
-            name: "role",
-            type: "uint256",
-          },
-          {
-            internalType: "bool",
-            name: "admin",
-            type: "bool",
-          },
-          {
-            internalType: "bool",
-            name: "salesman",
-            type: "bool",
-          },
+            "internalType": "bool",
+            "name": "finished",
+            "type": "bool"
+          }
         ],
-        stateMutability: "view",
-        type: "function",
+        "stateMutability": "view",
+        "type": "function"
       },
       {
-        inputs: [
+        "inputs": [
           {
-            internalType: "uint256",
-            name: "",
-            type: "uint256",
-          },
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+          }
         ],
-        name: "userArray",
-        outputs: [
+        "name": "shop",
+        "outputs": [
           {
-            internalType: "address",
-            name: "",
-            type: "address",
+            "internalType": "uint256",
+            "name": "shopId",
+            "type": "uint256"
           },
+          {
+            "internalType": "address payable",
+            "name": "addresShop",
+            "type": "address"
+          },
+          {
+            "internalType": "string",
+            "name": "city",
+            "type": "string"
+          },
+          {
+            "internalType": "bool",
+            "name": "shopStatus",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "bankMoney",
+            "type": "bool"
+          }
         ],
-        stateMutability: "view",
-        type: "function",
+        "stateMutability": "view",
+        "type": "function"
       },
       {
-        inputs: [
+        "inputs": [
           {
-            internalType: "uint256",
-            name: "",
-            type: "uint256",
-          },
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+          }
         ],
-        name: "zeroAddress",
-        outputs: [
+        "name": "shopAddress",
+        "outputs": [
           {
-            internalType: "address",
-            name: "",
-            type: "address",
-          },
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+          }
         ],
-        stateMutability: "view",
-        type: "function",
+        "stateMutability": "view",
+        "type": "function"
       },
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+          }
+        ],
+        "name": "user",
+        "outputs": [
+          {
+            "internalType": "address",
+            "name": "user_address",
+            "type": "address"
+          },
+          {
+            "internalType": "string",
+            "name": "FIO",
+            "type": "string"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "login",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "password",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "uint256",
+            "name": "role",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bool",
+            "name": "admin",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "salesman",
+            "type": "bool"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+          }
+        ],
+        "name": "userArray",
+        "outputs": [
+          {
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+          }
+        ],
+        "name": "zeroAddress",
+        "outputs": [
+          {
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      }
     ],
   },
   user: {
@@ -836,4 +942,9 @@ export const initialState = {
     showWindow: false,
   },
   CAS: {},
+  requests: {
+    beAdmin: [],
+    beSalesman: [],
+    beBuyer: [],
+  },
 };

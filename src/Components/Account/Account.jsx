@@ -1,12 +1,14 @@
 import { BeAdminButton } from "./Buttons/BeAdminButton";
 import { BeBuyerButton } from "./Buttons/BeBuyerButton";
 import { BeSalesmanButton } from "./Buttons/BeSalesmanButton";
+import { BeBuyerForever } from "./Buttons/BeBuyerForever";
 
 export const Account = (props) => {
   return (
     <article>
       <h2>Your login: {props.user.login}</h2>
       <p>Your balance: {props.user.balance} ETH</p>
+      {props.role !== 3 ? <p>Your name is {props.user.fio}</p> : ""}
       <p>
         You're{" "}
         {props.user.isAdmin
@@ -27,7 +29,10 @@ export const Account = (props) => {
         <div>
           <BeBuyerButton>Be Buyer</BeBuyerButton>
           {props.user.isSalesman ? (
-            <BeSalesmanButton>Be Salesman</BeSalesmanButton>
+            <>
+              <BeSalesmanButton>Be Salesman</BeSalesmanButton>
+              <BeBuyerForever>Be BuyerForever</BeBuyerForever>
+            </>
           ) : (
             ""
           )}

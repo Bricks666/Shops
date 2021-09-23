@@ -4,7 +4,6 @@ import {
   INPUT_NEW_COMMENT,
   INPUT_NEW_MARK,
   START_SEND_COMMENT,
-  TOGGLE_SHOW_WINDOW,
 } from "../ActionsConstants";
 import { initialState } from "../initialState";
 
