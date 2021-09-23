@@ -8,6 +8,7 @@ import { login } from "./Reducers/login";
 import { shops } from "./Reducers/shops";
 import { registration } from "./Reducers/registration";
 import { newMessage } from "./Reducers/newMessage";
+import { CAS } from "./Reducers/CAS";
 
 const rootReducer = combineReducers({
   user: account,
@@ -18,6 +19,7 @@ const rootReducer = combineReducers({
   registration: registration,
   shops: shops,
   newMessage: newMessage,
+  CAS: CAS,
 });
 
 const store = createStore(rootReducer, applyMiddleware(thunk));

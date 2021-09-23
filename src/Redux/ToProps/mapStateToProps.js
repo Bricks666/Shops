@@ -86,13 +86,6 @@ export const mapStateToProps = (component) => {
         return { shops: state.shops };
       };
     }
-    case SHOP_CARD: {
-      return (state) => {
-        return {
-          showWindow: state.newMessage.showWindow,
-        };
-      };
-    }
     case REGISTRATION: {
       return (state) => {
         return {
@@ -104,6 +97,14 @@ export const mapStateToProps = (component) => {
       return (state) => {
         return {
           condition: state.newMessage.showWindow,
+        };
+      };
+    }
+    case CAS_LIST: {
+      return (state, ownProps) => {
+        console.log(ownProps);
+        return {
+          CAS: state.CAS[ownProps.address],
         };
       };
     }

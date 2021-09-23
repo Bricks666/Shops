@@ -22,19 +22,12 @@ export const newMessage = (state = initialState.newMessage, action) => {
         mark: action.mark,
       };
     }
-    case TOGGLE_SHOW_WINDOW: {
-      return {
-        ...state,
-        showWindow: !state.showWindow,
-      };
-    }
     case START_SEND_COMMENT: {
       return {
         ...state,
         isDisabled: true,
         comment: "",
         mark: "0",
-        showWindow: false,
       };
     }
     case ABORT_SEND_COMMENT: {

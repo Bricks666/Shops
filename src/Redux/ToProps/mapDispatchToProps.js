@@ -98,11 +98,6 @@ export const mapDispatchToProps = (component) => {
         loadShops: requestShopsThunk,
       };
     }
-    case SHOP_CARD: {
-      return {
-        close: toggleShowWindow,
-      };
-    }
     case SHOW_SALESMEN_BUTTON: {
       return (dispatch, ownProps) => {
         return {
@@ -217,18 +212,14 @@ export const mapDispatchToProps = (component) => {
       return (dispatch, ownProps) => {
         return {
           onClick(evt) {
-            debugger;
+
             evt.preventDefault();
             dispatch(sendComment(ownProps.address));
           },
         };
       };
     }
-    case SHOW_NEW_COMMENT: {
-      return {
-        onClick: toggleShowWindow,
-      };
-    }
+
     default: {
       return {};
     }

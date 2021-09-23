@@ -5,9 +5,10 @@ import { ShowSalesmenButton } from "./ShowSalesmenButton/ShowSalesmenButton";
 import { CASListConnect } from "./CASList/CASListConnect";
 import { ModalWindow } from "../../Shared/ModalWindow/ModalWindow";
 import { NewCommentConnect } from "./NewComment/NewCommentConnect";
-import { ShowNewComment } from "./ShowNewCommet/ShowNewComment";
+import { Button } from "../../Shared/Button/Button";
 
 export const ShopCard = (props) => {
+
   return (
     <article>
       <h3>{props.addresShop}</h3>
@@ -21,7 +22,7 @@ export const ShopCard = (props) => {
       >
         {`${props.showCAS ? "Hidden" : "Show"} Complain And Suggestion`}
       </ComplaintAndSuggestionsButton>
-      <ShowNewComment>Создать новый комментарий</ShowNewComment>
+      <Button onClick={props.show}>Создать новый комментарий</Button>
       <BottomWindow condition={props.showSalesmen}>
         <SalesmenListConnect shopId={props.id} salesmen={props.salesmen} />
       </BottomWindow>
@@ -29,10 +30,9 @@ export const ShopCard = (props) => {
         <CASListConnect
           shopId={props.id}
           address={props.addresShop}
-          complainsAndSuggestions={props.complainsAndSuggestions}
         />
       </BottomWindow>
-      <ModalWindow condition={props.showWindow} close={props.close}>
+      <ModalWindow condition={props.condition} close={props.close}>
         <NewCommentConnect address={props.addresShop} />
       </ModalWindow>
     </article>

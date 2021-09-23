@@ -4,23 +4,19 @@ import { CASItem } from "./CASItem/CASItem";
 
 export class CASList extends Component {
   componentDidMount() {
-    if (this.props.complainsAndSuggestions.length === 0) {
-      this.props.loadCAS(
-        this.props.address,
-        this.props.shopId,
-        this.props.isSalesman
-      );
+    if (this.props.CAS.length === 0) {
+      this.props.loadCAS(this.props.address);
     }
   }
 
   render() {
+    console.log(this.props.CAS);
     return (
       <>
         <p>Отзывы</p>
         <ul>
-          {renderList(this.props.complainsAndSuggestions, CASItem, {
+          {renderList(this.props.CAS, CASItem, {
             address: this.props.address,
-            isSalesman: this.props.isSalesman,
           })}
         </ul>
       </>

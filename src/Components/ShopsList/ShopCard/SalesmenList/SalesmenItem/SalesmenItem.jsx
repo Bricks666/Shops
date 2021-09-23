@@ -1,34 +1,22 @@
 import { BottomWindow } from "../../../../Shared/BottomWindow/BottomWindow";
 import { CASListConnect } from "../../CASList/CASListConnect";
-import { ComplaintAndSuggestionsButton } from "../../ComplainsAndSuggestionsButton/ComplainsAndSuggestionButton";
 import { ModalWindow } from "../../../../Shared/ModalWindow/ModalWindow";
 import { NewCommentConnect } from "../../NewComment/NewCommentConnect";
-import { ShowNewComment } from "../../ShowNewCommet/ShowNewComment";
+import { Button } from "../../../../Shared/Button/Button";
 
 export const SalesmenItem = (props) => {
-  console.log(props);
+  debugger;
   return (
     <li>
       <h4>{props.fio}</h4>
       <p>{props.address}</p>
-      <ComplaintAndSuggestionsButton
-        address={props.address}
-        shopId={props.shopId}
-        isSalesman={true}
-      >
-        Посмотреть отзывы
-      </ComplaintAndSuggestionsButton>
-      <ShowNewComment>Написать новый комментарий</ShowNewComment>
+      <Button onClick={props.toggleCAS}>Посмотреть отзывы</Button>
+      <Button onClick={props.openComment}>Написать новый комментарий</Button>
       <BottomWindow condition={props.showCAS}>
-        <CASListConnect
-          shopId={props.shopId}
-          address={props.address}
-          isSalesman={true}
-          complainsAndSuggestions={props.complainsAndSuggestions}
-        />
+        <CASListConnect address={props.address} />
       </BottomWindow>
       {/* Доделать окно для отправки комментария, потому что сейчас вылезают два поверх друг друга и сверху оказывается комментарии от контракта*/}
-      <ModalWindow condition={props.condition} close={props.close}>
+      <ModalWindow condition={props.showComment} close={props.closeComment}>
         <NewCommentConnect address={props.address} />
       </ModalWindow>
     </li>

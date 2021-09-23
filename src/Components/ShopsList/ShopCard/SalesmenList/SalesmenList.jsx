@@ -1,6 +1,6 @@
 import { Component } from "react";
 import { renderList } from "../../renderList";
-import { SalesmenItem } from "./SalesmenItem/SalesmenItem";
+import { SalesmenItemClass } from "./SalesmenItem/SalesmenItemClass";
 
 export class SalesmenList extends Component {
   componentDidMount() {
@@ -13,12 +13,7 @@ export class SalesmenList extends Component {
     return (
       <>
         <p>Продавцы</p>
-        <ul>
-          {renderList(this.props.salesmen, SalesmenItem, {
-            condition: this.props.condition,
-            close: this.props.close,
-          })}
-        </ul>
+        <ul>{renderList(this.props.salesmen, SalesmenItemClass)}</ul>
       </>
     );
   }

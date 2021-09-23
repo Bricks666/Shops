@@ -11,27 +11,12 @@ import {
 } from "../ActionsConstants";
 import { initialState } from "../initialState";
 import { toValidSalesman } from "../Service/toValidSalesman";
+import { toValidShop } from "../Service/toValidShop";
 
 export const shops = (state = initialState.shops, action) => {
   switch (action.type) {
     case SET_SHOPS: {
-      return action.shops.map((shop) => {
-        for (let key in shop) {
-          if (isNaN(key)) {
-            if (key === "shopId") {
-              shop.id = shop[key];
-              delete shop[key];
-            }
-            continue;
-          }
-
-          delete shop[key];
-        }
-        shop.salesmen = [];
-        shop.complainsAndSuggestions = [];
-        shop.showSalesmen = false;
-        return shop;
-      });
+      return action.shops.map(toValidShop);
     }
     case SET_SALESMEN: {
       return state.map((shop) => {
@@ -48,7 +33,7 @@ export const shops = (state = initialState.shops, action) => {
       action.newShop.salesmen = [];
       return [...state, action.newShop];
     }
-    case ADD_CAS: {
+/*     case ADD_CAS: {
       return state.map((shop) => {
         debugger;
         if (shop.addresShop === action.address) {
@@ -77,7 +62,7 @@ export const shops = (state = initialState.shops, action) => {
           };
         }
       });
-    }
+    } */
     case TOGGLE_SHOW_SALESMEN: {
       return state.map((shop) => {
         if (shop.id == action.shopId) {
@@ -91,7 +76,7 @@ export const shops = (state = initialState.shops, action) => {
       });
     }
     /* Как то перемудрено, скорее всего можно сделать все проще */
-    case SET_COMPLAINS_AND_SUGGESTIONS: {
+/*     case SET_COMPLAINS_AND_SUGGESTIONS: {
       return state.map((shop) => {
         if (shop.id === action.shopId) {
           if (action.isSalesman) {
@@ -114,7 +99,7 @@ export const shops = (state = initialState.shops, action) => {
         }
         return shop;
       });
-    }
+    } */
     case SHOW_COMPLAINS_AND_SUGGESTIONS: {
       return state.map((shop) => {
         if (shop.id === action.shopId) {
