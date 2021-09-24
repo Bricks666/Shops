@@ -2,7 +2,7 @@ export const toValidShop = (shop) => {
   for (let key in shop) {
     if (isNaN(key)) {
       if (key === "shopId") {
-        shop.id = shop[key];
+        shop.id = +shop[key];
         delete shop[key];
       }
       continue;

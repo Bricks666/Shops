@@ -4,6 +4,7 @@ import { BeSalesmanButton } from "./Buttons/BeSalesmanButton";
 import { BeBuyerForever } from "./Buttons/BeBuyerForever";
 
 export const Account = (props) => {
+  console.log(props);
   return (
     <article>
       <h2>Your login: {props.user.login}</h2>
@@ -31,7 +32,9 @@ export const Account = (props) => {
           {props.user.isSalesman ? (
             <>
               <BeSalesmanButton>Be Salesman</BeSalesmanButton>
-              <BeBuyerForever>Be BuyerForever</BeBuyerForever>
+              <BeBuyerForever shopId={props.shopId}>
+                Be BuyerForever
+              </BeBuyerForever>
             </>
           ) : (
             ""

@@ -12,7 +12,11 @@ export const requestShopsSalesmen = (shopId) => {
     for (let address of salesmenAddresses) {
       salesmen.push(await state.contract.methods.user(address).call());
     }
-
-    dispatch(setSalesmen(shopId, salesmen));
+    dispatch(
+      setSalesmen(
+        shopId,
+        salesmen.filter((salesman) => salesman.role !== "0")
+      )
+    );
   };
 };

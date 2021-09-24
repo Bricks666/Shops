@@ -3,7 +3,9 @@ import { BuyerRequests } from "./BuyerRequests";
 
 export class BuyerRequestsClass extends Component {
   componentDidMount() {
-    this.props.loadRequests();
+    if (this.props.buyer.length === 0) {
+      this.props.loadRequests();
+    }
   }
 
   render() {

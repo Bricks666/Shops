@@ -1,6 +1,7 @@
 import {
   ADD_REQUEST,
   FINISH_REQUEST,
+  SET_ACCOUNT,
   SET_ADMIN_REQUESTS,
   SET_BUYER_REQUESTS,
   SET_SALESMAN_REQUESTS,
@@ -53,8 +54,17 @@ export const requests = (state = initialState.requests, action) => {
             return request;
           }
         );
+
+        return newState;
       }
       return state;
+    }
+    case SET_ACCOUNT: {
+      return {
+        beAdmin: [],
+        beBuyer: [],
+        beSalesman: [],
+      };
     }
     default: {
       return state;

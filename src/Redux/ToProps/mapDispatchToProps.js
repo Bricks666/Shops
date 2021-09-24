@@ -35,6 +35,9 @@ import {
   BUYER_REQUESTS,
   CANCEL_BUYER_REQUEST,
   ACCEPT_BUYER_REQUEST,
+  SALESMAN_REQUESTS,
+  ACCEPT_SALESMAN_REQUEST,
+  CANCEL_SALESMAN_REQUEST,
 } from "../ComponentConstants";
 import { requestShopsThunk } from "../Actions/Shops/requestShopsThunk";
 import { toggleShowSalesmen } from "../Actions/Shops/toggleShowSalesmen";
@@ -52,6 +55,9 @@ import { beSalesmanForever } from "../Actions/Account/Be/beSalesmanForever";
 import { loadBuyerRequests } from "../Actions/Requests/loadBuyerRequests";
 import { cancelBuyerRequest } from "../Actions/Requests/cancelBuyerRequest";
 import { acceptBuyerRequest } from "../Actions/Requests/acceptBuyerRequest";
+import { loadSalesmanRequests } from "../Actions/Requests/loadSalesmanRequests";
+import { acceptSalesmanRequest } from "../Actions/Requests/acceptSalesmanRequest";
+import { cancelSalesmanRequest } from "../Actions/Requests/cancelSalesmanRequest";
 
 export const mapDispatchToProps = (component) => {
   switch (component) {
@@ -241,6 +247,29 @@ export const mapDispatchToProps = (component) => {
         return {
           onClick() {
             dispatch(acceptBuyerRequest(ownProps.requestId));
+          },
+        };
+      };
+    }
+    case SALESMAN_REQUESTS: {
+      return {
+        loadRequests: loadSalesmanRequests,
+      };
+    }
+    case ACCEPT_SALESMAN_REQUEST: {
+      return (dispatch, ownProps) => {
+        return {
+          onClick() {
+            dispatch(acceptSalesmanRequest(ownProps.requestId));
+          },
+        };
+      };
+    }
+    case CANCEL_SALESMAN_REQUEST: {
+      return (dispatch, ownProps) => {
+        return {
+          onClick() {
+            dispatch(cancelSalesmanRequest(ownProps.requestId));
           },
         };
       };

@@ -1,7 +1,7 @@
 export const beBuyerForever = () => {
   return async (dispatch, getState) => {
     try {
-      debugger;
+
       const state = getState();
       await state.contract.methods
         .RequestToShoperFunc()

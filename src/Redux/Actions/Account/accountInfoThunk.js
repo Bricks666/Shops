@@ -1,3 +1,4 @@
+import { subscribeThunk } from "../Contract/subscribeThunk";
 import { setAccountInfo } from "./setAccountInfo";
 
 export const accountInfoThunk = () => {
@@ -7,5 +8,6 @@ export const accountInfoThunk = () => {
     const result = await state.contract.methods.user(state.user.address).call();
 
     dispatch(setAccountInfo(result));
+    dispatch(subscribeThunk());
   };
 };

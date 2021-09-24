@@ -18,8 +18,7 @@ contract Shoping {
         uint256 shopId;
         address payable addresShop;
         string city;
-        /*salemEn*/
-        address[] slaesmen;
+        address[] salesmen;
         bool shopStatus;
         bool bankMoney;
     }
@@ -63,7 +62,8 @@ contract Shoping {
     event NewComplaint(address bookAddress, uint256 complaintsId);
     event RequestFinished(string requestType, uint256 id); // Type may be "beAdmin", "beSalesman" and "beBuyer"
     event NewRequest(string requestType, uint256 id);
-    event ShopAdded();
+    event AddSalesman(address salesmanAddress, uint256 shopId);
+    event RemoveSalesman(address salesman, uint256 shopId);
 
     //Конструктор заносит в контракт нужные данные при деплое
 
@@ -215,9 +215,9 @@ contract Shoping {
     }
     modifier IsSalesmanThisStore(uint256 shopId) {
         //Проверка, является ли данный пользователь продавцом этого магазина
-        for (uint256 i = 0; i < shop[shopId].slaesmen.length; i++) {
+        for (uint256 i = 0; i < shop[shopId].salesmen.length; i++) {
             require(
-                msg.sender == shop[shopId].slaesmen[i],
+                msg.sender == shop[shopId].salesmen[i],
                 "You are not a shoper in this store"
             );
         }
@@ -510,11 +510,26 @@ contract Shoping {
             requestToShoper[requestId].finished == false,
             "You are not in request"
         );
-        user[requestToShoper[requestId].addressSalesman].salesman = false;
-        user[requestToShoper[requestId].addressSalesman].role = 1;
+        address salesman = requestToShoper[requestId].addressSalesman;
+        user[salesman].salesman = false;
+        user[salesman].role = 1;
         requestToShoper[requestId].finished = true;
+        uint64 shopId = 0;
+        bool isFound = false;
+        for (; shopId < shopAddress.length && !isFound; shopId++) {
+            address[] memory salesmen = shop[shopId].salesmen;
+
+            for (uint64 j = 0; j < salesmen.length; j++) {
+                if (salesmen[j] == salesman) {
+                    delete shop[shopId].salesmen[j];
+                    isFound = true;
+                    break;
+                }
+            }
+        }
+        emit RemoveSalesman(salesman, shopId);
         emit RequestFinished("beBuyer", requestId);
-        emit NewRole(requestToShoper[requestId].addressSalesman, 1);
+        emit NewRole(salesman, 1);
     }
 
     //Функция подтверждение администратором заявки на повышение роли до продавца
@@ -528,13 +543,15 @@ contract Shoping {
             requestToSalesman[requestId].finished == false,
             "You are not in request"
         );
-        user[requestToSalesman[requestId].addressShoper].salesman = true;
+        RequestToSalesman memory tempData = requestToSalesman[requestId];
+        user[tempData.addressShoper].salesman = true;
         requestToSalesman[requestId].finished = true;
-        shop[requestToSalesman[requestId].shopId].slaesmen.push(
+        shop[tempData.shopId].salesmen.push(
             requestToSalesman[requestId].addressShoper
         );
         emit RequestFinished("beSalesman", requestId);
-        emit NewRole(requestToSalesman[requestId].addressShoper, 2);
+        emit AddSalesman(tempData.addressShoper, tempData.shopId);
+        emit NewRole(tempData.addressShoper, 2);
     }
 
     //Функция отмены администратором заявки на повышение роли до администратора
@@ -641,7 +658,7 @@ contract Shoping {
         view
         returns (address[] memory)
     {
-        return (shop[shopId].slaesmen);
+        return (shop[shopId].salesmen);
     }
 
     //Функция удаления магазина из системы
@@ -650,16 +667,16 @@ contract Shoping {
         require(shop[shopId].shopStatus == true, "This shop is already delete");
         shop[shopId].shopStatus = false;
         DeleteSalesman(shopId);
-        shop[shopId].slaesmen = zeroAddress;
+        shop[shopId].salesmen = zeroAddress;
     }
 
     //Функция смены ролей продавцов удаленного магазина на роль покупателя
 
     function DeleteSalesman(uint256 shopId) private {
-        for (uint256 i = 0; i < shop[shopId].slaesmen.length; i++) {
-            user[shop[shopId].slaesmen[i]].salesman = false;
-            user[shop[shopId].slaesmen[i]].role = 1;
-            emit NewRole(shop[shopId].slaesmen[i], 1);
+        for (uint256 i = 0; i < shop[shopId].salesmen.length; i++) {
+            user[shop[shopId].salesmen[i]].salesman = false;
+            user[shop[shopId].salesmen[i]].role = 1;
+            emit NewRole(shop[shopId].salesmen[i], 1);
         }
     }
 

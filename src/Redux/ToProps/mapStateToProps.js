@@ -18,6 +18,7 @@ import {
   REG_LOGIN,
   REG_PASSWORD,
   SALESMAN_CONTENT,
+  SALESMAN_REQUESTS,
   SALESMEN_LIST,
   SHOPS_LIST,
   SHOP_CARD,
@@ -186,6 +187,13 @@ export const mapStateToProps = (component) => {
       return (state) => {
         return {
           buyer: state.requests.beBuyer,
+        };
+      };
+    }
+    case SALESMAN_REQUESTS: {
+      return (state) => {
+        return {
+          salesman: state.requests.beSalesman,
         };
       };
     }

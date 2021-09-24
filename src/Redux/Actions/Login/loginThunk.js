@@ -2,7 +2,6 @@ import { startLogin } from "./startLogin";
 import { abortLogin } from "./abortLogin";
 import { logged } from "./logged";
 import { accountInfoThunk } from "../Account/accountInfoThunk";
-import { subscribeThunk } from "../Contract/subscribeThunk";
 
 export const loginThunk = () => {
   return async (dispatch, getState) => {
@@ -22,7 +21,6 @@ export const loginThunk = () => {
 
       dispatch(logged());
       dispatch(accountInfoThunk());
-      dispatch(subscribeThunk());
     } catch (e) {
       dispatch(abortLogin());
     }

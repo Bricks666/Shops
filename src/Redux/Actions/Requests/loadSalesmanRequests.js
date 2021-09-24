@@ -1,7 +1,7 @@
 import { toValidRequest } from "../../Service/toValidRequest";
 import { setSalesmanRequests } from "./setSalesmanRequests";
 
-export const loadSalesmanRequest = () => {
+export const loadSalesmanRequests = () => {
   return async (dispatch, getState) => {
     const state = getState();
 
