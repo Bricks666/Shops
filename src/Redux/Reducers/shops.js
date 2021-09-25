@@ -1,19 +1,22 @@
 import {
   ADD_SALESMAN,
   ADD_SHOP,
+  CHANGE_ROLE,
+  NEW_ROLE,
   REMOVE_SALESMAN,
+  REMOVE_SHOP,
+  SET_ACCOUNT,
   SET_SALESMEN,
   SET_SHOPS,
   TOGGLE_SHOW_SALESMEN,
 } from "../ActionsConstants";
 import { initialState } from "../initialState";
 import { toValidSalesman } from "../Service/toValidSalesman";
-import { toValidShop } from "../Service/toValidShop";
 
 export const shops = (state = initialState.shops, action) => {
   switch (action.type) {
     case SET_SHOPS: {
-      return action.shops.map(toValidShop);
+      return action.shops;
     }
     case SET_SALESMEN: {
       return state.map((shop) => {
@@ -29,6 +32,9 @@ export const shops = (state = initialState.shops, action) => {
     case ADD_SHOP: {
       action.newShop.salesmen = [];
       return [...state, action.newShop];
+    }
+    case REMOVE_SHOP: {
+      return state.filter((shop) => shop.addressShop !== action.shopAddress);
     }
     case TOGGLE_SHOW_SALESMEN: {
       return state.map((shop) => {
@@ -65,6 +71,11 @@ export const shops = (state = initialState.shops, action) => {
         }
         return shop;
       });
+    }
+    case CHANGE_ROLE:
+    case NEW_ROLE:
+    case SET_ACCOUNT: {
+      return [];
     }
     default: {
       return state;

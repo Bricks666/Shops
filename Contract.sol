@@ -2,13 +2,10 @@ pragma solidity 0.7.0;
 pragma experimental ABIEncoderV2;
 
 contract Shoping {
-    // Создание контракта
-
-    //Создание структур данных
     struct User {
         address user_address;
         string FIO;
-        bytes32 login;
+        string login;
         bytes32 password;
         uint256 role; //1 - shoper  2 - salesman  3 - admin
         bool admin;
@@ -16,7 +13,7 @@ contract Shoping {
     }
     struct Shop {
         uint256 shopId;
-        address payable addresShop;
+        address payable addressShop;
         string city;
         address[] salesmen;
         bool shopStatus;
@@ -24,14 +21,12 @@ contract Shoping {
     }
     struct ComplaintsAndSuggestions {
         uint256 complaintsId;
-        bytes32 login;
+        string login;
         string comment;
         int256 mark;
         address[] like;
         address[] dislike;
     }
-
-    /*Нужно как то избавиться от дублирвания кода*/
     struct RequestToSalesman {
         uint256 id;
         address addressShoper;
@@ -48,11 +43,11 @@ contract Shoping {
         address addressUser;
         bool finished;
     }
-
-    // Объявление eventов
-
+    /* Roles */
     event ChangeRole(address indexed user, uint256 role);
     event NewRole(address indexed user, uint256 role);
+    event RemoveUser(address user);
+    /* Complains */
     event MarkComplaint(
         address shopAddress,
         uint256 complaintsId,
@@ -60,12 +55,14 @@ contract Shoping {
         address changer
     );
     event NewComplaint(address bookAddress, uint256 complaintsId);
+    /* Requests */
     event RequestFinished(string requestType, uint256 id); // Type may be "beAdmin", "beSalesman" and "beBuyer"
     event NewRequest(string requestType, uint256 id);
     event AddSalesman(address salesmanAddress, uint256 shopId);
     event RemoveSalesman(address salesman, uint256 shopId);
-
-    //Конструктор заносит в контракт нужные данные при деплое
+    /* Shops */
+    event RemoveShop(address shopAddress);
+    event AddShopEvent(address shopNewAddress, uint256 shopId);
 
     constructor() {
         user[0x5B38Da6a701c568545dCfcB03FcB875f56beddC4] = User(
@@ -77,10 +74,10 @@ contract Shoping {
             false,
             false
         );
-        user[0x0BE83965803BF63055347F99647051C292ADA64E] = User(
-            0x0BE83965803BF63055347F99647051C292ADA64E,
+        user[0x98ABCBdDb13B61b30205c04B325A2202050d2bBC] = User(
+            0x98ABCBdDb13B61b30205c04B325A2202050d2bBC,
             "Admin",
-            keccak256(abi.encodePacked("admin")),
+            "admin",
             keccak256(abi.encodePacked("admin")),
             3,
             true,
@@ -98,29 +95,34 @@ contract Shoping {
         user[msg.sender] = User(
             msg.sender,
             "User",
-            keccak256(abi.encodePacked("user")),
+            "user",
             keccak256(abi.encodePacked("123")),
             2,
             false,
             true
         );
+        userArray.push(0x5B38Da6a701c568545dCfcB03FcB875f56beddC4);
+        userArray.push(0x98ABCBdDb13B61b30205c04B325A2202050d2bBC);
+        userArray.push(0xdD870fA1b7C4700F2BD7f44238821C26f7392148);
+        userArray.push(msg.sender);
         address[] memory startSalesmen = new address[](1);
         startSalesmen[0] = msg.sender;
-        shop[shopAddress.length] = Shop(
-            shopAddress.length,
-            0xCA35b7d915458EF540aDe6068dFe2F44E8fa733c,
-            "kaluga",
-            startSalesmen,
-            false,
-            false
+        shop.push(
+            Shop(
+                shop.length,
+                0xCA35b7d915458EF540aDe6068dFe2F44E8fa733c,
+                "kaluga",
+                startSalesmen,
+                true,
+                false
+            )
         );
-        shopAddress.push(0xCA35b7d915458EF540aDe6068dFe2F44E8fa733c);
         bookOfComplaintsAndSuggestions[
             0xCA35b7d915458EF540aDe6068dFe2F44E8fa733c
         ].push(
                 ComplaintsAndSuggestions(
                     0,
-                    keccak256(abi.encodePacked("Admin")),
+                    "Admin",
                     "Hello, i'm an admin",
                     1,
                     zeroAddress,
@@ -130,7 +132,7 @@ contract Shoping {
         bookOfComplaintsAndSuggestions[msg.sender].push(
             ComplaintsAndSuggestions(
                 0,
-                keccak256(abi.encodePacked("Admin")),
+                "Admin",
                 "Hello, i'm an admin",
                 1,
                 zeroAddress,
@@ -139,95 +141,66 @@ contract Shoping {
         );
     }
 
-    //Создание маппингов для удобного доступа к данным
-
     mapping(address => User) public user;
     /*Зачем мапить магазины по числу, если есть отдельный массив с адресами магазинов, если уж обращаться к мапу, то по адресу магазина*/
-    mapping(uint256 => Shop) public shop;
+    Shop[] public shop;
     mapping(address => ComplaintsAndSuggestions[])
         public bookOfComplaintsAndSuggestions;
     RequestToAdmin[] public requestToAdmin;
     RequestToShoper[] public requestToShoper;
     RequestToSalesman[] public requestToSalesman;
     mapping(uint256 => bool) public BankRequestShop;
-
-    //Объявление переменных и массивов типов uint address[]
-
-    address[] public shopAddress;
     address[] public zeroAddress;
     address[] public userArray;
-
-    //Внесение адреса банка и поставщика
-
     address payable bank = 0x5c6B0f7Bf3E7ce046039Bd8FABdfD3f9F5021678;
     address payable provider = 0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db;
-
-    //модифаеры нужны для оптимизации контракта (чтобы избежать многократного повторение одинаковых проверкок)
-
     modifier IsNotReg() {
-        // Проверка на регистрацию пользователя. Если пользователь зарегистрирован, то выдает ошибку
         require(
             user[msg.sender].user_address == address(0),
             "You are registered"
         );
         _;
     }
-    modifier IsNotShop(address addresUser) {
-        // Проверка адреса, не является ли он адресом магазина
-        for (uint256 i = 0; i < shopAddress.length; i++) {
-            require(shop[i].addresShop != addresUser, "You are a store");
+    modifier IsNotShop(address addressUser) {
+        for (uint256 i = 0; i < shop.length; i++) {
+            require(shop[i].addressShop != addressUser, "You are a store");
         }
         _;
     }
     modifier IsStore() {
-        //Проверка, является ли адрес адресом магазина, зарегистрированного в системе
-        for (uint256 i = 0; i < shopAddress.length; i++) {
-            require(shop[i].addresShop == msg.sender, "You are not a store");
+        for (uint256 i = 0; i < shop.length; i++) {
+            require(shop[i].addressShop == msg.sender, "You are not a store");
         }
         _;
     }
     modifier IsShoperOrSamesman() {
-        //Проверка пользователя на роль покупателя или продавца (для книги жалоб и предложений)
         require(
             user[msg.sender].role == 1 || user[msg.sender].role == 2,
             "You are not a shoper"
         );
         _;
     }
-    modifier IsNotSalesman() {
-        //Проверка, не является ли данный пользователь продавцом
-        require(user[msg.sender].role != 2, "You are a salesman");
+    modifier IsNotSalesman(address notSalesman) {
+        require(user[notSalesman].role != 2, "You are a salesman");
         _;
     }
     modifier IsAdmin() {
-        //Проверка на то, что данный пользователь является администратором
         require(user[msg.sender].admin == true, "You are not an admin");
         require(user[msg.sender].role == 3, "Please, check your role");
         _;
     }
     modifier IsUser() {
-        //Проверка на то, что пользователь зарегистрирован
         require(
             user[msg.sender].user_address != address(0),
             "You are not an user"
         );
         _;
     }
-    modifier IsSalesmanThisStore(uint256 shopId) {
-        //Проверка, является ли данный пользователь продавцом этого магазина
-        for (uint256 i = 0; i < shop[shopId].salesmen.length; i++) {
-            require(
-                msg.sender == shop[shopId].salesmen[i],
-                "You are not a shoper in this store"
-            );
-        }
-        _;
-    }
     modifier CheckLogin(string memory login) {
-        //Проверка валидности логина (логин свободен)
         for (uint256 i = 0; i < userArray.length; i++) {
             require(
-                user[userArray[i]].login != keccak256(abi.encodePacked(login)),
+                keccak256(abi.encodePacked(user[userArray[i]].login)) !=
+                    keccak256(abi.encodePacked(login)),
                 "Please, use different login"
             );
         }
@@ -238,10 +211,9 @@ contract Shoping {
         );
         _;
     }
-    modifier CheckTheCorrectPassword(string memory password) {
-        //Проверка валидности пароля
+    modifier CheckTheCorrectPassword(bytes32 password) {
         require(
-            keccak256(abi.encodePacked(password)) !=
+            password !=
                 0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470,
             "Password incorrect"
         );
@@ -249,7 +221,6 @@ contract Shoping {
     }
 
     modifier CheckLike(address shopAddress, uint256 complaintsId) {
-        //Проверка, ставил ли пользователь подтверждеие комментария
         for (
             uint256 i = 0;
             i <
@@ -268,7 +239,6 @@ contract Shoping {
         _;
     }
     modifier CheckDislike(address shopAddress, uint256 complaintsId) {
-        //Проверка, ставил ли пользователь опроверждение комментария
         for (
             uint256 i = 0;
             i <
@@ -286,7 +256,6 @@ contract Shoping {
         _;
     }
     modifier CheckRequestToSalesman() {
-        //Проверка, подавал ли пользователь ранее заявку на повышение до продавца
         for (uint256 i = 0; i < requestToSalesman.length; i++) {
             if (requestToSalesman[i].addressShoper == msg.sender) {
                 require(
@@ -298,7 +267,6 @@ contract Shoping {
         _;
     }
     modifier CheckRequestToAdmin() {
-        //Проверка, подавал ли пользователь ранее заявку на повышение до роли администратора
         for (uint256 i = 0; i < requestToAdmin.length; i++) {
             if (requestToAdmin[i].addressUser == msg.sender) {
                 require(
@@ -310,7 +278,6 @@ contract Shoping {
         _;
     }
     modifier CheckRequestToShoper() {
-        //Проверка, подавал ли пользователь ранее заявку на понижение роли до покупателя
         for (uint256 i = 0; i < requestToShoper.length; i++) {
             if (requestToShoper[i].addressSalesman == msg.sender) {
                 require(
@@ -322,16 +289,29 @@ contract Shoping {
         _;
     }
 
-    //Блок функций контракта
-
-    //Функция регистрации пользователя с проверками на валидность логина, пароля, а также доступности адреса для регистрации (отсутствие его в системе)
+    modifier IsNotSenderComplains(
+        address complainsAddress,
+        uint256 complainsId
+    ) {
+        require(
+            keccak256(
+                abi.encodePacked(
+                    bookOfComplaintsAndSuggestions[complainsAddress][
+                        complainsId
+                    ].login
+                )
+            ) != keccak256(abi.encodePacked(user[msg.sender].login)),
+            "It's your complains"
+        );
+        _;
+    }
 
     function regUser(
         string memory FIO,
-        string memory password,
+        bytes32 password,
         string memory login
     )
-        public
+        external
         IsNotReg
         IsNotShop(msg.sender)
         CheckLogin(login)
@@ -342,8 +322,8 @@ contract Shoping {
         user[msg.sender] = User(
             msg.sender,
             FIO,
-            keccak256(abi.encodePacked(login)),
-            keccak256(abi.encodePacked(password)),
+            login,
+            password,
             1,
             false,
             false
@@ -351,37 +331,29 @@ contract Shoping {
         userArray.push(msg.sender);
     }
 
-    function LoginUser(string memory login, string memory password)
-        public
+    function LoginUser(string memory login, bytes32 password)
+        external
         view
         IsUser
         returns (bool)
     {
         require(
-            user[msg.sender].login == keccak256(abi.encodePacked(login)),
+            keccak256(abi.encodePacked(user[msg.sender].login)) ==
+                keccak256(abi.encodePacked(login)),
             "Login incorrect"
         );
-        require(
-            user[msg.sender].password == keccak256(abi.encodePacked(password)),
-            "Password incorrect"
-        );
+        require(user[msg.sender].password == password, "Password incorrect");
         return (true);
     }
 
-    //Функция подтверждения комментариев с соответствующими проверками
-
     function LikeComplaints(address shopAddress, uint256 complaintsId)
-        public
+        external
         IsUser
         CheckDislike(shopAddress, complaintsId)
         CheckLike(shopAddress, complaintsId)
-        IsNotSalesman
+        IsNotSalesman(msg.sender)
+        IsNotSenderComplains(shopAddress, complaintsId)
     {
-        require(
-            bookOfComplaintsAndSuggestions[shopAddress][complaintsId].login !=
-                user[msg.sender].login,
-            "This is your complaints"
-        );
         bookOfComplaintsAndSuggestions[shopAddress][complaintsId].like.push(
             msg.sender
         );
@@ -389,13 +361,11 @@ contract Shoping {
         emit MarkComplaint(shopAddress, complaintsId, 1, msg.sender);
     }
 
-    //Функция добавления комментариев в книгу жалоб и предложений с проверкой роли пользователя (покупатель или продавец)
-
     function AddComplaints(
         address shopAddress,
         string memory comment,
         int256 mark
-    ) public IsShoperOrSamesman {
+    ) external IsShoperOrSamesman {
         address[] memory zeroArray;
         ComplaintsAndSuggestions[]
             storage book = bookOfComplaintsAndSuggestions[shopAddress];
@@ -412,20 +382,14 @@ contract Shoping {
         emit NewComplaint(shopAddress, book.length - 1);
     }
 
-    //Функция опроверждения комментариев с соответствующими проверками
-
     function DisikeComplaints(address shopAddress, uint256 complaintsId)
-        public
+        external
         IsUser
         CheckDislike(shopAddress, complaintsId)
         CheckLike(shopAddress, complaintsId)
-        IsNotSalesman
+        IsNotSalesman(msg.sender)
+        IsNotSenderComplains(shopAddress, complaintsId)
     {
-        require(
-            bookOfComplaintsAndSuggestions[shopAddress][complaintsId].login !=
-                user[msg.sender].login,
-            "This is your complaints"
-        );
         bookOfComplaintsAndSuggestions[shopAddress][complaintsId].dislike.push(
             msg.sender
         );
@@ -433,19 +397,15 @@ contract Shoping {
         emit MarkComplaint(shopAddress, complaintsId, 0, msg.sender);
     }
 
-    //Функция переключения ролей в системе с роли продавца до роли покупателя
-
-    function BeShoperForSalesman() public IsUser IsNotShop(msg.sender) {
+    function BeShoperForSalesman() external IsUser IsNotShop(msg.sender) {
         require(user[msg.sender].role != 1, "You are user");
         require(user[msg.sender].salesman == true, "You are not a salesman");
         user[msg.sender].role = 1;
         emit ChangeRole(msg.sender, 1);
     }
 
-    //Функция отправления заявки на повышение роли до продавца
-
     function RequestToSalesmanFunc(uint256 shopId)
-        public
+        external
         IsUser
         CheckRequestToSalesman
     {
@@ -461,9 +421,7 @@ contract Shoping {
         emit NewRequest("beSalesman", requestToSalesman.length - 1);
     }
 
-    //Функция отправления заявки на повышение роли до администратора
-
-    function RequestToAdminFunc() public IsUser CheckRequestToAdmin {
+    function RequestToAdminFunc() external IsUser CheckRequestToAdmin {
         require(user[msg.sender].admin == false, "You are admin");
         require(user[msg.sender].salesman != true, "You are a salesman");
         requestToAdmin.push(
@@ -472,9 +430,7 @@ contract Shoping {
         emit NewRequest("beAdmin", requestToAdmin.length - 1);
     }
 
-    //Функция отправления заявки на понижение роли до покупателя
-
-    function RequestToShoperFunc() public IsUser CheckRequestToShoper {
+    function RequestToShoperFunc() external IsUser CheckRequestToShoper {
         require(user[msg.sender].salesman == true, "You are not a salesman");
         requestToShoper.push(
             RequestToShoper(requestToShoper.length, msg.sender, false)
@@ -482,9 +438,7 @@ contract Shoping {
         emit NewRequest("beBuyer", requestToShoper.length - 1);
     }
 
-    //Функция подтверждение администратором заявки на повышение роли до администратора
-
-    function AccRequestAdmin(uint256 requestId) public IsAdmin {
+    function AccRequestAdmin(uint256 requestId) external IsAdmin {
         require(
             requestToAdmin[requestId].addressUser != address(0),
             "Check requestId"
@@ -499,9 +453,7 @@ contract Shoping {
         emit NewRole(requestToAdmin[requestId].addressUser, 3);
     }
 
-    //Функция подтверждение администратором заявки на понижение роли до покупателя
-
-    function AccRequestShoper(uint256 requestId) public IsAdmin {
+    function AccRequestShoper(uint256 requestId) external IsAdmin {
         require(
             requestToShoper[requestId].addressSalesman != address(0),
             "Check requestId"
@@ -516,7 +468,7 @@ contract Shoping {
         requestToShoper[requestId].finished = true;
         uint64 shopId = 0;
         bool isFound = false;
-        for (; shopId < shopAddress.length && !isFound; shopId++) {
+        for (; shopId < shop.length && !isFound; shopId++) {
             address[] memory salesmen = shop[shopId].salesmen;
 
             for (uint64 j = 0; j < salesmen.length; j++) {
@@ -532,9 +484,7 @@ contract Shoping {
         emit NewRole(salesman, 1);
     }
 
-    //Функция подтверждение администратором заявки на повышение роли до продавца
-
-    function AccRequestSalesman(uint256 requestId) public IsAdmin {
+    function AccRequestSalesman(uint256 requestId) external IsAdmin {
         require(
             requestToSalesman[requestId].addressShoper != address(0),
             "Check requestId"
@@ -554,58 +504,44 @@ contract Shoping {
         emit NewRole(tempData.addressShoper, 2);
     }
 
-    //Функция отмены администратором заявки на повышение роли до администратора
-
-    function CancelRequestAdmin(uint256 requestId) public IsAdmin {
+    function CancelRequestAdmin(uint256 requestId) external IsAdmin {
         requestToAdmin[requestId].finished = true;
         emit RequestFinished("beAdmin", requestId);
     }
 
-    //Функция отмены администратором заявки на понижение роли до покупателя
-
-    function CancelRequestShoper(uint256 requestId) public IsAdmin {
+    function CancelRequestShoper(uint256 requestId) external IsAdmin {
         requestToShoper[requestId].finished = true;
         emit RequestFinished("beBuyer", requestId);
     }
 
-    //Функция отмены администратором заявки на повышение роли до продавца
-
-    function CancelRequestSalesman(uint256 requestId) public IsAdmin {
+    function CancelRequestSalesman(uint256 requestId) external IsAdmin {
         requestToSalesman[requestId].finished = true;
         emit RequestFinished("beSalesman", requestId);
     }
 
-    //Функция смены роли на администратора
-
-    function BeAdmin() public IsUser {
+    function BeAdmin() external IsUser {
         require(user[msg.sender].admin == true, "You are not an admin");
         require(user[msg.sender].role != 3, "You are admin");
         user[msg.sender].role = 3;
         emit ChangeRole(msg.sender, 3);
     }
 
-    //Функция смены роли на продавца
-
-    function BeSalesman() public IsUser {
+    function BeSalesman() external IsUser {
         require(user[msg.sender].salesman == true, "You are not an salesman");
         require(user[msg.sender].role != 2, "You are salesman");
         user[msg.sender].role = 2;
         emit ChangeRole(msg.sender, 2);
     }
 
-    //Функция смены роли на пользователя
-
-    function BeShoper() public IsUser {
+    function BeShoper() external IsUser {
         require(user[msg.sender].role != 1, "You are shoper");
         user[msg.sender].role = 1;
         emit ChangeRole(msg.sender, 1);
     }
 
-    //Функция отправления заявки магазином на получение стартового капитала от банка
-
-    function ToBankRequest(uint256 shopId) public IsStore {
+    function ToBankRequest(uint256 shopId) external IsStore {
         require(shop[shopId].shopStatus == true, "This shop is already delete");
-        require(msg.sender == shop[shopId].addresShop, "The shopId incorrect");
+        require(msg.sender == shop[shopId].addressShop, "The shopId incorrect");
         require(
             shop[shopId].bankMoney == false,
             "You are already have money from Bank"
@@ -614,9 +550,7 @@ contract Shoping {
         BankRequestShop[shopId] = true;
     }
 
-    //Функция подтверждения заявки банка на получение магазином стартового капитала
-
-    function AccRequestBank(uint256 shopId) public payable {
+    function AccRequestBank(uint256 shopId) external payable {
         require(msg.sender == bank, "You are not a Bank");
         require(
             shop[shopId].bankMoney == false,
@@ -628,60 +562,73 @@ contract Shoping {
         );
         require(msg.sender.balance >= 1000, "You are have not a money");
         require(msg.value > 0, "Check value");
-        shop[shopId].addresShop.transfer(msg.value);
+        shop[shopId].addressShop.transfer(msg.value);
         shop[shopId].bankMoney = true;
     }
 
-    //Функция ввода в систему нового магазина
-
-    function AddShop(address payable addressShop, string memory city)
-        public
-        IsAdmin
-        IsNotShop(addressShop)
-    {
-        address[] storage zeroAddressSalesman;
-        shop[shopAddress.length] = Shop(
-            shopAddress.length,
-            addressShop,
-            city,
-            zeroAddressSalesman,
-            true,
-            false
+    function upgradeToAdmin(address userAddress) external IsAdmin {
+        require(
+            user[userAddress].admin == false,
+            "This user is already an admin"
         );
-        shopAddress.push(addressShop);
+        user[userAddress].role = 3;
+        user[userAddress].admin = true;
+        emit NewRole(userAddress, 3);
     }
 
-    //Функция просмотра продавцов в определенном магазине
+    function AddShop(address payable addressShop, string memory city)
+        external
+        IsAdmin
+        IsNotShop(addressShop)
+        IsNotSalesman(addressShop)
+    {
+        shop.push(
+            Shop(shop.length, addressShop, city, zeroAddress, true, false)
+        );
+
+        delete user[addressShop];
+
+        for (uint256 i = 0; i < userArray.length; i++) {
+            if (userArray[i] == addressShop) {
+                delete userArray[i];
+                break;
+            }
+        }
+
+        emit AddShopEvent(addressShop, shop.length - 1);
+        emit RemoveUser(addressShop);
+    }
 
     function ShowSalesmanOfStore(uint256 shopId)
-        public
+        external
         view
         returns (address[] memory)
     {
         return (shop[shopId].salesmen);
     }
 
-    //Функция удаления магазина из системы
-    /*Есть оператор delete для удаления какого либо элемента*/
-    function DeleteShop(uint256 shopId) public IsAdmin {
+    function DeleteShop(uint256 shopId) external IsAdmin {
         require(shop[shopId].shopStatus == true, "This shop is already delete");
+
         shop[shopId].shopStatus = false;
-        DeleteSalesman(shopId);
+
+        DeleteSalesman(shop[shopId]);
+
         shop[shopId].salesmen = zeroAddress;
+
+        emit RemoveShop(shop[shopId].addressShop);
     }
 
-    //Функция смены ролей продавцов удаленного магазина на роль покупателя
-
-    function DeleteSalesman(uint256 shopId) private {
-        for (uint256 i = 0; i < shop[shopId].salesmen.length; i++) {
-            user[shop[shopId].salesmen[i]].salesman = false;
-            user[shop[shopId].salesmen[i]].role = 1;
-            emit NewRole(shop[shopId].salesmen[i], 1);
+    function DeleteSalesman(Shop memory deletingShop) private {
+        for (uint256 i = 0; i < deletingShop.salesmen.length; i++) {
+            user[deletingShop.salesmen[i]].salesman = false;
+            user[deletingShop.salesmen[i]].role = 1;
+            emit NewRole(deletingShop.salesmen[i], 1);
         }
     }
 
-    function getShopsAddress() public view returns (address[] memory) {
-        return shopAddress;
+    function getShops() external view returns (Shop[] memory) {
+        return shop;
     }
 
     function getShopComplainAndSuggestion(address addressShop)
@@ -714,5 +661,9 @@ contract Shoping {
         returns (RequestToShoper[] memory)
     {
         return requestToShoper;
+    }
+
+    function getUsersAddresses() external view returns (address[] memory) {
+        return userArray;
     }
 }

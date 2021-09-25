@@ -1,21 +1,30 @@
 import { Switch, Route } from "react-router";
-import { NavLink } from "react-router-dom";
-import { BuyerRequestsConnect } from "./BuyerRequests/BuyerRequestsConnect";
-import { SalesmanRequestsConnect } from "./SalesmanRequests/SalesmanRequestsConnect";
+import { BeBuyerRequestsConnect } from "./BeRequests/BeBuyerRequests/BeBuyerRequestsConnect";
+import { Navigation } from "./Navigation/Navigation";
+import { BeSalesmanRequestsConnect } from "./BeRequests/BeSalesmanRequests/BeSalesmanRequestsConnect";
+import { ShopsConnect } from "../Shared/ShopsList/ShopsConnect";
+import { ShopCardAdmin } from "./ShopCardAdmin/ShopCardAdmin";
+import { BeBuyerRequestsItem } from "./BeRequests/BeBuyerRequests/Item/BeBuyerRequestsItem";
+import { BeSalesmanRequestsItem } from "./BeRequests/BeSalesmanRequests/Item/BeSalesmanRequestsItem";
+import { UsersConnect } from "./Users/UsersConnect";
 
 export const Admin = (props) => {
   return (
     <section>
-      <NavLink to="/admin/beAdmin">Запросы на админа</NavLink>
-      <NavLink to="/admin/beSalesman">Запросы на продавца</NavLink>
-      <NavLink to="/admin/beBuyer">Запросы на покупателя</NavLink>
+      <Navigation />
       <Switch>
         <Route path="/admin/beAdmin">Admin</Route>
         <Route path="/admin/beSalesman">
-          <SalesmanRequestsConnect />
+          <BeSalesmanRequestsConnect requestCard={BeSalesmanRequestsItem} />
         </Route>
         <Route path="/admin/beBuyer">
-          <BuyerRequestsConnect />
+          <BeBuyerRequestsConnect requestCard={BeBuyerRequestsItem} />
+        </Route>
+        <Route path="/admin/shops">
+          <ShopsConnect shopCard={ShopCardAdmin} />
+        </Route>
+        <Route path="/admin/users">
+          <UsersConnect />
         </Route>
       </Switch>
     </section>

@@ -1,8 +1,8 @@
 export const initialState = {
   web3: null,
-  contract: { unsubscribe: [] },
+  contract: { unsubscribe: [], unsubscribeNames: [] },
   dataForContract: {
-    address: "0x7b299d942A2838d1a29f53FBd3466DD2E306a320",
+    address: "0x59c1402249A7394CaEf1dbEC7207f7bE4B66290A",
     abi: [
       {
         inputs: [],
@@ -26,6 +26,25 @@ export const initialState = {
           },
         ],
         name: "AddSalesman",
+        type: "event",
+      },
+      {
+        anonymous: false,
+        inputs: [
+          {
+            indexed: false,
+            internalType: "address",
+            name: "shopNewAddress",
+            type: "address",
+          },
+          {
+            indexed: false,
+            internalType: "uint256",
+            name: "shopId",
+            type: "uint256",
+          },
+        ],
+        name: "AddShopEvent",
         type: "event",
       },
       {
@@ -152,6 +171,32 @@ export const initialState = {
           },
         ],
         name: "RemoveSalesman",
+        type: "event",
+      },
+      {
+        anonymous: false,
+        inputs: [
+          {
+            indexed: false,
+            internalType: "address",
+            name: "shopAddress",
+            type: "address",
+          },
+        ],
+        name: "RemoveShop",
+        type: "event",
+      },
+      {
+        anonymous: false,
+        inputs: [
+          {
+            indexed: false,
+            internalType: "address",
+            name: "user",
+            type: "address",
+          },
+        ],
+        name: "RemoveUser",
         type: "event",
       },
       {
@@ -409,9 +454,9 @@ export const initialState = {
             type: "string",
           },
           {
-            internalType: "string",
+            internalType: "bytes32",
             name: "password",
-            type: "string",
+            type: "bytes32",
           },
         ],
         name: "LoginUser",
@@ -505,9 +550,9 @@ export const initialState = {
             type: "uint256",
           },
           {
-            internalType: "bytes32",
+            internalType: "string",
             name: "login",
-            type: "bytes32",
+            type: "string",
           },
           {
             internalType: "string",
@@ -636,9 +681,9 @@ export const initialState = {
                 type: "uint256",
               },
               {
-                internalType: "bytes32",
+                internalType: "string",
                 name: "login",
-                type: "bytes32",
+                type: "string",
               },
               {
                 internalType: "string",
@@ -671,7 +716,52 @@ export const initialState = {
       },
       {
         inputs: [],
-        name: "getShopsAddress",
+        name: "getShops",
+        outputs: [
+          {
+            components: [
+              {
+                internalType: "uint256",
+                name: "shopId",
+                type: "uint256",
+              },
+              {
+                internalType: "address payable",
+                name: "addressShop",
+                type: "address",
+              },
+              {
+                internalType: "string",
+                name: "city",
+                type: "string",
+              },
+              {
+                internalType: "address[]",
+                name: "salesmen",
+                type: "address[]",
+              },
+              {
+                internalType: "bool",
+                name: "shopStatus",
+                type: "bool",
+              },
+              {
+                internalType: "bool",
+                name: "bankMoney",
+                type: "bool",
+              },
+            ],
+            internalType: "struct Shoping.Shop[]",
+            name: "",
+            type: "tuple[]",
+          },
+        ],
+        stateMutability: "view",
+        type: "function",
+      },
+      {
+        inputs: [],
+        name: "getUsersAddresses",
         outputs: [
           {
             internalType: "address[]",
@@ -690,9 +780,9 @@ export const initialState = {
             type: "string",
           },
           {
-            internalType: "string",
+            internalType: "bytes32",
             name: "password",
-            type: "string",
+            type: "bytes32",
           },
           {
             internalType: "string",
@@ -814,7 +904,7 @@ export const initialState = {
           },
           {
             internalType: "address payable",
-            name: "addresShop",
+            name: "addressShop",
             type: "address",
           },
           {
@@ -839,20 +929,14 @@ export const initialState = {
       {
         inputs: [
           {
-            internalType: "uint256",
-            name: "",
-            type: "uint256",
-          },
-        ],
-        name: "shopAddress",
-        outputs: [
-          {
             internalType: "address",
-            name: "",
+            name: "userAddress",
             type: "address",
           },
         ],
-        stateMutability: "view",
+        name: "upgradeToAdmin",
+        outputs: [],
+        stateMutability: "nonpayable",
         type: "function",
       },
       {
@@ -876,9 +960,9 @@ export const initialState = {
             type: "string",
           },
           {
-            internalType: "bytes32",
+            internalType: "string",
             name: "login",
-            type: "bytes32",
+            type: "string",
           },
           {
             internalType: "bytes32",
@@ -979,4 +1063,5 @@ export const initialState = {
     beSalesman: [],
     beBuyer: [],
   },
+  users: [],
 };

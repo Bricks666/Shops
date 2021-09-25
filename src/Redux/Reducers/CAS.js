@@ -2,6 +2,9 @@ import {
   ADD_CAS,
   ADD_SHOP,
   CHANGE_MARK,
+  CHANGE_ROLE,
+  NEW_ROLE,
+  SET_ACCOUNT,
   SET_COMPLAINS_AND_SUGGESTIONS,
   SET_SALESMEN,
   SET_SHOPS,
@@ -13,7 +16,7 @@ export const CAS = (state = initialState.CAS, action) => {
     case SET_SHOPS: {
       const newState = { ...state };
       for (let shop of action.shops) {
-        newState[shop.addresShop] = [];
+        newState[shop.addressShop] = [];
       }
 
       return newState;
@@ -29,7 +32,7 @@ export const CAS = (state = initialState.CAS, action) => {
     }
     case ADD_SHOP: {
       const newState = { ...state };
-      newState[action.newShop.addresShop] = [];
+      newState[action.newShop.addressShop] = [];
 
       return newState;
     }
@@ -62,6 +65,11 @@ export const CAS = (state = initialState.CAS, action) => {
       }
 
       return newState;
+    }
+    case CHANGE_ROLE:
+    case NEW_ROLE:
+    case SET_ACCOUNT: {
+      return {};
     }
     default: {
       return state;

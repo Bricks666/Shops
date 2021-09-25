@@ -18,7 +18,7 @@ export class Main extends Component {
         {this.props.isLogin ? (
           <Redirect from="/login" to="/" />
         ) : (
-          <Redirect to="/login" />
+          <Redirect from="/" to="/login" />
         )}
         <ContentRedirect role={this.props.role} />
         <Switch>

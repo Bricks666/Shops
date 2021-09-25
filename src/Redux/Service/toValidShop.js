@@ -1,17 +1,17 @@
 export const toValidShop = (shop) => {
+
+  const validShop = {};
   for (let key in shop) {
     if (isNaN(key)) {
       if (key === "shopId") {
-        shop.id = +shop[key];
-        delete shop[key];
+        validShop.id = +shop[key];
       }
-      continue;
+      validShop[key] = shop[key];
     }
-
-    delete shop[key];
   }
-  shop.salesmen = [];
-  shop.showSalesmen = false;
 
-  return shop;
+  validShop.salesmen = [];
+  validShop.showSalesmen = false;
+
+  return validShop;
 };

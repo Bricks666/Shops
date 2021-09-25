@@ -1,13 +1,13 @@
 import { Switch, Route } from "react-router";
 import { SalesmanContentConnect } from "../SalesmanContent/SalesmanContentConnect";
-import { ShopsConnect } from "../ShopsList/ShopsConnect";
 import { Admin } from "../Admin/Admin";
+import { Buyer } from "../Buyer/Buyer";
 
 export const Content = (props) => {
   return (
     <Switch>
       <Route path="/buyer">
-        <ShopsConnect />
+        <Buyer />
       </Route>
       <Route path="/admin">
         <Admin />

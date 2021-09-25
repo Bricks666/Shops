@@ -20,8 +20,10 @@ import {
   SALESMAN_CONTENT,
   SALESMAN_REQUESTS,
   SALESMEN_LIST,
+  SET_SHOP,
   SHOPS_LIST,
-  SHOP_CARD,
+  SHOP_CARD_BUYER,
+  USERS,
 } from "../ComponentConstants";
 
 export const mapStateToProps = (component) => {
@@ -91,7 +93,7 @@ export const mapStateToProps = (component) => {
         return { shops: state.shops };
       };
     }
-    case SHOP_CARD: {
+    case SHOP_CARD_BUYER: {
       return (state) => {
         return {
           isBuyer: !state.user.isSalesman && !state.user.isAdmin,
@@ -122,9 +124,11 @@ export const mapStateToProps = (component) => {
     case CAS_ITEM: {
       return (state, ownProps) => {
         return {
-          disabled: state.CAS[ownProps.address][ownProps.id].users?.includes(
-            state.user.address
-          ),
+          disabled:
+            state.CAS[ownProps.address][ownProps.id].users?.includes(
+              state.user.address
+            ) ||
+            state.CAS[ownProps.address][ownProps.id].login === state.user.login,
         };
       };
     }
@@ -186,14 +190,28 @@ export const mapStateToProps = (component) => {
     case BUYER_REQUESTS: {
       return (state) => {
         return {
-          buyer: state.requests.beBuyer,
+          requests: state.requests.beBuyer,
         };
       };
     }
     case SALESMAN_REQUESTS: {
       return (state) => {
         return {
-          salesman: state.requests.beSalesman,
+          requests: state.requests.beSalesman,
+        };
+      };
+    }
+    case USERS: {
+      return (state) => {
+        return {
+          users: state.users,
+        };
+      };
+    }
+    case SET_SHOP: {
+      return (state, ownProps) => {
+        return {
+          disabled: state.user.address === ownProps.userAddress,
         };
       };
     }

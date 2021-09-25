@@ -1,28 +1,30 @@
 import {
   ADD_REQUEST,
+  CHANGE_ROLE,
   FINISH_REQUEST,
+  NEW_ROLE,
   SET_ACCOUNT,
-  SET_ADMIN_REQUESTS,
-  SET_BUYER_REQUESTS,
-  SET_SALESMAN_REQUESTS,
+  BE_SET_ADMIN_REQUESTS,
+  BE_SET_BUYER_REQUESTS,
+  BE_SET_SALESMAN_REQUESTS,
 } from "../ActionsConstants";
 import { initialState } from "../initialState";
 
 export const requests = (state = initialState.requests, action) => {
   switch (action.type) {
-    case SET_ADMIN_REQUESTS: {
+    case BE_SET_ADMIN_REQUESTS: {
       return {
         ...state,
         beAdmin: action.requests,
       };
     }
-    case SET_SALESMAN_REQUESTS: {
+    case BE_SET_SALESMAN_REQUESTS: {
       return {
         ...state,
         beSalesman: action.requests,
       };
     }
-    case SET_BUYER_REQUESTS: {
+    case BE_SET_BUYER_REQUESTS: {
       return {
         ...state,
         beBuyer: action.requests,
@@ -59,6 +61,8 @@ export const requests = (state = initialState.requests, action) => {
       }
       return state;
     }
+    case CHANGE_ROLE:
+    case NEW_ROLE:
     case SET_ACCOUNT: {
       return {
         beAdmin: [],

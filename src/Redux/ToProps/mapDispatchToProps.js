@@ -1,14 +1,3 @@
-import { beBuyerThunk } from "../Actions/Account/Be/beBuyerThunk";
-import { inputLoginLog } from "../Actions/Login/inputLoginLog";
-import { inputPasswordLog } from "../Actions/Login/inputPasswordLog";
-import { loginThunk } from "../Actions/Login/loginThunk";
-import { startInitialThunk } from "../Actions/StartInitial/startInitialThunk";
-import { beSalesmanThunk } from "../Actions/Account/Be/beSalesmanThunk";
-import { beAdminThunk } from "../Actions/Account/Be/beAdminThunk";
-import { requestComplainsAndSuggestions } from "../Actions/Shops/requsetComplainsAndSuggestions";
-import { inputNewComment } from "../Actions/NewMessage/inputNewComment";
-import { inputNewMark } from "../Actions/NewMessage/inputNewMark";
-
 import {
   BE_ADMIN,
   BE_BUYER,
@@ -38,26 +27,44 @@ import {
   SALESMAN_REQUESTS,
   ACCEPT_SALESMAN_REQUEST,
   CANCEL_SALESMAN_REQUEST,
+  USERS,
+  SET_ADMIN,
+  SET_SHOP,
+  REMOVE_SHOP_BUTTON,
 } from "../ComponentConstants";
-import { requestShopsThunk } from "../Actions/Shops/requestShopsThunk";
+import { beBuyerThunk } from "../Thunk/Account/Be/beBuyerThunk";
+import { inputLoginLog } from "../Actions/Login/inputLoginLog";
+import { inputPasswordLog } from "../Actions/Login/inputPasswordLog";
+import { loginThunk } from "../Thunk/Login/loginThunk";
+import { startInitialThunk } from "../Actions/StartInitial/startInitialThunk";
+import { beSalesmanThunk } from "../Thunk/Account/Be/beSalesmanThunk";
+import { beAdminThunk } from "../Thunk/Account/Be/beAdminThunk";
+import { requestComplainsAndSuggestions } from "../Thunk/Shops/requsetComplainsAndSuggestions";
+import { inputNewComment } from "../Actions/NewMessage/inputNewComment";
+import { inputNewMark } from "../Actions/NewMessage/inputNewMark";
+import { requestShopsThunk } from "../Thunk/Shops/requestShopsThunk";
 import { toggleShowSalesmen } from "../Actions/Shops/toggleShowSalesmen";
-import { requestShopsSalesmen } from "../Actions/Shops/requestShopsSalesmen";
-import { likeComment } from "../Actions/Shops/likeComment";
-import { registrationThunk } from "../Actions/Reg/registrationThunk";
+import { requestShopsSalesmen } from "../Thunk/Shops/requestShopsSalesmen";
+import { likeComment } from "../Thunk/Shops/likeComment";
+import { registrationThunk } from "../Thunk/Registration/registrationThunk";
 import { inputFIOReg } from "../Actions/Reg/inputFIOReg";
 import { inputPasswordReg } from "../Actions/Reg/inputPasswordReg";
 import { inputLoginReg } from "../Actions/Reg/inputLoginReg";
-import { dislikeComment } from "../Actions/Shops/dislikeComment";
-import { sendComment } from "../Actions/NewMessage/sendComment";
+import { dislikeComment } from "../Thunk/Shops/dislikeComment";
+import { sendComment } from "../Thunk/NewMessage/sendComment";
 import { toggleShowWindow } from "../Actions/NewMessage/toggleShowWindow";
-import { beBuyerForever } from "../Actions/Account/Be/beBuyerForeverThunk";
-import { beSalesmanForever } from "../Actions/Account/Be/beSalesmanForever";
-import { loadBuyerRequests } from "../Actions/Requests/loadBuyerRequests";
-import { cancelBuyerRequest } from "../Actions/Requests/cancelBuyerRequest";
-import { acceptBuyerRequest } from "../Actions/Requests/acceptBuyerRequest";
-import { loadSalesmanRequests } from "../Actions/Requests/loadSalesmanRequests";
-import { acceptSalesmanRequest } from "../Actions/Requests/acceptSalesmanRequest";
-import { cancelSalesmanRequest } from "../Actions/Requests/cancelSalesmanRequest";
+import { beBuyerForever } from "../Thunk/Account/Be/beBuyerForeverThunk";
+import { beSalesmanForever } from "../Thunk/Account/Be/beSalesmanForever";
+import { loadBeBuyerRequests } from "../Thunk/Requests/loadBeBuyerRequests";
+import { cancelBeBuyerRequest } from "../Thunk/Requests/cancelBeBuyerRequest";
+import { acceptBeBuyerRequest } from "../Thunk/Requests/acceptBeBuyerRequest";
+import { loadBeSalesmanRequests } from "../Thunk/Requests/loadBeSalesmanRequests";
+import { acceptBeSalesmanRequest } from "../Thunk/Requests/acceptBeSalesmanRequest";
+import { cancelBeSalesmanRequest } from "../Thunk/Requests/cancelBeSalesmanRequest";
+import { removeShopThunk } from "../Thunk/Shops/removeShopThunk";
+import { requestUsersThunk } from "../Thunk/Account/requestUsersThunk";
+import { upgradeToAdmin } from "../Thunk/Users/upgradeToAdmin";
+import { setShopThunk } from "../Actions/Users/setShopThunk";
 
 export const mapDispatchToProps = (component) => {
   switch (component) {
@@ -230,14 +237,14 @@ export const mapDispatchToProps = (component) => {
     }
     case BUYER_REQUESTS: {
       return {
-        loadRequests: loadBuyerRequests,
+        loadRequests: loadBeBuyerRequests,
       };
     }
     case CANCEL_BUYER_REQUEST: {
       return (dispatch, ownProps) => {
         return {
           onClick() {
-            dispatch(cancelBuyerRequest(ownProps.requestId));
+            dispatch(cancelBeBuyerRequest(ownProps.requestId));
           },
         };
       };
@@ -246,21 +253,21 @@ export const mapDispatchToProps = (component) => {
       return (dispatch, ownProps) => {
         return {
           onClick() {
-            dispatch(acceptBuyerRequest(ownProps.requestId));
+            dispatch(acceptBeBuyerRequest(ownProps.requestId));
           },
         };
       };
     }
     case SALESMAN_REQUESTS: {
       return {
-        loadRequests: loadSalesmanRequests,
+        loadRequests: loadBeSalesmanRequests,
       };
     }
     case ACCEPT_SALESMAN_REQUEST: {
       return (dispatch, ownProps) => {
         return {
           onClick() {
-            dispatch(acceptSalesmanRequest(ownProps.requestId));
+            dispatch(acceptBeSalesmanRequest(ownProps.requestId));
           },
         };
       };
@@ -269,7 +276,39 @@ export const mapDispatchToProps = (component) => {
       return (dispatch, ownProps) => {
         return {
           onClick() {
-            dispatch(cancelSalesmanRequest(ownProps.requestId));
+            dispatch(cancelBeSalesmanRequest(ownProps.requestId));
+          },
+        };
+      };
+    }
+    case REMOVE_SHOP_BUTTON: {
+      return (dispatch, ownProps) => {
+        return {
+          onClick() {
+            dispatch(removeShopThunk(ownProps.shopId));
+          },
+        };
+      };
+    }
+    case USERS: {
+      return {
+        loadUsers: requestUsersThunk,
+      };
+    }
+    case SET_ADMIN: {
+      return (dispatch, ownProps) => {
+        return {
+          onClick() {
+            dispatch(upgradeToAdmin(ownProps.userAddress));
+          },
+        };
+      };
+    }
+    case SET_SHOP: {
+      return (dispatch, ownProps) => {
+        return {
+          onClick() {
+            dispatch(setShopThunk(ownProps.userAddress));
           },
         };
       };

@@ -1,49 +1,19 @@
-import { BeAdminButton } from "./Buttons/BeAdminButton";
-import { BeBuyerButton } from "./Buttons/BeBuyerButton";
-import { BeSalesmanButton } from "./Buttons/BeSalesmanButton";
-import { BeBuyerForever } from "./Buttons/BeBuyerForever";
+import { Buttons } from "./Buttons/Buttons";
+import { CurrentRole } from "./CurrentRole/CurrentRole";
+import { Role } from "./Role/Role";
 
 export const Account = (props) => {
-  console.log(props);
   return (
     <article>
       <h2>Your login: {props.user.login}</h2>
       <p>Your balance: {props.user.balance} ETH</p>
-      {props.role !== 3 ? <p>Your name is {props.user.fio}</p> : ""}
-      <p>
-        You're{" "}
-        {props.user.isAdmin
-          ? "Admin"
-          : props.user.isSalesman
-          ? "Salesman"
-          : "Buyer"}
-      </p>
-      <p>
-        Now you're in role{" "}
-        {props.user.role === "3"
-          ? "an admin"
-          : props.user.role === "2"
-          ? "a salesman"
-          : "a buyer"}
-      </p>
-      {props.user.isSalesman || props.user.isAdmin ? (
-        <div>
-          <BeBuyerButton>Be Buyer</BeBuyerButton>
-          {props.user.isSalesman ? (
-            <>
-              <BeSalesmanButton>Be Salesman</BeSalesmanButton>
-              <BeBuyerForever shopId={props.shopId}>
-                Be BuyerForever
-              </BeBuyerForever>
-            </>
-          ) : (
-            ""
-          )}
-          {props.user.isAdmin ? <BeAdminButton>Be Admin</BeAdminButton> : ""}
-        </div>
-      ) : (
-        ""
-      )}
+      <p>Your name is {props.user.fio}</p>
+      <Role isAdmin={props.user.isAdmin} isSalesman={props.user.isSalesman} />
+      <CurrentRole role={props.user.role} />
+      <Buttons
+        isAdmin={props.user.isAdmin}
+        isSalesman={props.user.isSalesman}
+      />
     </article>
   );
 };

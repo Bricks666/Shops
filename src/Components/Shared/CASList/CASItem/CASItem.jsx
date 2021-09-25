@@ -4,10 +4,8 @@ import { LikeButton } from "./LikeButton";
 export const CASItem = (props) => {
   return (
     <article>
-      <p>
-        <span>Номер {props.id}</span>
-        {props.comment}
-      </p>
+      <h5>{props.login}</h5>
+      <p>{props.comment}</p>
       <LikeButton
         CASId={props.id}
         address={props.address}

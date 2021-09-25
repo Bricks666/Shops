@@ -1,9 +1,9 @@
 import Web3 from "web3";
-import { setAccount } from "../Account/setAccount";
+import { setAccount } from "../Account/Set/setAccount";
 import { setWeb3 } from "./setWeb3";
-import { setBalance } from "../Account/setBalacne";
-import { refreshAccountThunk } from "../Account/refreshAccountThunk";
-import { setContract } from "../Contract/setContract";
+import { refreshAccountThunk } from "../../Thunk/Account/refreshAccountThunk";
+import { setContract } from "../Contract/Set/setContract";
+import { setBalance } from "../Account/Set/setBalance";
 
 export const startInitialThunk = () => {
   return async (dispatch, getState) => {
