@@ -2,7 +2,7 @@ export const initialState = {
   web3: null,
   contract: { unsubscribe: [], unsubscribeNames: [] },
   dataForContract: {
-    address: "0x59c1402249A7394CaEf1dbEC7207f7bE4B66290A",
+    address: "0xd2Cb575945f7FEC76aC6F0f23289E4a55F30d266",
     abi: [
       {
         inputs: [],
@@ -152,6 +152,19 @@ export const initialState = {
           },
         ],
         name: "NewRole",
+        type: "event",
+      },
+      {
+        anonymous: false,
+        inputs: [
+          {
+            indexed: false,
+            internalType: "address",
+            name: "user",
+            type: "address",
+          },
+        ],
+        name: "NewUser",
         type: "event",
       },
       {

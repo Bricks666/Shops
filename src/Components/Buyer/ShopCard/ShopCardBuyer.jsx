@@ -10,7 +10,6 @@ import { NewCommentConnect } from "./NewComment/NewCommentConnect";
 import { SalesmanCardClass } from "./SalesmanCardBuyer/SalesmanCardClass";
 
 export const ShopCardBuyer = (props) => {
-  console.log(props);
   return (
     <ShopCard addressShop={props.addressShop} city={props.city}>
       <ShowSalesmenButton shopId={props.id}>

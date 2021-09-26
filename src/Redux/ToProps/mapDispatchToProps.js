@@ -62,9 +62,9 @@ import { loadBeSalesmanRequests } from "../Thunk/Requests/loadBeSalesmanRequests
 import { acceptBeSalesmanRequest } from "../Thunk/Requests/acceptBeSalesmanRequest";
 import { cancelBeSalesmanRequest } from "../Thunk/Requests/cancelBeSalesmanRequest";
 import { removeShopThunk } from "../Thunk/Shops/removeShopThunk";
-import { requestUsersThunk } from "../Thunk/Account/requestUsersThunk";
+import { requestUsersThunk } from "../Thunk/Users/requestUsersThunk";
 import { upgradeToAdmin } from "../Thunk/Users/upgradeToAdmin";
-import { setShopThunk } from "../Actions/Users/setShopThunk";
+import { setShopThunk } from "../Thunk/Users/setShopThunk";
 
 export const mapDispatchToProps = (component) => {
   switch (component) {

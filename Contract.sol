@@ -43,10 +43,12 @@ contract Shoping {
         address addressUser;
         bool finished;
     }
+    /*Users*/
+    event RemoveUser(address user);
+    event NewUser(address user);
     /* Roles */
     event ChangeRole(address indexed user, uint256 role);
     event NewRole(address indexed user, uint256 role);
-    event RemoveUser(address user);
     /* Complains */
     event MarkComplaint(
         address shopAddress,
@@ -329,6 +331,7 @@ contract Shoping {
             false
         );
         userArray.push(msg.sender);
+        emit NewUser(msg.sender);
     }
 
     function LoginUser(string memory login, bytes32 password)

@@ -3,6 +3,7 @@ import { toValidUser } from "../../Service/toValidUser";
 import { subscribeNewRoleUsers } from "../Subscribes/subscribeNewRoleUsers";
 import { subscribeChangeRoleUsers } from "../Subscribes/subscribeChangeRoleUsers";
 import { subscribeRemoveUser } from "../Subscribes/subscribeRemoveUser";
+import { subscribeNewUser } from "../Subscribes/subscribeNewUser";
 
 export const requestUsersThunk = () => {
   return async (dispatch, getState) => {
@@ -29,6 +30,7 @@ export const requestUsersThunk = () => {
       dispatch(subscribeNewRoleUsers());
       dispatch(subscribeChangeRoleUsers());
       dispatch(subscribeRemoveUser());
+      dispatch(subscribeNewUser());
     } catch (e) {
       console.log(e.message);
     }

@@ -1,4 +1,5 @@
 import {
+  ADD_USER,
   CHANGE_ROLE,
   CHANGE_ROLE_USERS,
   NEW_ROLE,
@@ -42,6 +43,9 @@ export const users = (state = initialState.users, action) => {
 
         return user;
       });
+    }
+    case ADD_USER: {
+      return [...state, action.user];
     }
     case NEW_ROLE:
     case CHANGE_ROLE:
