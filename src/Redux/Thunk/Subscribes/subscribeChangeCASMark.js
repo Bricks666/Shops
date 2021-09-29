@@ -1,12 +1,12 @@
 import { notSubscribeEvent } from "../../Service/notSubscribeEvent";
 import { addUnsubscribe } from "../../Actions/Contract/Add/addUnsubscribe";
 import { addUnsubscribeNames } from "../../Actions/Contract/Add/addUnsubscribeNames";
-import { changeMark } from "../../Actions/Shops/changeMark";
+import { changeMark } from "../../Actions/CAS/changeMark";
 
-export const subscribeChangeMark = () => {
+export const subscribeChangeCASMark = () => {
   return (dispatch, getState) => {
     const contract = getState().contract;
-    const unsubscribeName = "ChangeMark";
+    const unsubscribeName = "ChangeCASMark";
 
     if (notSubscribeEvent(contract.unsubscribeNames, unsubscribeName)) {
       const subscribe = contract.events.MarkComplaint(

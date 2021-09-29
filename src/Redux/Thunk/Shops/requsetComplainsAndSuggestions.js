@@ -1,6 +1,6 @@
 import { toValidComplainAndSuggestion } from "../../Service/toValidComplainAndSuggestion";
-import { setBook } from "../../Actions/Shops/Set/setBook";
-import { subscribeChangeMark } from "../Subscribes/subscribeChangeMark";
+import { setBook } from "../../Actions/CAS/setBook";
+import { subscribeChangeCASMark } from "../Subscribes/subscribeChangeCASMark";
 import { subscribeNewCAS } from "../Subscribes/subscribeNewCAS";
 
 export const requestComplainsAndSuggestions = (address) => {
@@ -15,6 +15,6 @@ export const requestComplainsAndSuggestions = (address) => {
 
     dispatch(setBook(book, address));
     dispatch(subscribeNewCAS());
-    dispatch(subscribeChangeMark());
+    dispatch(subscribeChangeCASMark());
   };
 };

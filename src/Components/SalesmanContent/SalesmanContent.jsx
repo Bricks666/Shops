@@ -1,9 +1,10 @@
+import { CASItem } from "../Shared/CASItem/CASItem";
 import { CASListConnect } from "../Shared/CASList/CASListConnect";
 
 export const SalesmanContent = (props) => {
   return (
     <section>
-      <CASListConnect address={props.address} />
+      <CASListConnect address={props.address} CASCard={CASItem} />
     </section>
   );
 };

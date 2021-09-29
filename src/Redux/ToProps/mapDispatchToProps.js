@@ -10,15 +10,15 @@ import {
   SHOPS_LIST,
   SHOW_SALESMEN_BUTTON,
   CAS_LIST,
-  LIKE_BUTTON,
+  LIKE_CAS_BUTTON,
   REG_BUTTON,
   REG_FIO,
   REG_LOGIN,
   REG_PASSWORD,
-  DISLIKE_BUTTON,
-  COMMENT_FIELD,
+  DISLIKE_CAS_BUTTON,
+  CAS_BUTTON,
   MARK_FIELD,
-  SEND_COMMENT_BUTTON,
+  NEW_CAS_BUTTON,
   BE_BUYER_FOREVER,
   BE_SALESMAN_OF_SHOP,
   BUYER_REQUESTS,
@@ -31,6 +31,10 @@ import {
   SET_ADMIN,
   SET_SHOP,
   REMOVE_SHOP_BUTTON,
+  COMMENT_LIST,
+  LIKE_COMMENT_BUTTON,
+  DISLIKE_COMMENT_BUTTON,
+  NEW_COMMENT,
 } from "../ComponentConstants";
 import { beBuyerThunk } from "../Thunk/Account/Be/beBuyerThunk";
 import { inputLoginLog } from "../Actions/Login/inputLoginLog";
@@ -45,12 +49,12 @@ import { inputNewMark } from "../Actions/NewMessage/inputNewMark";
 import { requestShopsThunk } from "../Thunk/Shops/requestShopsThunk";
 import { toggleShowSalesmen } from "../Actions/Shops/toggleShowSalesmen";
 import { requestShopsSalesmen } from "../Thunk/Shops/requestShopsSalesmen";
-import { likeComment } from "../Thunk/Shops/likeComment";
+import { likeCAS } from "../Thunk/Shops/likeCAS";
 import { registrationThunk } from "../Thunk/Registration/registrationThunk";
 import { inputFIOReg } from "../Actions/Reg/inputFIOReg";
 import { inputPasswordReg } from "../Actions/Reg/inputPasswordReg";
 import { inputLoginReg } from "../Actions/Reg/inputLoginReg";
-import { dislikeComment } from "../Thunk/Shops/dislikeComment";
+import { dislikeCAS } from "../Thunk/Shops/dislikeCAS";
 import { sendComment } from "../Thunk/NewMessage/sendComment";
 import { toggleShowWindow } from "../Actions/NewMessage/toggleShowWindow";
 import { beBuyerForever } from "../Thunk/Account/Be/beBuyerForeverThunk";
@@ -65,6 +69,10 @@ import { removeShopThunk } from "../Thunk/Shops/removeShopThunk";
 import { requestUsersThunk } from "../Thunk/Users/requestUsersThunk";
 import { upgradeToAdmin } from "../Thunk/Users/upgradeToAdmin";
 import { setShopThunk } from "../Thunk/Users/setShopThunk";
+import { requestCASComments } from "../Thunk/Shops/requestCASComments";
+import { likeComment } from "../Thunk/Shops/likeComment";
+import { dislikeComment } from "../Thunk/Shops/dislikeComment";
+import { sendNewComment } from "../Thunk/Shops/sendNewComment";
 
 export const mapDispatchToProps = (component) => {
   switch (component) {
@@ -147,20 +155,68 @@ export const mapDispatchToProps = (component) => {
         loadCAS: requestComplainsAndSuggestions,
       };
     }
-    case LIKE_BUTTON: {
-      return (dispatch, ownProps) => {
+    case COMMENT_LIST: {
+      return (dispatch) => {
         return {
-          onClick() {
-            dispatch(likeComment(ownProps.address, ownProps.CASId));
+          loadComments(shopId, CASId) {
+            dispatch(requestCASComments(shopId, CASId));
           },
         };
       };
     }
-    case DISLIKE_BUTTON: {
+    case LIKE_CAS_BUTTON: {
       return (dispatch, ownProps) => {
         return {
           onClick() {
-            dispatch(dislikeComment(ownProps.address, ownProps.CASId));
+            dispatch(likeCAS(ownProps.address, ownProps.CASId));
+          },
+        };
+      };
+    }
+    case DISLIKE_CAS_BUTTON: {
+      return (dispatch, ownProps) => {
+        return {
+          onClick() {
+            dispatch(dislikeCAS(ownProps.address, ownProps.CASId));
+          },
+        };
+      };
+    }
+    case LIKE_COMMENT_BUTTON: {
+      return (dispatch, ownProps) => {
+        return {
+          onClick() {
+            dispatch(
+              likeComment(
+                ownProps.shopAddress,
+                ownProps.CASId,
+                ownProps.commentId
+              )
+            );
+          },
+        };
+      };
+    }
+    case DISLIKE_COMMENT_BUTTON: {
+      return (dispatch, ownProps) => {
+        return {
+          onClick() {
+            dispatch(
+              dislikeComment(
+                ownProps.shopAddress,
+                ownProps.CASId,
+                ownProps.commentId
+              )
+            );
+          },
+        };
+      };
+    }
+    case NEW_COMMENT: {
+      return (dispatch) => {
+        return {
+          sendNewComment(shopAddress, CASId, comment) {
+            dispatch(sendNewComment(shopAddress, CASId, comment));
           },
         };
       };
@@ -198,7 +254,7 @@ export const mapDispatchToProps = (component) => {
       };
     }
 
-    case COMMENT_FIELD: {
+    case CAS_BUTTON: {
       return (dispatch) => {
         return {
           input(evt) {
@@ -216,7 +272,7 @@ export const mapDispatchToProps = (component) => {
         };
       };
     }
-    case SEND_COMMENT_BUTTON: {
+    case NEW_CAS_BUTTON: {
       return (dispatch, ownProps) => {
         return {
           onClick(evt) {

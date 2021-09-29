@@ -1,4 +1,4 @@
-import { SET_COMPLAINS_AND_SUGGESTIONS } from "../../../ActionsConstants";
+import { SET_COMPLAINS_AND_SUGGESTIONS } from "../../ActionsConstants";
 
 export const setBook = (book, address) => {
   return {

@@ -1,4 +1,4 @@
-import { ADD_CAS } from "../../../ActionsConstants";
+import { ADD_CAS } from "../../ActionsConstants";
 
 export const addNewCAS = (address, CAS) => {
   return {

@@ -2,7 +2,7 @@ import { CommentFieldConnect } from "./FieldParts/CommentField";
 import { MarkFieldConnect } from "./FieldParts/MarkField";
 import { SendCommentButton } from "./FieldParts/SendCommentButton";
 
-export const NewComment = (props) => {
+export const NewCAS = (props) => {
   return (
     <form>
       <CommentFieldConnect disabled={props.isDisabled} />

@@ -3,7 +3,7 @@ import { Button } from "../../../Shared/Button/Button";
 import { CASListConnect } from "../../../Shared/CASList/CASListConnect";
 import { BottomWindow } from "../../../Shared/BottomWindow/BottomWindow";
 import { ModalWindow } from "../../../Shared/ModalWindow/ModalWindow";
-import { NewCommentConnect } from "../NewComment/NewCommentConnect";
+import { NewCASConnect } from "../NewCAS/NewCASConnect";
 
 export const SalesmanCardBuyer = (props) => {
   return (
@@ -14,7 +14,7 @@ export const SalesmanCardBuyer = (props) => {
         <CASListConnect address={props.address} />
       </BottomWindow>
       <ModalWindow condition={props.showComment} close={props.toggleComment}>
-        <NewCommentConnect address={props.address} />
+        <NewCASConnect address={props.address} />
       </ModalWindow>
     </SalesmenItem>
   );

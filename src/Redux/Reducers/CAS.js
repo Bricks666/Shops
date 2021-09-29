@@ -1,10 +1,13 @@
 import {
   ADD_CAS,
+  ADD_COMMENT,
   ADD_SHOP,
-  CHANGE_MARK,
+  CHANGE_CAS_MARK,
+  CHANGE_COMMENT_MARK,
   CHANGE_ROLE,
   NEW_ROLE,
   SET_ACCOUNT,
+  SET_COMMENTS,
   SET_COMPLAINS_AND_SUGGESTIONS,
   SET_SALESMEN,
   SET_SHOPS,
@@ -48,7 +51,7 @@ export const CAS = (state = initialState.CAS, action) => {
 
       return newState;
     }
-    case CHANGE_MARK: {
+    case CHANGE_CAS_MARK: {
       const newState = { ...state };
 
       for (let CAS in newState) {
@@ -56,13 +59,75 @@ export const CAS = (state = initialState.CAS, action) => {
           newState[CAS] = [...newState[CAS]];
           newState[CAS][action.complainId] = {
             ...newState[CAS][action.complainId],
-            mark:
-              +newState[CAS][action.complainId].mark +
-              (+action.changes ? 1 : -1),
+            likes:
+              newState[CAS][action.complainId].likes +
+              (+action.changes === 1 ? 1 : 0),
+            dislikes:
+              newState[CAS][action.complainId].dislikes +
+              (+action.changes === 0 ? 1 : 0),
           };
           newState[CAS][action.complainId].users.push(action.changer);
         }
       }
+
+      return newState;
+    }
+    case SET_COMMENTS: {
+      const newState = { ...state };
+
+      newState[action.shopAddress] = newState[action.shopAddress].map((CAS) => {
+        if (CAS.id === action.CASId) {
+          return {
+            ...CAS,
+            comments: action.comments,
+          };
+        }
+
+        return CAS;
+      });
+
+      return newState;
+    }
+    case ADD_COMMENT: {
+
+      const newState = { ...state };
+
+      newState[action.shopAddress] = newState[action.shopAddress].map((CAS) => {
+        if (CAS.id === action.CASId) {
+          return {
+            ...CAS,
+            comments: [...CAS.comments, action.comment],
+          };
+        }
+
+        return CAS;
+      });
+
+      return newState;
+    }
+    case CHANGE_COMMENT_MARK: {
+      const newState = { ...state };
+
+      newState[action.shopAddress] = newState[action.shopAddress].map((CAS) => {
+        if (CAS.id === action.CASId) {
+          return {
+            ...CAS,
+            comments: CAS.comments.map((comment) => {
+              if (comment.id === action.commentId) {
+                return {
+                  ...comment,
+                  likes: comment.likes + (+action.changes === 1 ? 1 : 0),
+                  dislikes: comment.dislikes + (+action.changes === 0 ? 1 : 0),
+                  users: [...comment.users, action.changer],
+                };
+              }
+              return comment;
+            }),
+          };
+        }
+
+        return CAS;
+      });
 
       return newState;
     }

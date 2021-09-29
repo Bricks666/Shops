@@ -6,8 +6,9 @@ import { BottomWindow } from "../../Shared/BottomWindow/BottomWindow";
 import { ModalWindow } from "../../Shared/ModalWindow/ModalWindow";
 import { SalesmenListConnect } from "../../Shared/SalesmenList/SalesmenListConnnect";
 import { CASListConnect } from "../../Shared/CASList/CASListConnect";
-import { NewCommentConnect } from "./NewComment/NewCommentConnect";
+import { NewCASConnect } from "./NewCAS/NewCASConnect";
 import { SalesmanCardClass } from "./SalesmanCardBuyer/SalesmanCardClass";
+import { CASItemConnect } from "./CASItem/CASItemConnect";
 
 export const ShopCardBuyer = (props) => {
   return (
@@ -34,10 +35,10 @@ export const ShopCardBuyer = (props) => {
         />
       </BottomWindow>
       <BottomWindow condition={props.showCAS}>
-        <CASListConnect address={props.addressShop} />
+        <CASListConnect address={props.addressShop} CASCard={CASItemConnect}/>
       </BottomWindow>
       <ModalWindow condition={props.showComment} close={props.toggleComment}>
-        <NewCommentConnect address={props.addressShop} />
+        <NewCASConnect address={props.addressShop} />
       </ModalWindow>
     </ShopCard>
   );

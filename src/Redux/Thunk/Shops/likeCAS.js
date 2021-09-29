@@ -1,8 +1,8 @@
-export const dislikeComment = (shopAddress, CASId, commentId) => {
+export const likeCAS = (CASAddress, complainId) => {
   return async (dispatch, getState) => {
     try {
       await getState()
-        .contract.methods.DisikeComment(shopAddress, CASId, commentId)
+        .contract.methods.LikeComplaints(CASAddress, complainId)
         .send({ from: getState().user.address });
     } catch (e) {
       console.log(e.message);

@@ -1,4 +1,4 @@
-import { addNewCAS } from "../../Actions/Shops/Add/addNewCAS";
+import { addNewCAS } from "../../Actions/CAS/addNewCAS";
 import { toValidComplainAndSuggestion } from "../../Service/toValidComplainAndSuggestion";
 
 export const requestNewCAS = (address, CASId) => {

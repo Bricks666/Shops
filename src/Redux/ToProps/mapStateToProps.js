@@ -6,13 +6,14 @@ import {
   BUYER_REQUESTS,
   CAS_ITEM,
   CAS_LIST,
-  COMMENT_FIELD,
+  COMMENT_BUYER_CARD,
+  CAS_BUTTON,
   LOGIN,
   LOGIN_LOGIN,
   LOGIN_PASSWORD,
   MAIN,
   MARK_FIELD,
-  NEW_COMMENT,
+  NEW_CAS,
   REGISTRATION,
   REG_FIO,
   REG_LOGIN,
@@ -132,6 +133,13 @@ export const mapStateToProps = (component) => {
         };
       };
     }
+    case COMMENT_BUYER_CARD: {
+      return (state, ownProps) => {
+        return {
+          disabled: ownProps.users.includes(state.user.address),
+        };
+      };
+    }
     case REG_FIO: {
       return (state) => {
         return {
@@ -157,14 +165,14 @@ export const mapStateToProps = (component) => {
         };
       };
     }
-    case NEW_COMMENT: {
+    case NEW_CAS: {
       return (state) => {
         return {
           isDisabled: state.newMessage.isDisabled,
         };
       };
     }
-    case COMMENT_FIELD: {
+    case CAS_BUTTON: {
       return (state) => {
         return {
           value: state.newMessage.comment,

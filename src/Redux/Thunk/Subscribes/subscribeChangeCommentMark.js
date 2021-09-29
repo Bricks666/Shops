@@ -1,17 +1,25 @@
 import { notSubscribeEvent } from "../../Service/notSubscribeEvent";
+import { changeCommentMark } from "../../Actions/CAS/changeCommentMark";
 import { addUnsubscribe } from "../../Actions/Contract/Add/addUnsubscribe";
 import { addUnsubscribeNames } from "../../Actions/Contract/Add/addUnsubscribeNames";
-import { removeUser } from "../../Actions/Users/removeUser";
 
-export const subscribeRemoveUser = () => {
+export const subscribeChangeCommentMark = () => {
   return (dispatch, getState) => {
     const contract = getState().contract;
-    const unsubscribeName = "RemoveUser";
-    if (notSubscribeEvent(contract.unsubscribeNames, unsubscribeName)) {
-      const subscribe = contract.events.RemoveUser(
-        (error, { returnValues }) => {
+    const unsubscribeName = "ChangeCommentMark";
 
-          dispatch(removeUser(returnValues.user));
+    if (notSubscribeEvent(contract.unsubscribeNames, unsubscribeName)) {
+      const subscribe = contract.events.MarkComment(
+        (error, { returnValues }) => {
+          dispatch(
+            changeCommentMark(
+              returnValues.bookAddress,
+              returnValues.CASId,
+              returnValues.commentId,
+              returnValues.mark,
+              returnValues.changer
+            )
+          );
         }
       );
 
