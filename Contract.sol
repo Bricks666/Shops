@@ -55,7 +55,8 @@ contract Shoping {
     /* Complains */
     event MarkComplaint(address shopAddress, uint256 complaintsId, uint256 mark, address changer);
     event NewComplaint(address bookAddress, uint256 complaintsId);
-    event NewComment(address bookAddress, uint256 complaintsId);
+    event NewComment(address bookAddress, uint256 complaintsId, uint commentId);
+    event MarkComment(address bookAddress, uint CASId, uint commentId, uint mark, address changer);
     /* Requests */
     event RequestFinished(string requestType, uint256 id); // Type may be "beAdmin", "beSalesman" and "beBuyer"
     event NewRequest(string requestType, uint256 id);
@@ -92,6 +93,7 @@ contract Shoping {
             ComplaintsAndSuggestions(0,1,"Admin","Hello, i'm an admin",1,zeroAddress,zeroAddress));
         bookOfComplaintsAndSuggestions[msg.sender].push(
             ComplaintsAndSuggestions(0,2,"Admin","Hello, i'm an admin",1,zeroAddress,zeroAddress));
+        comments[0xCA35b7d915458EF540aDe6068dFe2F44E8fa733c][0].push(Comment(comments[0xCA35b7d915458EF540aDe6068dFe2F44E8fa733c][0].length, "admin", "Hay", zeroAddress, zeroAddress));
      }
     mapping(address => User) public user;
     Shop[] public shop;
@@ -270,14 +272,6 @@ modifier CheckLogin(string memory login) {
         _;
     }
 
-    function regUser(string memory FIO,bytes32 password,string memory login)public IsNotReg IsNotShop(msg.sender) CheckLogin(login) CheckTheCorrectPassword(password)
-    {
-        require(msg.sender != bank, "You are a bank");
-        require(msg.sender != provider, "You are a provider");
-        user[msg.sender] = User(msg.sender,FIO,login,password,1,false,false);
-        userArray.push(msg.sender);
-        emit NewUser(msg.sender);
-    }
 
     function LoginUser(string memory login, bytes32 password)public view IsUser returns (bool)
     {
@@ -286,7 +280,7 @@ modifier CheckLogin(string memory login) {
         return (true);
     }
 
-    function LikeComplaints(address shopAddress, uint256 complaintsId)public IsUser CheckDislike(shopAddress, complaintsId) CheckLike(shopAddress, complaintsId) IsNotSalesman(msg.sender) IsNotSenderComplains(shopAddress, complaintsId) IsStore(shopAddress)
+    function LikeComplaints(address shopAddress, uint256 complaintsId)public IsUser CheckDislike(shopAddress, complaintsId) CheckLike(shopAddress, complaintsId) IsNotSalesman(msg.sender) IsNotSenderComplains(shopAddress, complaintsId)
     {
         require(user[msg.sender].role!=6, "You are a Shop");
         bookOfComplaintsAndSuggestions[shopAddress][complaintsId].like.push(msg.sender);
@@ -306,32 +300,29 @@ modifier CheckLogin(string memory login) {
         if (user[msg.sender].role == 1 || user[msg.sender].role == 2) {
             Comment[] storage tempComments = comments[addressShop][complaintsId]; // Понять насколько это оптимально
             tempComments.push(Comment(tempComments.length, user[msg.sender].login, comment, zeroAddress, zeroAddress));
-            emit NewComment(addressShop, complaintsId);
+            emit NewComment(addressShop, complaintsId, tempComments.length - 1);
         }
     }
 
-    function LikeComments(address shopAddress, uint256 complaintsId, uint256 commentId) public IsUser CheckDislikeComment(shopAddress, complaintsId, commentId) CheckLikeComment(shopAddress, complaintsId, commentId) IsNotSalesman(msg.sender) IsNotSenderComplains(shopAddress, complaintsId) IsStore(shopAddress)
+    function LikeComment(address shopAddress, uint256 complaintsId, uint256 commentId) public IsUser CheckDislikeComment(shopAddress, complaintsId, commentId) CheckLikeComment(shopAddress, complaintsId, commentId) IsNotSalesman(msg.sender) IsNotSenderComplains(shopAddress, complaintsId)
     {
         require(user[msg.sender].role!=6, "You are a Shop");
         comments[shopAddress][complaintsId][commentId].likes.push(msg.sender);
-        //bookOfComplaintsAndSuggestions[shopAddress][complaintsId].mark++;
-        emit MarkComplaint(shopAddress, complaintsId, 1, msg.sender);
+        emit MarkComment(shopAddress, complaintsId, commentId, 1, msg.sender);
     }
 
-    function DisikeComment(address shopAddress, uint256 complaintsId, uint256 commentId)public IsUser CheckDislikeComment(shopAddress, complaintsId, commentId)CheckLikeComment(shopAddress, complaintsId, commentId)IsNotSalesman(msg.sender)IsNotSenderComplains(shopAddress, complaintsId) IsStore(shopAddress)
+    function DisikeComment(address shopAddress, uint256 complaintsId, uint256 commentId)public IsUser CheckDislikeComment(shopAddress, complaintsId, commentId)CheckLikeComment(shopAddress, complaintsId, commentId)IsNotSalesman(msg.sender)IsNotSenderComplains(shopAddress, complaintsId)
     {
         require(user[msg.sender].role!=6, "You are a Shop");
         comments[shopAddress][complaintsId][commentId].dislikes.push(
             msg.sender
         );
-        //bookOfComplaintsAndSuggestions[shopAddress][complaintsId].mark--;
-        emit MarkComplaint(shopAddress, complaintsId, 0, msg.sender);
+        emit MarkComment(shopAddress, complaintsId, commentId, 0, msg.sender);
     }
 
-    function DisikeComplaints(address shopAddress, uint256 complaintsId)public IsUser IsNotShop(msg.sender)  CheckDislike(shopAddress, complaintsId)CheckLike(shopAddress, complaintsId) IsNotSalesman(msg.sender) IsNotSenderComplains(shopAddress, complaintsId) IsStore(shopAddress)
+    function DisikeComplaints(address shopAddress, uint256 complaintsId)public IsUser IsNotShop(msg.sender)  CheckDislike(shopAddress, complaintsId)CheckLike(shopAddress, complaintsId) IsNotSalesman(msg.sender) IsNotSenderComplains(shopAddress, complaintsId)
     {
         bookOfComplaintsAndSuggestions[shopAddress][complaintsId].dislike.push(msg.sender);
-        //bookOfComplaintsAndSuggestions[shopAddress][complaintsId].mark--; // - Понять, зачем это необходимо
         emit MarkComplaint(shopAddress, complaintsId, 0, msg.sender);
     }
 
@@ -502,5 +493,9 @@ modifier CheckLogin(string memory login) {
 
     function getUsersAddresses() public view returns (address[] memory) {
         return userArray;
+    }
+
+    function getCASComments(address shopAddress, uint CASId) external view returns(Comment[] memory) {
+        return comments[shopAddress][CASId];
     }
  }
