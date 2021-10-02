@@ -1,4 +1,5 @@
 import { applyMiddleware, combineReducers, createStore } from "redux";
+import { reducer as formReducer } from "redux-form";
 import { account } from "./Reducers/account";
 import { web3 } from "./Reducers/web3";
 import { contract } from "./Reducers/contract";
@@ -7,7 +8,6 @@ import thunk from "redux-thunk";
 import { login } from "./Reducers/login";
 import { shops } from "./Reducers/shops";
 import { registration } from "./Reducers/registration";
-import { newMessage } from "./Reducers/newMessage";
 import { CAS } from "./Reducers/CAS";
 import { requests } from "./Reducers/requests";
 import { users } from "./Reducers/users";
@@ -20,10 +20,10 @@ const rootReducer = combineReducers({
   login: login,
   registration: registration,
   shops: shops,
-  newMessage: newMessage,
   CAS: CAS,
   requests: requests,
   users: users,
+  form: formReducer
 });
 
 const store = createStore(rootReducer, applyMiddleware(thunk));

@@ -1,21 +1,11 @@
-import { SalesmenItem } from "../../../Shared/SalesmenItem/SalesmenItem";
-import { Button } from "../../../Shared/Button/Button";
-import { CASListConnect } from "../../../Shared/CASList/CASListConnect";
-import { BottomWindow } from "../../../Shared/BottomWindow/BottomWindow";
-import { ModalWindow } from "../../../Shared/ModalWindow/ModalWindow";
-import { NewCASConnect } from "../NewCAS/NewCASConnect";
 
-export const SalesmanCardBuyer = (props) => {
-  return (
-    <SalesmenItem fio={props.fio} address={props.address}>
-      <Button onClick={props.toggleCAS}>Посмотреть отзывы</Button>
-      <Button onClick={props.toggleComment}>Написать новый комментарий</Button>
-      <BottomWindow condition={props.showCAS}>
-        <CASListConnect address={props.address} />
-      </BottomWindow>
-      <ModalWindow condition={props.showComment} close={props.toggleComment}>
-        <NewCASConnect address={props.address} />
-      </ModalWindow>
-    </SalesmenItem>
-  );
-};
+import { withCASList } from "../../../Shared/HOC's/withCASList";
+import { CASItemConnect } from "../CASItem/CASItemConnect";
+import { withCASCreate } from "../../../Shared/HOC's/withCASCreate";
+import { compose } from "redux";
+import { SalesmenItem } from "../../../Shared/SalesmenItem/SalesmenItem";
+
+export const SalesmanCardBuyer = compose(
+  withCASCreate,
+  withCASList(CASItemConnect)
+)(SalesmenItem);

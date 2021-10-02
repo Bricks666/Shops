@@ -1,7 +1,7 @@
 import { addUnsubscribe } from "../../Actions/Contract/Add/addUnsubscribe";
 import { addUnsubscribeNames } from "../../Actions/Contract/Add/addUnsubscribeNames";
 import { notSubscribeEvent } from "../../Service/notSubscribeEvent";
-import { requestNewComment } from "../Shops/requestNewComment";
+import { requestNewComment } from "../CAS/requestNewComment";
 
 export const subscribeNewComments = () => {
   return async (dispatch, getState) => {
@@ -11,7 +11,7 @@ export const subscribeNewComments = () => {
     if (notSubscribeEvent(contract.unsubscribeNames, unsubscribeName)) {
       const subscribe = contract.events.NewComment(
         (error, { returnValues }) => {
-
+          debugger;
           dispatch(
             requestNewComment(
               returnValues.bookAddress,

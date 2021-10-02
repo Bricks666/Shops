@@ -1,5 +1,6 @@
 export const likeComment = (shopAddress, CASId, commentId) => {
   return async (dispatch, getState) => {
+
     try {
       await getState()
         .contract.methods.LikeComment(shopAddress, CASId, commentId)

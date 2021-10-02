@@ -69,8 +69,8 @@ contract Shoping {
     constructor() {
         user[0x5B38Da6a701c568545dCfcB03FcB875f56beddC4] = User(
             0x5B38Da6a701c568545dCfcB03FcB875f56beddC4, "Petrov Petr Petrovich", "petrov", keccak256(abi.encodePacked("petr")), 1, false, false);
-        user[0x4B0897b0513fdC7C541B6d9D7E929C4e5364D2dB] = User(
-            0x4B0897b0513fdC7C541B6d9D7E929C4e5364D2dB, "Admin", "admin", keccak256(abi.encodePacked("admin")), 3, true, false);
+        user[0x98ABCBdDb13B61b30205c04B325A2202050d2bBC] = User(
+            0x98ABCBdDb13B61b30205c04B325A2202050d2bBC, "Admin", "admin", keccak256(abi.encodePacked("admin")), 3, true, false);
         user[0xdD870fA1b7C4700F2BD7f44238821C26f7392148] = User(
             0xdD870fA1b7C4700F2BD7f44238821C26f7392148,"Salesman", "salesman", keccak256(abi.encodePacked("salesman")),2,false,true
         );
@@ -82,7 +82,7 @@ contract Shoping {
         userArray.push(0x5B38Da6a701c568545dCfcB03FcB875f56beddC4);
         userArray.push(0x7E548B655Cd85547F6709601bA19515903F233Bd);
         userArray.push(0xdD870fA1b7C4700F2BD7f44238821C26f7392148);
-        userArray.push(0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db);
+        userArray.push(0x98ABCBdDb13B61b30205c04B325A2202050d2bBC);
         userArray.push(0x5c6B0f7Bf3E7ce046039Bd8FABdfD3f9F5021678);
         userArray.push(msg.sender);
         address[] memory startSalesmen = new address[](1);
@@ -273,6 +273,23 @@ modifier CheckLogin(string memory login) {
     }
 
 
+    function regUser(string memory FIO,bytes32 password,string memory login )public IsNotReg IsNotShop(msg.sender) CheckLogin(login) CheckTheCorrectPassword(password)
+    {
+        require(msg.sender != bank, "You are a bank");
+        require(msg.sender != provider, "You are a provider");
+        user[msg.sender] = User(
+            msg.sender,
+            FIO,
+            login,
+            password,
+            1,
+            false,
+            false
+        );
+        userArray.push(msg.sender);
+        emit NewUser(msg.sender);
+    }
+
     function LoginUser(string memory login, bytes32 password)public view IsUser returns (bool)
     {
         require(keccak256(abi.encodePacked(user[msg.sender].login)) == keccak256(abi.encodePacked(login)), "Login incorrect");
@@ -304,14 +321,14 @@ modifier CheckLogin(string memory login) {
         }
     }
 
-    function LikeComment(address shopAddress, uint256 complaintsId, uint256 commentId) public IsUser CheckDislikeComment(shopAddress, complaintsId, commentId) CheckLikeComment(shopAddress, complaintsId, commentId) IsNotSalesman(msg.sender) IsNotSenderComplains(shopAddress, complaintsId)
+    function LikeComment(address shopAddress, uint256 complaintsId, uint256 commentId) public IsUser CheckDislikeComment(shopAddress, complaintsId, commentId) CheckLikeComment(shopAddress, complaintsId, commentId) IsNotSalesman(msg.sender)
     {
         require(user[msg.sender].role!=6, "You are a Shop");
         comments[shopAddress][complaintsId][commentId].likes.push(msg.sender);
         emit MarkComment(shopAddress, complaintsId, commentId, 1, msg.sender);
     }
 
-    function DisikeComment(address shopAddress, uint256 complaintsId, uint256 commentId)public IsUser CheckDislikeComment(shopAddress, complaintsId, commentId)CheckLikeComment(shopAddress, complaintsId, commentId)IsNotSalesman(msg.sender)IsNotSenderComplains(shopAddress, complaintsId)
+    function DisikeComment(address shopAddress, uint256 complaintsId, uint256 commentId)public IsUser CheckDislikeComment(shopAddress, complaintsId, commentId)CheckLikeComment(shopAddress, complaintsId, commentId)IsNotSalesman(msg.sender)
     {
         require(user[msg.sender].role!=6, "You are a Shop");
         comments[shopAddress][complaintsId][commentId].dislikes.push(

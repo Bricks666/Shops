@@ -1,4 +1,5 @@
 export const toValidComment = (comment) => {
+  debugger;
   return {
     id: comment.idComment,
     login: comment.login,

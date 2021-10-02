@@ -4,7 +4,7 @@ import { addUnsubscribeNames } from "../../Actions/Contract/Add/addUnsubscribeNa
 import { addUnsubscribe } from "../../Actions/Contract/Add/addUnsubscribe";
 
 export const subscribeNewSalesman = () => {
-  return async (dispatch, getState) => {
+  return (dispatch, getState) => {
     const contract = getState().contract;
     const subscribeName = "AddSalesman";
     if (notSubscribeEvent(contract.unsubscribeNames, subscribeName)) {

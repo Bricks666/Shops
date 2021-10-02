@@ -1,6 +1,11 @@
-import { renderList } from "../../Shared/renderList";
-import { UsersCard } from "./UsersCard/UsersCard";
+import { UsersFiltersWithForm } from "./UsersFilters/UsersFiltersWithForm";
+import { UsersListConnect } from "./UsersList/UsersListConnect";
 
 export const Users = (props) => {
-  return <ul>{renderList(props.users, UsersCard)}</ul>;
+  return (
+    <div>
+      <UsersFiltersWithForm />
+      <UsersListConnect />
+    </div>
+  );
 };

@@ -3,7 +3,7 @@ import { Button } from "../Button/Button";
 
 export const ModalWindow = (props) => {
   return props.condition ? (
-    <div className={ModalWindowStyle.wrapper}>
+    <div className={ModalWindowStyle.wrapper} onClick={props.close}>
       <div
         className={ModalWindowStyle.modal}
         onClick={(evt) => evt.stopPropagation()}

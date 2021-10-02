@@ -4,6 +4,7 @@ import { subscribeRemoveSalesman } from "../Subscribes/subscribeRemoveSalesman";
 
 export const requestShopsSalesmen = (shopId) => {
   return async (dispatch, getState) => {
+
     const state = getState();
     const salesmenAddresses = await state.contract.methods
       .ShowSalesmanOfStore(+shopId)

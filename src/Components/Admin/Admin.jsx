@@ -2,11 +2,11 @@ import { Switch, Route } from "react-router";
 import { BeBuyerRequestsConnect } from "./BeRequests/BeBuyerRequests/BeBuyerRequestsConnect";
 import { Navigation } from "./Navigation/Navigation";
 import { BeSalesmanRequestsConnect } from "./BeRequests/BeSalesmanRequests/BeSalesmanRequestsConnect";
-import { ShopsConnect } from "../Shared/ShopsList/ShopsConnect";
-import { ShopCardAdmin } from "./ShopCardAdmin/ShopCardAdmin";
+import { Shops } from "../Shared/Shops/Shops";
 import { BeBuyerRequestsItem } from "./BeRequests/BeBuyerRequests/Item/BeBuyerRequestsItem";
 import { BeSalesmanRequestsItem } from "./BeRequests/BeSalesmanRequests/Item/BeSalesmanRequestsItem";
 import { UsersConnect } from "./Users/UsersConnect";
+import { ShopCardAdmin } from "./ShopCardAdmin/ShopCardAdmin";
 
 export const Admin = (props) => {
   return (
@@ -21,7 +21,7 @@ export const Admin = (props) => {
           <BeBuyerRequestsConnect requestCard={BeBuyerRequestsItem} />
         </Route>
         <Route path="/admin/shops">
-          <ShopsConnect shopCard={ShopCardAdmin} />
+          <Shops ShopCard={ShopCardAdmin} />
         </Route>
         <Route path="/admin/users">
           <UsersConnect />

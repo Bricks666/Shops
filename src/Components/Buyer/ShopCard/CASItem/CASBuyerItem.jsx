@@ -1,9 +1,10 @@
-import { LikeButton } from "./LikeButton";
-import { DislikeButton } from "./DislikeButton";
+import { LikeButton } from "./Buttons/LikeButton";
+import { DislikeButton } from "./Buttons/DislikeButton";
 import { CASItemCommentClass } from "../../../Shared/CASItem/CASItemCommentClass";
 import { CommentBuyerCardConnect } from "./CommentCard/CommentBuyerCardConnect";
 
 export const CASBuyerItem = (props) => {
+
   return (
     <CASItemCommentClass
       login={props.login}

@@ -8,7 +8,6 @@ import {
   SET_ACCOUNT,
   SET_SALESMEN,
   SET_SHOPS,
-  TOGGLE_SHOW_SALESMEN,
 } from "../ActionsConstants";
 import { initialState } from "../initialState";
 import { toValidSalesman } from "../Service/toValidSalesman";
@@ -19,6 +18,7 @@ export const shops = (state = initialState.shops, action) => {
       return action.shops;
     }
     case SET_SALESMEN: {
+
       return state.map((shop) => {
         if (+shop.id === +action.shopId) {
           shop.salesmen = action.salesmen.map((salesman) =>
@@ -34,19 +34,7 @@ export const shops = (state = initialState.shops, action) => {
       return [...state, action.newShop];
     }
     case REMOVE_SHOP: {
-      return state.filter((shop) => shop.addressShop !== action.shopAddress);
-    }
-    case TOGGLE_SHOW_SALESMEN: {
-      return state.map((shop) => {
-        if (shop.id === +action.shopId) {
-          return {
-            ...shop,
-            showSalesmen: !shop.showSalesmen,
-          };
-        }
-
-        return shop;
-      });
+      return state.filter((shop) => shop.address !== action.shopAddress);
     }
     case ADD_SALESMAN: {
       return state.map((shop) => {

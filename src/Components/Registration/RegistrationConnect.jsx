@@ -1,10 +1,15 @@
 import { connect } from "react-redux";
 import { Registration } from "./Registration";
-import { mapStateToProps } from "../../Redux/ToProps/mapStateToProps";
 import { mapDispatchToProps } from "../../Redux/ToProps/mapDispatchToProps";
 import { REGISTRATION } from "../../Redux/ComponentConstants";
+import { reduxForm } from "redux-form";
 
 export const RegistrationConnect = connect(
-  mapStateToProps(REGISTRATION),
+  null,
   mapDispatchToProps(REGISTRATION)
-)(Registration);
+)(
+  reduxForm({
+    form: "registration",
+    initialValues: { fio: "", login: "", password: "" },
+  })(Registration)
+);

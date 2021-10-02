@@ -3,7 +3,7 @@ import { Redirect, Route, Switch } from "react-router";
 import { LoginConnect } from "../Login/LoginConnect";
 import { AccountConnect } from "../Account/AccountConnect";
 import { RegistrationConnect } from "../Registration/RegistrationConnect";
-import { ContentRedirect } from "../ContentRedirect/ContentRedirect";
+import { ContentRedirect } from "./ContentRedirect/ContentRedirect";
 import { Content } from "../Content/Content";
 
 export class Main extends Component {
@@ -18,7 +18,7 @@ export class Main extends Component {
         {this.props.isLogin ? (
           <Redirect from="/login" to="/" />
         ) : (
-          <Redirect from="/" to="/login" />
+          <Redirect to="/login" />
         )}
         <ContentRedirect role={this.props.role} />
         <Switch>

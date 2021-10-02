@@ -2,23 +2,12 @@ import {
   BE_ADMIN,
   BE_BUYER,
   BE_SALESMAN,
-  LOGIN_BUTTON,
-  LOGIN_LOGIN,
-  LOGIN_PASSWORD,
   MAIN,
   SALESMEN_LIST,
   SHOPS_LIST,
-  SHOW_SALESMEN_BUTTON,
   CAS_LIST,
   LIKE_CAS_BUTTON,
-  REG_BUTTON,
-  REG_FIO,
-  REG_LOGIN,
-  REG_PASSWORD,
   DISLIKE_CAS_BUTTON,
-  CAS_BUTTON,
-  MARK_FIELD,
-  NEW_CAS_BUTTON,
   BE_BUYER_FOREVER,
   BE_SALESMAN_OF_SHOP,
   BUYER_REQUESTS,
@@ -27,7 +16,6 @@ import {
   SALESMAN_REQUESTS,
   ACCEPT_SALESMAN_REQUEST,
   CANCEL_SALESMAN_REQUEST,
-  USERS,
   SET_ADMIN,
   SET_SHOP,
   REMOVE_SHOP_BUTTON,
@@ -35,28 +23,24 @@ import {
   LIKE_COMMENT_BUTTON,
   DISLIKE_COMMENT_BUTTON,
   NEW_COMMENT,
+  LOGIN,
+  REGISTRATION,
+  NEW_CAS,
+  GUEST_BUTTON,
+  USERS_LIST,
 } from "../ComponentConstants";
 import { beBuyerThunk } from "../Thunk/Account/Be/beBuyerThunk";
-import { inputLoginLog } from "../Actions/Login/inputLoginLog";
-import { inputPasswordLog } from "../Actions/Login/inputPasswordLog";
 import { loginThunk } from "../Thunk/Login/loginThunk";
 import { startInitialThunk } from "../Actions/StartInitial/startInitialThunk";
 import { beSalesmanThunk } from "../Thunk/Account/Be/beSalesmanThunk";
 import { beAdminThunk } from "../Thunk/Account/Be/beAdminThunk";
-import { requestComplainsAndSuggestions } from "../Thunk/Shops/requsetComplainsAndSuggestions";
-import { inputNewComment } from "../Actions/NewMessage/inputNewComment";
-import { inputNewMark } from "../Actions/NewMessage/inputNewMark";
+import { requestCAS } from "../Thunk/CAS/requestCAS";
 import { requestShopsThunk } from "../Thunk/Shops/requestShopsThunk";
-import { toggleShowSalesmen } from "../Actions/Shops/toggleShowSalesmen";
 import { requestShopsSalesmen } from "../Thunk/Shops/requestShopsSalesmen";
-import { likeCAS } from "../Thunk/Shops/likeCAS";
+import { likeCAS } from "../Thunk/CAS/likeCAS";
 import { registrationThunk } from "../Thunk/Registration/registrationThunk";
-import { inputFIOReg } from "../Actions/Reg/inputFIOReg";
-import { inputPasswordReg } from "../Actions/Reg/inputPasswordReg";
-import { inputLoginReg } from "../Actions/Reg/inputLoginReg";
-import { dislikeCAS } from "../Thunk/Shops/dislikeCAS";
-import { sendComment } from "../Thunk/NewMessage/sendComment";
-import { toggleShowWindow } from "../Actions/NewMessage/toggleShowWindow";
+import { dislikeCAS } from "../Thunk/CAS/dislikeCAS";
+import { sendNewCAS } from "../Thunk/CAS/sendNewCAS";
 import { beBuyerForever } from "../Thunk/Account/Be/beBuyerForeverThunk";
 import { beSalesmanForever } from "../Thunk/Account/Be/beSalesmanForever";
 import { loadBeBuyerRequests } from "../Thunk/Requests/loadBeBuyerRequests";
@@ -69,10 +53,11 @@ import { removeShopThunk } from "../Thunk/Shops/removeShopThunk";
 import { requestUsersThunk } from "../Thunk/Users/requestUsersThunk";
 import { upgradeToAdmin } from "../Thunk/Users/upgradeToAdmin";
 import { setShopThunk } from "../Thunk/Users/setShopThunk";
-import { requestCASComments } from "../Thunk/Shops/requestCASComments";
+import { requestCASComments } from "../Thunk/CAS/requestCASComments";
 import { likeComment } from "../Thunk/Shops/likeComment";
 import { dislikeComment } from "../Thunk/Shops/dislikeComment";
-import { sendNewComment } from "../Thunk/Shops/sendNewComment";
+import { sendNewComment } from "../Thunk/CAS/sendNewComment";
+import { guestEnter } from "../Actions/Login/guestEnter";
 
 export const mapDispatchToProps = (component) => {
   switch (component) {
@@ -81,27 +66,13 @@ export const mapDispatchToProps = (component) => {
         initialApp: startInitialThunk,
       };
     }
-    case LOGIN_LOGIN: {
+    case LOGIN: {
       return (dispatch) => {
         return {
-          input(evt) {
-            dispatch(inputLoginLog(evt.target.value));
+          onSubmit(data) {
+            dispatch(loginThunk(data.login, data.password));
           },
         };
-      };
-    }
-    case LOGIN_PASSWORD: {
-      return (dispatch) => {
-        return {
-          input(evt) {
-            dispatch(inputPasswordLog(evt.target.value));
-          },
-        };
-      };
-    }
-    case LOGIN_BUTTON: {
-      return {
-        onClick: loginThunk,
       };
     }
     case BE_BUYER: {
@@ -129,30 +100,18 @@ export const mapDispatchToProps = (component) => {
         loadShops: requestShopsThunk,
       };
     }
-    case SHOW_SALESMEN_BUTTON: {
-      return (dispatch, ownProps) => {
-        return {
-          onClick() {
-            dispatch(toggleShowSalesmen(ownProps.shopId));
-          },
-        };
-      };
-    }
     case SALESMEN_LIST: {
       return (dispatch, ownProps) => {
         return {
           loadSalesmen() {
             dispatch(requestShopsSalesmen(ownProps.shopId));
           },
-          close() {
-            dispatch(toggleShowWindow());
-          },
         };
       };
     }
     case CAS_LIST: {
       return {
-        loadCAS: requestComplainsAndSuggestions,
+        loadCAS: requestCAS,
       };
     }
     case COMMENT_LIST: {
@@ -213,71 +172,34 @@ export const mapDispatchToProps = (component) => {
       };
     }
     case NEW_COMMENT: {
-      return (dispatch) => {
-        return {
-          sendNewComment(shopAddress, CASId, comment) {
-            dispatch(sendNewComment(shopAddress, CASId, comment));
-          },
-        };
-      };
-    }
-    case REG_BUTTON: {
-      return {
-        onClick: registrationThunk,
-      };
-    }
-    case REG_FIO: {
-      return (dispatch) => {
-        return {
-          input(evt) {
-            dispatch(inputFIOReg(evt.target.value));
-          },
-        };
-      };
-    }
-    case REG_LOGIN: {
-      return (dispatch) => {
-        return {
-          input(evt) {
-            dispatch(inputLoginReg(evt.target.value));
-          },
-        };
-      };
-    }
-    case REG_PASSWORD: {
-      return (dispatch) => {
-        return {
-          input(evt) {
-            dispatch(inputPasswordReg(evt.target.value));
-          },
-        };
-      };
-    }
-
-    case CAS_BUTTON: {
-      return (dispatch) => {
-        return {
-          input(evt) {
-            dispatch(inputNewComment(evt.target.value));
-          },
-        };
-      };
-    }
-    case MARK_FIELD: {
-      return (dispatch) => {
-        return {
-          input(evt) {
-            dispatch(inputNewMark(evt.target.value));
-          },
-        };
-      };
-    }
-    case NEW_CAS_BUTTON: {
       return (dispatch, ownProps) => {
         return {
-          onClick(evt) {
-            evt.preventDefault();
-            dispatch(sendComment(ownProps.address));
+          onSubmit(data) {
+            dispatch(
+              sendNewComment(
+                ownProps.shopAddress,
+                ownProps.CASId,
+                data.newComment
+              )
+            );
+          },
+        };
+      };
+    }
+    case REGISTRATION: {
+      return (dispatch) => {
+        return {
+          onSubmit(data) {
+            dispatch(registrationThunk(data.fio, data.login, data.password));
+          },
+        };
+      };
+    }
+    case NEW_CAS: {
+      return (dispatch, ownProps) => {
+        return {
+          onSubmit(data) {
+            dispatch(sendNewCAS(data.CAS, data.mark, ownProps.address));
           },
         };
       };
@@ -346,7 +268,7 @@ export const mapDispatchToProps = (component) => {
         };
       };
     }
-    case USERS: {
+    case USERS_LIST: {
       return {
         loadUsers: requestUsersThunk,
       };
@@ -365,6 +287,15 @@ export const mapDispatchToProps = (component) => {
         return {
           onClick() {
             dispatch(setShopThunk(ownProps.userAddress));
+          },
+        };
+      };
+    }
+    case GUEST_BUTTON: {
+      return (dispatch) => {
+        return {
+          onClick() {
+            dispatch(guestEnter());
           },
         };
       };

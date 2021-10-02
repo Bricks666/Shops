@@ -1,16 +1,34 @@
 import { Link } from "react-router-dom";
-import { LoginButton } from "./FormParts/LoginButton";
-import { LoginField } from "./FormParts/LoginField";
-import { PasswordField } from "./FormParts/PasswordFiel";
+import { Field as ReduxField } from "redux-form";
+import { Field } from "../Shared/Field/Field";
+import { Button } from "../Shared/Button/Button";
+import { Form } from "../Shared/Form/Form";
+import { GuestEnter } from "./GuestEnter";
 
 export const Login = (props) => {
   return (
     <>
-      <form onSubmit={(evt) => evt.preventDefault()}>
-        <LoginField isDisabled={props.isDisabled}>Login</LoginField>
-        <PasswordField isDisabled={props.isDisabled}>Password</PasswordField>
-        <LoginButton isDisabled={props.isDisabled}>Sing in</LoginButton>
-      </form>
+      <Form onSubmit={props.handleSubmit} error={props.error}>
+        <ReduxField
+          name="login"
+          component={Field}
+          required={true}
+          disabled={props.submitting}
+        >
+          Login
+        </ReduxField>
+        <ReduxField
+          name="password"
+          component={Field}
+          type={"password"}
+          required={true}
+          disabled={props.submitting}
+        >
+          Password
+        </ReduxField>
+        <Button disabled={props.submitting || !props.dirty}>Sing in</Button>
+      </Form>
+      <GuestEnter>Войти как гость</GuestEnter>
       <Link to="/registration">Зарегистрироваться</Link>
     </>
   );

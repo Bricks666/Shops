@@ -1,7 +1,7 @@
 export const Role = (props) => {
-  return (
-    <p>
-      You're {props.isAdmin ? "Admin" : props.isSalesman ? "Salesman" : "Buyer"}
-    </p>
+  return props.isAdmin || props.isSalesman ? (
+    <p>You're {props.isAdmin ? "Admin" : "Salesman"}</p>
+  ) : (
+    ""
   );
 };

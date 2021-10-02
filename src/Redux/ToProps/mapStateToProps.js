@@ -1,3 +1,4 @@
+import { getFormValues } from "redux-form";
 import {
   ACCOUNT,
   BE_ADMIN,
@@ -8,23 +9,15 @@ import {
   CAS_LIST,
   COMMENT_BUYER_CARD,
   CAS_BUTTON,
-  LOGIN,
-  LOGIN_LOGIN,
-  LOGIN_PASSWORD,
   MAIN,
   MARK_FIELD,
-  NEW_CAS,
   REGISTRATION,
-  REG_FIO,
-  REG_LOGIN,
-  REG_PASSWORD,
   SALESMAN_CONTENT,
   SALESMAN_REQUESTS,
-  SALESMEN_LIST,
   SET_SHOP,
   SHOPS_LIST,
   SHOP_CARD_BUYER,
-  USERS,
+  USERS_LIST,
 } from "../ComponentConstants";
 
 export const mapStateToProps = (component) => {
@@ -35,29 +28,6 @@ export const mapStateToProps = (component) => {
           isLogin: state.login.isLogin,
           isReg: state.registration.isReg,
           role: state.user.role,
-        };
-      };
-    }
-    case LOGIN: {
-      return (state) => {
-        return { isDisabled: state.login.isDisabled };
-      };
-    }
-    case LOGIN_LOGIN: {
-      return (state) => {
-        return {
-          value: state.login.login,
-          required: true,
-          type: "text",
-        };
-      };
-    }
-    case LOGIN_PASSWORD: {
-      return (state) => {
-        return {
-          value: state.login.password,
-          required: true,
-          type: "password",
         };
       };
     }
@@ -91,13 +61,22 @@ export const mapStateToProps = (component) => {
     }
     case SHOPS_LIST: {
       return (state) => {
-        return { shops: state.shops };
+        const filters = getFormValues("shopsFilters")(state);
+        debugger;
+        return {
+          shops: state.shops.filter(
+            (shop) =>
+              shop.address.includes(filters.address) &&
+              shop.city.includes(filters.city)
+          ),
+        };
       };
     }
     case SHOP_CARD_BUYER: {
       return (state) => {
         return {
-          isBuyer: !state.user.isSalesman && !state.user.isAdmin,
+          isBuyer:
+            state.user.isSalesman === false && state.user.isAdmin === false,
         };
       };
     }
@@ -105,13 +84,6 @@ export const mapStateToProps = (component) => {
       return (state) => {
         return {
           isDisabled: state.registration.isDisabled,
-        };
-      };
-    }
-    case SALESMEN_LIST: {
-      return (state) => {
-        return {
-          condition: state.newMessage.showWindow,
         };
       };
     }
@@ -137,38 +109,6 @@ export const mapStateToProps = (component) => {
       return (state, ownProps) => {
         return {
           disabled: ownProps.users.includes(state.user.address),
-        };
-      };
-    }
-    case REG_FIO: {
-      return (state) => {
-        return {
-          value: state.registration.fio,
-          required: true,
-        };
-      };
-    }
-    case REG_LOGIN: {
-      return (state) => {
-        return {
-          value: state.registration.login,
-          required: true,
-        };
-      };
-    }
-    case REG_PASSWORD: {
-      return (state) => {
-        return {
-          value: state.registration.password,
-          type: "password",
-          required: true,
-        };
-      };
-    }
-    case NEW_CAS: {
-      return (state) => {
-        return {
-          isDisabled: state.newMessage.isDisabled,
         };
       };
     }
@@ -209,10 +149,17 @@ export const mapStateToProps = (component) => {
         };
       };
     }
-    case USERS: {
+    case USERS_LIST: {
       return (state) => {
+        debugger;
+        const filter = getFormValues("usersFilters")(state);
         return {
-          users: state.users,
+          users: state.users.filter(
+            (user) =>
+              user.address.includes(filter.address) &&
+              (filter.role === "-1" || +user.role === +filter.role) &&
+              user.fio.includes(filter.fio)
+          ),
         };
       };
     }

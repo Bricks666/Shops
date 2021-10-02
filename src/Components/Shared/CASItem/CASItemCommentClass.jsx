@@ -3,6 +3,7 @@ import { BottomWindow } from "../BottomWindow/BottomWindow";
 import { Button } from "../Button/Button";
 import { CASItem } from "./CASItem";
 import { CommentListConnect } from "./CommentList/CommentListConnect";
+import { Comment } from "../Comment/Comment";
 
 export class CASItemCommentClass extends Component {
   constructor(props) {
@@ -25,16 +26,16 @@ export class CASItemCommentClass extends Component {
         dislikes={this.props.dislikes}
         likes={this.props.likes}
       >
-        {this.props.children}
         <Button onClick={this.toggleShowWindow.bind(this)}>
           Показать комментарии
         </Button>
+        {this.props.children}
         <BottomWindow condition={this.state.showComment}>
           <CommentListConnect
             comments={this.props.comments}
-            shopAddress={this.props.shopAddress}
-            CASId={this.props.CASId}
-            CommentCard={this.props.CommentCard}
+            shopAddress={this.props.shopAddress || this.props.address}
+            CASId={this.props.CASId || this.props.id}
+            CommentCard={this.props.CommentCard ?? Comment}
           />
         </BottomWindow>
       </CASItem>

@@ -3,11 +3,15 @@ export const Field = (props) => {
     <label>
       {props.children}
       <input
-        type={props.type ?? "text"}
-        value={props.value ?? ""}
+        {...props.input}
         required={props.required}
-        onChange={props.input}
+        type={props.type}
+        disabled={props.disabled}
+        min={props.min}
+        max={props.max}
+        step={props.step}
       />
+      {props.meta.error !== undefined ? <span>{props.meta.error}</span> : ""}{" "}
     </label>
   );
 };

@@ -1,10 +1,10 @@
-import { ShopsConnect } from "../Shared/ShopsList/ShopsConnect";
+import { Shops } from "../Shared/Shops/Shops";
 import { ShopCardConnect } from "./ShopCard/ShopCardConnect";
 
 export const Buyer = (props) => {
   return (
     <section>
-      <ShopsConnect shopCard={ShopCardConnect} />
+      <Shops ShopCard={ShopCardConnect} />
     </section>
   );
 };

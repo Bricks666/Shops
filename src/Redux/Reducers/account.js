@@ -1,5 +1,6 @@
 import {
   CHANGE_ROLE,
+  GUEST_ENTER,
   NEW_ROLE,
   SET_ACCOUNT,
   SET_ACCOUNT_INFO,
@@ -26,7 +27,6 @@ export const account = (state = initialState.user, action) => {
       return {
         ...state,
         ...toValidAccount(action.info),
-
       };
     }
     case NEW_ROLE: {
@@ -41,6 +41,12 @@ export const account = (state = initialState.user, action) => {
       return {
         ...state,
         role: action.role,
+      };
+    }
+    case GUEST_ENTER: {
+      return {
+        ...state,
+        role: "0",
       };
     }
     default: {

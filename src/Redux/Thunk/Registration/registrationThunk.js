@@ -1,24 +1,24 @@
-import { startReg } from "../../Actions/Reg/startReg";
-import { abortReg } from "../../Actions/Reg/abortReg";
 import { endReg } from "../../Actions/Reg/endReg";
 import { hashing } from "../../Service/hashing";
+import { reset, startSubmit } from "redux-form";
+import { dispatchSubmitError } from "../../Service/dispatchSubmitError";
 
-export const registrationThunk = () => {
+export const registrationThunk = (fio, login, password) => {
   return async (dispatch, getState) => {
     const state = getState();
-    const fio = state.registration.fio;
-    const password = hashing(state.registration.password);
-    const login = state.registration.login;
+    const passwordHashed = hashing(password);
 
-    dispatch(startReg());
+    dispatch(reset("registration"));
+    dispatch(startSubmit("registration"));
+
     try {
       await state.contract.methods
-        .regUser(fio, password, login)
+        .regUser(fio, passwordHashed, login)
         .send({ from: state.user.address });
 
       dispatch(endReg());
     } catch (e) {
-      dispatch(abortReg());
+      dispatchSubmitError(e, dispatch, "registration");
     }
   };
 };

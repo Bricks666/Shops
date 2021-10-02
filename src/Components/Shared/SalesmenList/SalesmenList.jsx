@@ -9,10 +9,15 @@ export class SalesmenList extends Component {
   }
 
   render() {
+
     return (
       <>
         <p>Продавцы</p>
-        <ul>{renderList(this.props.salesmen, this.props.salesmanCard)}</ul>
+        <ul>
+          {renderList(this.props.salesmen, this.props.SalesmanCard, {
+            CASCard: this.props.CASCard,
+          })}
+        </ul>
       </>
     );
   }

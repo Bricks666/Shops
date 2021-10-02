@@ -13,7 +13,7 @@ import { initialState } from "../initialState";
 export const users = (state = initialState.users, action) => {
   switch (action.type) {
     case SET_USERS: {
-      return action.users;
+      return action.users.filter((user) => user !== undefined);
     }
     case REMOVE_USER: {
       return state.filter((user) => user.address !== action.userAddress);
@@ -45,7 +45,7 @@ export const users = (state = initialState.users, action) => {
       });
     }
     case ADD_USER: {
-      return [...state, action.user];
+      return action.user !== undefined ? [...state, action.user] : state;
     }
     case NEW_ROLE:
     case CHANGE_ROLE:
