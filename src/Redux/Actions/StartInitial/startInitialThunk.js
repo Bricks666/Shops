@@ -4,11 +4,14 @@ import { setWeb3 } from "./setWeb3";
 import { refreshAccountThunk } from "../../Thunk/Account/refreshAccountThunk";
 import { setContract } from "../Contract/Set/setContract";
 import { setBalance } from "../Account/Set/setBalance";
+import { startLoading } from "../Contract/startLoading";
+import { api } from "../../API/API";
 
 export const startInitialThunk = () => {
   return async (dispatch, getState) => {
     const dataForContract = getState().dataForContract;
     try {
+      dispatch(startLoading());
       const web3 = new Web3(await Web3.givenProvider);
 
       dispatch(setWeb3(web3));
@@ -29,8 +32,11 @@ export const startInitialThunk = () => {
       );
 
       dispatch(setContract(contract));
+
+      api.initialApi(contract, address);
     } catch (e) {
       console.log(e.message);
+      startInitialThunk();
     }
   };
 };

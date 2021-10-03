@@ -1,6 +1,7 @@
 import { setAccount } from "../../Actions/Account/Set/setAccount";
 import { setBalance } from "../../Actions/Account/Set/setBalance";
 import { setRefreshId } from "../../Actions/StartInitial/setRefreshId";
+import { api } from "../../API/API";
 
 export const refreshAccountThunk = () => {
   return (dispatch, getState) => {
@@ -12,6 +13,7 @@ export const refreshAccountThunk = () => {
 
           if (state.user.address !== newAddress) {
             dispatch(setAccount(newAddress));
+            api.refreshSender(newAddress);
           }
 
           const newBalance =
@@ -20,7 +22,7 @@ export const refreshAccountThunk = () => {
           if (state.user.balance !== newBalance) {
             dispatch(setBalance(newBalance));
           }
-        }, 1000)
+        }, 500)
       )
     );
   };

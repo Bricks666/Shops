@@ -3,130 +3,253 @@ pragma experimental ABIEncoderV2;
 
 contract Shoping {
     struct User {
-        address user_address;
+        address userAddress;
         string FIO;
         string login;
         bytes32 password;
-        uint256 role; //1 - shoper  2 - salesman  3 - admin -  4 - provider  5 - bank  6 - shop
-        bool admin;
-        bool salesman;
+        uint role; //1 - shoper  2 - salesman  3 - admin -  4 - provider  5 - bank  6 - shop
+        int shopId; //Если пользователь не продавец то равно -1, иначе id магазина
+        bool isSalesman;
+        bool isAdmin;
     }
     struct Shop {
-        uint256 shopId;
-        address payable addressShop;
+        uint shopId;
+        address payable shopAddress;
         string city;
         address[] salesmen;
-        bool shopStatus;
-        bool bankMoney;
+        bool haveBankMoney;
     }
     struct Comment {
-        uint idComment;
+        uint commentId;
         string login;
         string comment;
         address[] likes;
         address[] dislikes;
     }
     struct ComplaintsAndSuggestions {
-        uint256 complaintsId;
-        uint8 shopId;
+        uint complaintsId;
         string login;
         string comment;
-        int256 mark;
-        address[] like;
-        address[] dislike;
+        uint mark;
+        address[] likes;
+        address[] dislikes;
     }
-    struct RequestToSalesman {
-        uint256 id;
-        address addressShoper;
-        uint256 shopId;
-        bool finished;
-    }
-    struct RequestToShoper {
-        uint256 id;
-        address addressSalesman;
-        bool finished;
+    struct Request {
+        uint id;
+        address senderAddress;
+        uint currentRole;
+        uint newRole;
+        int shopId;//Если покупатель хочет стать продавцом, то хранит id магазина, иначе равен -1
+        bool isFinish;
     }
     /*Users*/
-    event RemoveUser(address user);
     event NewUser(address user);
     /* Roles */
-    event ChangeRole(address indexed user, uint256 role);
-    event NewRole(address indexed user, uint256 role);
+    event ChangeRole(address indexed user, uint role);
+    event NewRole(address indexed user, uint role);
     /* Complains */
-    event MarkComplaint(address shopAddress, uint256 complaintsId, uint256 mark, address changer);
-    event NewComplaint(address bookAddress, uint256 complaintsId);
-    event NewComment(address bookAddress, uint256 complaintsId, uint commentId);
+    event MarkComplaint(address shopAddress, uint complaintsId, uint mark, address changer);
+    event NewComplaint(address bookAddress, uint complaintsId);
+    event NewComment(address bookAddress, uint complaintsId, uint commentId);
     event MarkComment(address bookAddress, uint CASId, uint commentId, uint mark, address changer);
     /* Requests */
-    event RequestFinished(string requestType, uint256 id); // Type may be "beAdmin", "beSalesman" and "beBuyer"
-    event NewRequest(string requestType, uint256 id);
-    event AddSalesman(address salesmanAddress, uint256 shopId);
-    event RemoveSalesman(address salesman, uint256 shopId);
+    event RequestFinished(string requestType, uint id); // Type may be "beAdmin", "beSalesman" and "beBuyer"
+    event NewRequest(string requestType, uint id);
+    event AddSalesman(address salesmanAddress, uint shopId);
+    event RemoveSalesman(address salesman, uint shopId);
     /* Shops */
     event RemoveShop(address shopAddress);
-    event AddShopEvent(address shopNewAddress, uint256 shopId);
+    event AddShopEvent(address shopNewAddress, uint shopId);
+    event RemoveFreeAddress(address freeAddress);
+    event AddFreeAddress(address freeAddress, uint index);
 
     constructor() {
         user[0x5B38Da6a701c568545dCfcB03FcB875f56beddC4] = User(
-            0x5B38Da6a701c568545dCfcB03FcB875f56beddC4, "Petrov Petr Petrovich", "petrov", keccak256(abi.encodePacked("petr")), 1, false, false);
-        user[0x98ABCBdDb13B61b30205c04B325A2202050d2bBC] = User(
-            0x98ABCBdDb13B61b30205c04B325A2202050d2bBC, "Admin", "admin", keccak256(abi.encodePacked("admin")), 3, true, false);
-        user[0xdD870fA1b7C4700F2BD7f44238821C26f7392148] = User(
-            0xdD870fA1b7C4700F2BD7f44238821C26f7392148,"Salesman", "salesman", keccak256(abi.encodePacked("salesman")),2,false,true
+            {
+                userAddress: 0x5B38Da6a701c568545dCfcB03FcB875f56beddC4,
+                FIO: "Petrov Petr Petrovich",
+                login:  "petrov",
+                password: keccak256(abi.encodePacked("petr")), role: 1,
+                shopId: -1,
+                isSalesman: false,
+                isAdmin: false
+            }
         );
-        user[msg.sender] = User(msg.sender,"User","user",keccak256(abi.encodePacked("123")),2,false,true);
-        user[0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db] = User(
-            0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db,"provider","provider",keccak256(abi.encodePacked("provider")),4,false,false);
-        user[0x5c6B0f7Bf3E7ce046039Bd8FABdfD3f9F5021678] = User(
-            0x5c6B0f7Bf3E7ce046039Bd8FABdfD3f9F5021678,"bank","bank",keccak256(abi.encodePacked("bank")),5,false,false);
         userArray.push(0x5B38Da6a701c568545dCfcB03FcB875f56beddC4);
-        userArray.push(0x7E548B655Cd85547F6709601bA19515903F233Bd);
-        userArray.push(0xdD870fA1b7C4700F2BD7f44238821C26f7392148);
+
+        user[0x98ABCBdDb13B61b30205c04B325A2202050d2bBC] = User(
+            {
+                userAddress: 0x98ABCBdDb13B61b30205c04B325A2202050d2bBC,
+                FIO: "Admin",
+                login: "admin",
+                password: keccak256(abi.encodePacked("admin")),
+                role: 3,
+                shopId: -1,
+                isAdmin: true,
+                isSalesman: false
+            }
+        );
         userArray.push(0x98ABCBdDb13B61b30205c04B325A2202050d2bBC);
-        userArray.push(0x5c6B0f7Bf3E7ce046039Bd8FABdfD3f9F5021678);
+
+        user[0xdD870fA1b7C4700F2BD7f44238821C26f7392148] = User(
+            {
+                userAddress: 0xdD870fA1b7C4700F2BD7f44238821C26f7392148,
+                FIO: "Salesman",
+                login: "salesman",
+                password: keccak256(abi.encodePacked("salesman")),
+                role: 2,
+                shopId: 0,
+                isAdmin: false,
+                isSalesman: true
+            }
+        );
+        userArray.push(0xdD870fA1b7C4700F2BD7f44238821C26f7392148);
+
+        user[msg.sender] = User(
+            {
+                userAddress: msg.sender,
+                FIO: "User",
+                login: "user",
+                password: keccak256(abi.encodePacked("123")),
+                role: 2,
+                shopId: 0,
+                isAdmin: false,
+                isSalesman: true
+            }
+        );
         userArray.push(msg.sender);
-        address[] memory startSalesmen = new address[](1);
-        shop.push(Shop(shop.length,0xCA35b7d915458EF540aDe6068dFe2F44E8fa733c,"kaluga",startSalesmen,true,false));
+
+        user[0x468afC816Bf4Cf8EC93923b9722484617f1c6Ebc] = User(
+            {
+                userAddress: 0x468afC816Bf4Cf8EC93923b9722484617f1c6Ebc,
+                FIO: "Provider",
+                login: "provider",
+                password: keccak256(abi.encodePacked("provider")),
+                role: 4,
+                shopId: -1,
+                isAdmin: false,
+                isSalesman: false
+            }
+        );
+        userArray.push(0x468afC816Bf4Cf8EC93923b9722484617f1c6Ebc);
+
+        user[0x0359F0EE893BCF6882E455bA911e59Ba68f966D2] = User(
+            {
+                userAddress: 0x0359F0EE893BCF6882E455bA911e59Ba68f966D2,
+                FIO: "Bank",
+                login: "bank",
+                password: keccak256(abi.encodePacked("bank")),
+                role: 5,
+                shopId: -1,
+                isAdmin: false,
+                isSalesman: false
+            }
+        );
+        userArray.push(0x0359F0EE893BCF6882E455bA911e59Ba68f966D2);
+
+        freeAddresses.push(0x5E0d17253fe14d19FAe6de54C6BFa49B334Bf268);
+
+        address[] memory startSalesmen = new address[](2);
+        startSalesmen[0] = 0xdD870fA1b7C4700F2BD7f44238821C26f7392148;
+        startSalesmen[1] = msg.sender;
+
+        shop.push(Shop(
+                {
+                    shopId: uint(shop.length),
+                    shopAddress: 0xCA35b7d915458EF540aDe6068dFe2F44E8fa733c,
+                    city: "kaluga",
+                    salesmen: startSalesmen,
+                    haveBankMoney: false
+                }
+            )
+        );
+        user[0xCA35b7d915458EF540aDe6068dFe2F44E8fa733c] = User(
+            {
+                userAddress:0xCA35b7d915458EF540aDe6068dFe2F44E8fa733c,
+                FIO: "shop1",
+                login: "shop1",
+                password: keccak256(abi.encodePacked("shop1")),
+                role: 6,
+                shopId: -1,
+                isAdmin: false,
+                isSalesman: false
+            }
+        );//Попробовать избавиться от дублирования
         userArray.push(0xCA35b7d915458EF540aDe6068dFe2F44E8fa733c);
-        user[0xCA35b7d915458EF540aDe6068dFe2F44E8fa733c]=User(0xCA35b7d915458EF540aDe6068dFe2F44E8fa733c, "shop1", "shop1", keccak256(abi.encodePacked("shop1")), 6, false, false);
+
+
         bookOfComplaintsAndSuggestions[0xCA35b7d915458EF540aDe6068dFe2F44E8fa733c].push(
-            ComplaintsAndSuggestions(0,1,"Admin","Hello, i'm an admin",1,zeroAddress,zeroAddress));
+            ComplaintsAndSuggestions(
+                {
+                    complaintsId: uint(bookOfComplaintsAndSuggestions[0xCA35b7d915458EF540aDe6068dFe2F44E8fa733c].length),
+                    login: "Admin",
+                    comment: "Hello, i'm an admin",
+                    mark: 1,
+                    likes: zeroAddress,
+                    dislikes: zeroAddress
+                }
+            )
+        );
         bookOfComplaintsAndSuggestions[msg.sender].push(
-            ComplaintsAndSuggestions(0,2,"Admin","Hello, i'm an admin",1,zeroAddress,zeroAddress));
-        comments[0xCA35b7d915458EF540aDe6068dFe2F44E8fa733c][0].push(Comment(comments[0xCA35b7d915458EF540aDe6068dFe2F44E8fa733c][0].length, "admin", "Hay", zeroAddress, zeroAddress));
-     }
+            ComplaintsAndSuggestions(
+                {
+                    complaintsId: uint(bookOfComplaintsAndSuggestions[msg.sender].length),
+                    login: "Admin",
+                    comment: "Hello, i'm an admin",
+                    mark: 1,
+                    likes: zeroAddress,
+                    dislikes: zeroAddress
+                }
+            )
+        );
+
+        comments[0xCA35b7d915458EF540aDe6068dFe2F44E8fa733c][0].push(
+            Comment(
+                {
+                    commentId: uint(comments[0xCA35b7d915458EF540aDe6068dFe2F44E8fa733c][0].length),
+                    login: "Admin",
+                    comment: "Hay",
+                    likes: zeroAddress,
+                    dislikes: zeroAddress
+                }
+            )
+        );
+    }
+
     mapping(address => User) public user;
     Shop[] public shop;
     mapping(address => ComplaintsAndSuggestions[])
         public bookOfComplaintsAndSuggestions;
-    RequestToShoper[] public requestToShoper;
-    RequestToSalesman[] public requestToSalesman;
-    mapping(uint256 => bool) public BankRequestShop;
-    mapping(address => uint8) AddressToShop;
+    Request[] public requestToShoper;
+    Request[] public requestToSalesman;
+    mapping(uint => bool) public BankRequestShop;
+    mapping(address => uint) AddressToShop;
     mapping (address => mapping (uint => Comment[])) public comments;
-
+    /* Отсуда берутся адреса для назвачения магазина и хранятся адреса, которые принадлежали магазинам */
+    address[] public freeAddresses;
     address[] public zeroAddress;
     address[] public userArray;
-    address payable bank = 0x5c6B0f7Bf3E7ce046039Bd8FABdfD3f9F5021678;
-    address payable provider = 0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db;
+    uint[] public bankRequestsIndexes;
+
     modifier IsNotReg() {
         require(
-            user[msg.sender].user_address == address(0),
+            user[msg.sender].userAddress == address(0),
             "You are registered"
         );
         _;
     }
     modifier IsNotShop(address addressUser) {
         for (uint256 i = 0; i < shop.length; i++) {
-            require(shop[i].addressShop != addressUser, "You are a store");
+            require(shop[i].shopAddress != addressUser, "You are a store");
         }
         _;
     }
-    modifier IsStore(address addressShop) {
+    modifier IsStore(address shopAddress) {
         bool flag = false;
         for (uint256 i = 0; i < shop.length; i++) {
-            if (shop[i].addressShop == msg.sender) {
+            if (shop[i].shopAddress == msg.sender) {
                 flag=true;
+                break;
             }
         }
         require(flag==true, "You are not a shop");
@@ -144,19 +267,19 @@ contract Shoping {
         _;
     }
     modifier IsAdmin() {
-        require(user[msg.sender].admin == true, "You are not an admin");
+        require(user[msg.sender].isAdmin == true, "You are not an admin");
         require(user[msg.sender].role == 3, "Please, check your role");
         _;
     }
     modifier IsUser() {
         require(
-            user[msg.sender].user_address != address(0),
+            user[msg.sender].userAddress != address(0),
             "You are not an user"
         );
         _;
     }
 
-modifier CheckLogin(string memory login) {
+    modifier CheckLogin(string memory login) {
         for (uint256 i = 0; i < userArray.length; i++) {
             require(
                 keccak256(abi.encodePacked(user[userArray[i]].login)) !=
@@ -185,12 +308,12 @@ modifier CheckLogin(string memory login) {
             uint256 i = 0;
             i <
             bookOfComplaintsAndSuggestions[shopAddress][complaintsId]
-                .like
+                .likes
                 .length;
             i++
         ) {
             require(
-                bookOfComplaintsAndSuggestions[shopAddress][complaintsId].like[
+                bookOfComplaintsAndSuggestions[shopAddress][complaintsId].likes[
                     i
                 ] != msg.sender,
                 "You are liked"
@@ -198,7 +321,7 @@ modifier CheckLogin(string memory login) {
         }
         _;
     }
-    modifier CheckLikeComment(address shopAddress, uint256 complaintsId, uint256 commentId) {
+    modifier CheckLikeComment(address shopAddress, uint complaintsId, uint256 commentId) {
         for (
             uint256 i = 0;
             i <
@@ -232,36 +355,36 @@ modifier CheckLogin(string memory login) {
             uint256 i = 0;
             i <
             bookOfComplaintsAndSuggestions[shopAddress][complaintsId]
-                .dislike
+                .dislikes
                 .length;
             i++
         ) {
             require(
                 bookOfComplaintsAndSuggestions[shopAddress][complaintsId]
-                    .dislike[i] != msg.sender,
+                    .dislikes[i] != msg.sender,
                 "You are disliked"
             );
         }
         _;
     }
-    modifier CheckDislikeComment(address shopAddress, uint256 complaintsId, uint256 commentId) {
+    modifier CheckDislikeComment(address shopAddress, uint complaintsId, uint commentId) {
         for (uint256 i = 0;i <comments[shopAddress][complaintsId][commentId].dislikes.length;i++) {
             require(comments[shopAddress][complaintsId][commentId].dislikes[i] != msg.sender,"You are disliked");
         }
         _;
     }
     modifier CheckRequestToSalesman() {
-        for (uint256 i = 0; i < requestToSalesman.length; i++) {
-            if (requestToSalesman[i].addressShoper == msg.sender) {
-                require(requestToSalesman[i].finished == true,"You are in request to salesman");
+        for (uint i = 0; i < requestToSalesman.length; i++) {
+            if (requestToSalesman[i].senderAddress == msg.sender) {
+                require(requestToSalesman[i].isFinish == true,"You are in request to salesman");
             }
         }
         _;
     }
     modifier CheckRequestToShoper() {
         for (uint256 i = 0; i < requestToShoper.length; i++) {
-            if (requestToShoper[i].addressSalesman == msg.sender) {
-                require(requestToShoper[i].finished == true,"You are in request to shoper");
+            if (requestToShoper[i].senderAddress == msg.sender) {
+                require(requestToShoper[i].isFinish == true,"You are in request to shoper");
             }
         }
         _;
@@ -275,18 +398,20 @@ modifier CheckLogin(string memory login) {
 
     function regUser(string memory FIO,bytes32 password,string memory login )public IsNotReg IsNotShop(msg.sender) CheckLogin(login) CheckTheCorrectPassword(password)
     {
-        require(msg.sender != bank, "You are a bank");
-        require(msg.sender != provider, "You are a provider");
         user[msg.sender] = User(
-            msg.sender,
-            FIO,
-            login,
-            password,
-            1,
-            false,
-            false
+            {
+                userAddress: msg.sender,
+                FIO: FIO,
+                login: login,
+                password: password,
+                role: 1,
+                shopId: -1,
+                isAdmin: false,
+                isSalesman: false
+            }
         );
         userArray.push(msg.sender);
+
         emit NewUser(msg.sender);
     }
 
@@ -294,41 +419,60 @@ modifier CheckLogin(string memory login) {
     {
         require(keccak256(abi.encodePacked(user[msg.sender].login)) == keccak256(abi.encodePacked(login)), "Login incorrect");
         require(user[msg.sender].password == password, "Password incorrect");
-        return (true);
+        return true;
     }
 
-    function LikeComplaints(address shopAddress, uint256 complaintsId)public IsUser CheckDislike(shopAddress, complaintsId) CheckLike(shopAddress, complaintsId) IsNotSalesman(msg.sender) IsNotSenderComplains(shopAddress, complaintsId)
+    function LikeComplaints(address shopAddress, uint complaintsId)public IsUser CheckDislike(shopAddress, complaintsId) CheckLike(shopAddress, complaintsId) IsNotSalesman(msg.sender) IsNotSenderComplains(shopAddress, complaintsId)
     {
-        require(user[msg.sender].role!=6, "You are a Shop");
-        bookOfComplaintsAndSuggestions[shopAddress][complaintsId].like.push(msg.sender);
-        bookOfComplaintsAndSuggestions[shopAddress][complaintsId].mark++;
+        require(user[msg.sender].role != 6, "You are a Shop");
+        bookOfComplaintsAndSuggestions[shopAddress][complaintsId].likes.push(msg.sender);
+
         emit MarkComplaint(shopAddress, complaintsId, 1, msg.sender);
     }
 
-    function AddComplaints(address shopAddress,string memory comment,  int256 mark) public IsShoperOrSalesman {
+    function AddComplaints(address shopAddress,string memory comment,  uint mark) public IsShoperOrSalesman {
         ComplaintsAndSuggestions[] storage book = bookOfComplaintsAndSuggestions[shopAddress];
         book.push(
-            ComplaintsAndSuggestions({ complaintsId: book.length,shopId: AddressToShop[shopAddress], login: user[msg.sender].login, comment: comment, mark: mark, like: zeroAddress, dislike: zeroAddress} )
+            ComplaintsAndSuggestions(
+                {
+                    complaintsId: uint(book.length),
+                    login: user[msg.sender].login,
+                    comment: comment,
+                    mark: mark,
+                    likes: zeroAddress,
+                    dislikes: zeroAddress
+                }
+            )
         );
-        emit NewComplaint(shopAddress, book.length - 1);
+        emit NewComplaint(shopAddress, uint(book.length - 1));
     }
 
-    function AddComment(address addressShop, uint complaintsId, string memory comment) public IsSalesmanOnThisShop(AddressToShop[addressShop]) {
+    function AddComment(address shopAddress, uint complaintsId, string memory comment) public IsSalesmanOnThisShop(AddressToShop[shopAddress]) {
         if (user[msg.sender].role == 1 || user[msg.sender].role == 2) {
-            Comment[] storage tempComments = comments[addressShop][complaintsId]; // Понять насколько это оптимально
-            tempComments.push(Comment(tempComments.length, user[msg.sender].login, comment, zeroAddress, zeroAddress));
-            emit NewComment(addressShop, complaintsId, tempComments.length - 1);
+            Comment[] storage tempComments = comments[shopAddress][complaintsId]; // Понять насколько это оптимально
+            tempComments.push(
+                Comment(
+                    {
+                        commentId: uint(tempComments.length),
+                        login: user[msg.sender].login,
+                        comment: comment,
+                        likes: zeroAddress,
+                        dislikes: zeroAddress
+                    }
+                )
+            );
+            emit NewComment(shopAddress, complaintsId, uint(tempComments.length - 1));
         }
     }
 
-    function LikeComment(address shopAddress, uint256 complaintsId, uint256 commentId) public IsUser CheckDislikeComment(shopAddress, complaintsId, commentId) CheckLikeComment(shopAddress, complaintsId, commentId) IsNotSalesman(msg.sender)
+    function LikeComment(address shopAddress, uint complaintsId, uint commentId) public IsUser CheckDislikeComment(shopAddress, complaintsId, commentId) CheckLikeComment(shopAddress, complaintsId, commentId) IsNotSalesman(msg.sender)
     {
         require(user[msg.sender].role!=6, "You are a Shop");
         comments[shopAddress][complaintsId][commentId].likes.push(msg.sender);
         emit MarkComment(shopAddress, complaintsId, commentId, 1, msg.sender);
     }
 
-    function DisikeComment(address shopAddress, uint256 complaintsId, uint256 commentId)public IsUser CheckDislikeComment(shopAddress, complaintsId, commentId)CheckLikeComment(shopAddress, complaintsId, commentId)IsNotSalesman(msg.sender)
+    function DisikeComment(address shopAddress, uint complaintsId, uint commentId)public IsUser CheckDislikeComment(shopAddress, complaintsId, commentId)CheckLikeComment(shopAddress, complaintsId, commentId)IsNotSalesman(msg.sender)
     {
         require(user[msg.sender].role!=6, "You are a Shop");
         comments[shopAddress][complaintsId][commentId].dislikes.push(
@@ -337,88 +481,107 @@ modifier CheckLogin(string memory login) {
         emit MarkComment(shopAddress, complaintsId, commentId, 0, msg.sender);
     }
 
-    function DisikeComplaints(address shopAddress, uint256 complaintsId)public IsUser IsNotShop(msg.sender)  CheckDislike(shopAddress, complaintsId)CheckLike(shopAddress, complaintsId) IsNotSalesman(msg.sender) IsNotSenderComplains(shopAddress, complaintsId)
+    function DisikeComplaints(address shopAddress, uint complaintsId)public IsUser IsNotShop(msg.sender)  CheckDislike(shopAddress, complaintsId)CheckLike(shopAddress, complaintsId) IsNotSalesman(msg.sender) IsNotSenderComplains(shopAddress, complaintsId)
     {
-        bookOfComplaintsAndSuggestions[shopAddress][complaintsId].dislike.push(msg.sender);
+        bookOfComplaintsAndSuggestions[shopAddress][complaintsId].dislikes.push(msg.sender);
         emit MarkComplaint(shopAddress, complaintsId, 0, msg.sender);
     }
 
-    function BeShoperForSalesman() public IsUser{
-        require(user[msg.sender].role == 2, "You are not a salesman, check your role");
-        require(user[msg.sender].salesman == true, "You are not a salesman");
-        user[msg.sender].role = 1;
-        emit ChangeRole(msg.sender, 1);
-    }
-
-    function RequestToSalesmanFunc(uint256 shopId)public IsUser CheckRequestToSalesman IsNotShop(msg.sender)
+    function RequestToSalesmanFunc(uint shopId)public IsUser CheckRequestToSalesman IsNotShop(msg.sender)
     {
-        require(user[msg.sender].salesman != true, "You are a salesman");
+        require(user[msg.sender].isSalesman == false, "You are a salesman");
         require(user[msg.sender].role == 1 || user[msg.sender].role == 3);
-        requestToSalesman.push(RequestToSalesman(requestToSalesman.length,msg.sender,shopId,false));
-        emit NewRequest("beSalesman", requestToSalesman.length - 1);
+        requestToSalesman.push(
+            Request(
+                {
+                    id: requestToSalesman.length,
+                    senderAddress: msg.sender,
+                    currentRole: user[msg.sender].role,
+                    newRole: 2,
+                    shopId: int(shopId),
+                    isFinish: false
+                }
+            )
+        );
+        emit NewRequest("beSalesman", uint(requestToSalesman.length - 1));
     }
 
     function RequestToShoperFunc() public IsUser CheckRequestToShoper IsNotShop(msg.sender) {
-        require(user[msg.sender].salesman == true, "You are not a salesman");
-        requestToShoper.push(RequestToShoper(requestToShoper.length, msg.sender, false));
-        emit NewRequest("beBuyer", requestToShoper.length - 1);
+        require(user[msg.sender].isSalesman == true, "You are not a salesman");
+        requestToShoper.push(
+            Request(
+               {
+                    id: uint(requestToShoper.length),
+                    senderAddress: msg.sender,
+                    currentRole: user[msg.sender].role,
+                    newRole: 1,
+                    shopId: user[msg.sender].shopId,
+                    isFinish: false
+                }
+            )
+        );
+
+        emit NewRequest("beBuyer", uint(requestToShoper.length - 1));
     }
 
-    function AccRequestShoper(uint256 requestId) public IsAdmin {
-        require(requestToShoper[requestId].addressSalesman != address(0),"Check requestId");
-        require(requestToShoper[requestId].finished == false,"You are not in request");
-        address salesman = requestToShoper[requestId].addressSalesman;
-        user[salesman].salesman = false;
-        user[salesman].role = 1;
-        requestToShoper[requestId].finished = true;
-        uint64 shopId = 0;
-        bool isFound = false;
-        for (; shopId < shop.length && !isFound; shopId++) {
-            address[] memory salesmen = shop[shopId].salesmen;
+    function AccRequestShoper(uint requestId) public IsAdmin {
+        require(requestToShoper[requestId].senderAddress != address(0),"Check requestId");
+        require(requestToShoper[requestId].isFinish == false,"You are not in request");
 
-            for (uint64 j = 0; j < salesmen.length; j++) {
-                if (salesmen[j] == salesman) {
-                    delete shop[shopId].salesmen[j];
-                    isFound = true;
-                    break;
-                }
+        address salesman = requestToShoper[requestId].senderAddress;
+        address[] storage salesmen = shop[uint256(requestToShoper[requestId].shopId)].salesmen;
+
+        for (uint i = 0; i < salesmen.length; i++) {
+            if(salesmen[i] == salesman) {
+                delete salesmen[i];
+                break;
             }
         }
-        emit RemoveSalesman(salesman, shopId);
+
+        user[salesman].isSalesman = false;
+        user[salesman].role = 1;
+        requestToShoper[requestId].isFinish = true;
+
+        emit RemoveSalesman(salesman, uint(requestToShoper[requestId].shopId));
         emit RequestFinished("beBuyer", requestId);
         emit NewRole(salesman, 1);
     }
 
-    function AccRequestSalesman(uint256 requestId) public IsAdmin {
-        require(requestToSalesman[requestId].addressShoper != address(0),"Check requestId");
-        require(requestToSalesman[requestId].finished == false,"You are not in request");
-        RequestToSalesman memory tempData = requestToSalesman[requestId];
-        user[tempData.addressShoper].salesman = true;
-        requestToSalesman[requestId].finished = true;
-        shop[tempData.shopId].salesmen.push(requestToSalesman[requestId].addressShoper);
+    function AccRequestSalesman(uint requestId) public IsAdmin {
+        require(requestToSalesman[requestId].senderAddress != address(0),"Check requestId");
+        require(requestToSalesman[requestId].isFinish == false,"You are not in request")
+        ;
+        Request memory tempData = requestToSalesman[requestId];
+        shop[uint256(tempData.shopId)].salesmen.push(requestToSalesman[requestId].senderAddress);
+
+        user[tempData.senderAddress].isSalesman = true;
+        user[tempData.senderAddress].shopId = tempData.shopId;
+
+        requestToSalesman[requestId].isFinish = true;
+
         emit RequestFinished("beSalesman", requestId);
-        emit AddSalesman(tempData.addressShoper, tempData.shopId);
-        emit NewRole(tempData.addressShoper, 2);
+        emit AddSalesman(tempData.senderAddress, uint(tempData.shopId));
+        emit NewRole(tempData.senderAddress, 2);
     }
-    function CancelRequestShoper(uint256 requestId) public IsAdmin {
-        requestToShoper[requestId].finished = true;
+    function CancelRequestShoper(uint requestId) public IsAdmin {
+        requestToShoper[requestId].isFinish = true;
         emit RequestFinished("beBuyer", requestId);
     }
 
-    function CancelRequestSalesman(uint256 requestId) public IsAdmin {
-        requestToSalesman[requestId].finished = true;
+    function CancelRequestSalesman(uint requestId) public IsAdmin {
+        requestToSalesman[requestId].isFinish = true;
         emit RequestFinished("beSalesman", requestId);
     }
 
     function BeAdmin() public IsUser {
-        require(user[msg.sender].admin == true, "You are not an admin");
+        require(user[msg.sender].isAdmin == true, "You are not an admin");
         require(user[msg.sender].role != 3, "You are admin");
         user[msg.sender].role = 3;
         emit ChangeRole(msg.sender, 3);
     }
 
     function BeSalesman() public IsUser {
-        require(user[msg.sender].salesman == true, "You are not an salesman");
+        require(user[msg.sender].isSalesman == true, "You are not an salesman");
         require(user[msg.sender].role != 2, "You are salesman");
         user[msg.sender].role = 2;
         emit ChangeRole(msg.sender, 2);
@@ -430,39 +593,64 @@ modifier CheckLogin(string memory login) {
         emit ChangeRole(msg.sender, 1);
     }
 
-    function ToBankRequest(uint256 shopId) public IsStore(msg.sender) {
-        require(shop[shopId].shopStatus == true, "This shop is already delete");
-        require(msg.sender == shop[shopId].addressShop, "The shopId incorrect");
-        require(shop[shopId].bankMoney == false,"You are already have money from Bank");
+    function ToBankRequest(uint shopId) public IsStore(msg.sender) {
+        require(msg.sender == shop[shopId].shopAddress, "The shopId incorrect");
+        require(shop[shopId].haveBankMoney == false,"You are already have money from Bank");
         require(BankRequestShop[shopId] == false, "You are in request");
         BankRequestShop[shopId] = true;
+        bankRequestsIndexes.push(shopId);
     }
 
-    function AccRequestBank(uint256 shopId) public payable {
-        require(msg.sender == bank, "You are not a Bank");
-        require(shop[shopId].bankMoney == false,"The shop is already have money");
+    function AccRequestBank(uint shopId) public payable {
+        // require(msg.sender == bank, "You are not a Bank"); Исправить, проверка нужна, но переменная банк - нет
+        require(shop[shopId].haveBankMoney == false,"The shop is already have money");
         require(BankRequestShop[shopId] == true,"The shop is not send a request to have money");
         require(msg.sender.balance >= 1000, "You are have not a money");
         require(msg.value > 0, "Check value");
-        shop[shopId].addressShop.transfer(msg.value);
-        shop[shopId].bankMoney = true;
+        shop[shopId].shopAddress.transfer(msg.value);
+        shop[shopId].haveBankMoney = true;
     }
 
     function upgradeToAdmin(address userAddress) public IsAdmin {
-        require(user[userAddress].admin == false,"This user is already an admin");
+        require(user[userAddress].isAdmin == false,"This user is already an admin");
         user[userAddress].role = 3;
-        user[userAddress].admin = true;
+        user[userAddress].isAdmin = true;
         emit NewRole(userAddress, 3);
     }
 
-    function AddShop(address payable addressShop, string memory city, string memory login, string memory password)public IsAdmin IsNotShop(addressShop)IsNotSalesman(addressShop)
+    function AddShop(uint freeAddressId, string memory city, string memory login, bytes32 password)public IsAdmin IsNotShop(freeAddresses[freeAddressId])IsNotSalesman(freeAddresses[freeAddressId])
     {
-        require(user[addressShop].user_address == address(0), "This address is buzy");
-        user[addressShop] = User(addressShop, login, login, keccak256(abi.encodePacked(password)), 6, false, false);
-        shop.push(Shop(shop.length, addressShop, city, zeroAddress, true, false));
-        AddressToShop[addressShop]=uint8(shop.length);
-        emit AddShopEvent(addressShop, shop.length - 1);
-        emit RemoveUser(addressShop);
+        address payable newShopAddress = payable(freeAddresses[freeAddressId]);
+        require(newShopAddress != address(0), "This address is buzy or not registered");
+        user[newShopAddress] = User(
+                {
+                    userAddress: newShopAddress,
+                    FIO: login,
+                    login: login,
+                    password: password,
+                    role: 6,
+                    shopId: -1,
+                    isAdmin: false,
+                    isSalesman: false
+
+                }
+            );
+        shop.push(
+            Shop(
+                {
+                    shopId: uint(shop.length),
+                    shopAddress: newShopAddress,
+                    city: city,
+                    salesmen: zeroAddress,
+                    haveBankMoney: false
+
+                }
+            )
+        );
+        AddressToShop[newShopAddress] = uint(shop.length - 1);
+        delete freeAddresses[freeAddressId];
+        emit AddShopEvent(newShopAddress, uint(shop.length - 1));
+        emit RemoveFreeAddress(newShopAddress);
     }
 
     function ShowSalesmanOfStore(uint256 shopId) public view returns (address[] memory)
@@ -471,18 +659,23 @@ modifier CheckLogin(string memory login) {
     }
 
     function DeleteShop(uint256 shopId) public IsAdmin {
-        require(shop[shopId].addressShop != address(0), "This shop is already delete");
+        Shop memory tempShop = shop[shopId];
 
-        DeleteSalesman(shop[shopId]);
+        require(tempShop.shopAddress != address(0), "This shop is already delete");
 
+        DeleteSalesman(tempShop);
+
+        freeAddresses.push(tempShop.shopAddress);
+        delete user[tempShop.shopAddress];
         delete shop[shopId];
 
-        emit RemoveShop(shop[shopId].addressShop);
+        emit RemoveShop(tempShop.shopAddress);
+        emit AddFreeAddress(tempShop.shopAddress, freeAddresses.length - 1);
     }
 
     function DeleteSalesman(Shop memory deletingShop) private {
         for (uint256 i = 0; i < deletingShop.salesmen.length; i++) {
-            user[deletingShop.salesmen[i]].salesman = false;
+            user[deletingShop.salesmen[i]].isSalesman = false;
             user[deletingShop.salesmen[i]].role = 1;
             emit NewRole(deletingShop.salesmen[i], 1);
         }
@@ -492,18 +685,18 @@ modifier CheckLogin(string memory login) {
         return shop;
     }
 
-    function getShopComplainAndSuggestion(address addressShop) public view returns (ComplaintsAndSuggestions[] memory)
+    function getShopComplainAndSuggestion(address shopAddress) public view returns (ComplaintsAndSuggestions[] memory)
     {
-        return bookOfComplaintsAndSuggestions[addressShop];
+        return bookOfComplaintsAndSuggestions[shopAddress];
     }
 
 
-    function getBeSalesmanRequests() public view returns (RequestToSalesman[] memory)
+    function getBeSalesmanRequests() public view returns (Request[] memory)
     {
         return requestToSalesman;
     }
 
-    function getBeBuyerRequests() public view returns (RequestToShoper[] memory)
+    function getBeBuyerRequests() public view returns (Request[] memory)
     {
         return requestToShoper;
     }
@@ -514,5 +707,12 @@ modifier CheckLogin(string memory login) {
 
     function getCASComments(address shopAddress, uint CASId) external view returns(Comment[] memory) {
         return comments[shopAddress][CASId];
+    }
+
+    function getFreeAddresses() external view returns(address[] memory) {
+        return freeAddresses;
+    }
+    function getBankRequestsIndexes() external view returns(uint[] memory) {
+        return bankRequestsIndexes;
     }
  }

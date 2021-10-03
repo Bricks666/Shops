@@ -2,7 +2,7 @@ import { Redirect } from "react-router";
 
 export const ContentRedirect = (props) => {
   switch (props.role) {
-    case "0": {
+    case "-1": {
       return <Redirect exact from="/" to="/guest" />;
     }
     case "1": {

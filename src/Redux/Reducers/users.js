@@ -34,7 +34,7 @@ export const users = (state = initialState.users, action) => {
       return state.map((user) => {
         if (user.address === action.userAddress) {
           return {
-            ...state,
+            ...user,
             role: action.role,
             isAdmin: action.role === "3",
             isSalesman: action.role === "2",

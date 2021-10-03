@@ -11,6 +11,7 @@ class UsersListClass extends Component {
   }
 
   render() {
+
     return <UsersList {...this.props} />;
   }
 }

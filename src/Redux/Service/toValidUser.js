@@ -2,12 +2,12 @@ export const toValidUser = (user) => {
   return +user.role === 4 || +user.role === 5 || +user.role === 6
     ? undefined
     : {
-        id: user.user_address,
+        id: user.userAddress,
         login: user.login,
         fio: user.FIO,
-        address: user.user_address,
-        isAdmin: user.admin,
-        isSalesman: user.salesman,
+        address: user.userAddress,
+        isAdmin: user.isAdmin,
+        isSalesman: user.isSalesman,
         role: user.role,
       };
 };

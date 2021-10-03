@@ -5,8 +5,8 @@ export const BeBuyerRequestsItem = (props) => {
     <li>
       <h4>{props.address}</h4>
       <p>{props.id}</p>
-      <span>status {props.finished ? "Завершен" : "Незавершен"}</span>
-      <Buttons finished={props.finished} requestId={props.id} />
+      <span>status {props.isFinish ? "Завершен" : "Незавершен"}</span>
+      <Buttons finished={props.isFinish} requestId={props.id} />
     </li>
   );
 };

@@ -1,7 +1,6 @@
 export const toValidComment = (comment) => {
-  debugger;
   return {
-    id: comment.idComment,
+    id: comment.commentId,
     login: comment.login,
     content: comment.comment,
     users: [...(comment.likes ?? []), ...(comment.dislikes ?? [])],

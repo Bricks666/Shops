@@ -11,6 +11,7 @@ export const subscribeRemoveShop = () => {
     if (notSubscribeEvent(contract.unsubscribeNames, unsubscribeName)) {
       const subscribe = contract.events.RemoveShop(
         (error, { returnValues }) => {
+
           dispatch(removeShop(returnValues.shopAddress));
         }
       );

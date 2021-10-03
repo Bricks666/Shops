@@ -17,7 +17,6 @@ import {
   ACCEPT_SALESMAN_REQUEST,
   CANCEL_SALESMAN_REQUEST,
   SET_ADMIN,
-  SET_SHOP,
   REMOVE_SHOP_BUTTON,
   COMMENT_LIST,
   LIKE_COMMENT_BUTTON,
@@ -28,6 +27,10 @@ import {
   NEW_CAS,
   GUEST_BUTTON,
   USERS_LIST,
+  ADD_SHOP_FORM,
+  FREE_ADDRESSES,
+  BANK_REQUEST_BUTTON,
+  BANK_REQUESTS_LIST,
 } from "../ComponentConstants";
 import { beBuyerThunk } from "../Thunk/Account/Be/beBuyerThunk";
 import { loginThunk } from "../Thunk/Login/loginThunk";
@@ -58,6 +61,9 @@ import { likeComment } from "../Thunk/Shops/likeComment";
 import { dislikeComment } from "../Thunk/Shops/dislikeComment";
 import { sendNewComment } from "../Thunk/CAS/sendNewComment";
 import { guestEnter } from "../Actions/Login/guestEnter";
+import { requestFreeAddresses } from "../Thunk/FreeAddress/requestFreeAddresses";
+import { sendBankRequest } from "../Thunk/Shop/sendBankRequest";
+import { requestBankRequest } from "../Thunk/Shop/requestBankRequest";
 
 export const mapDispatchToProps = (component) => {
   switch (component) {
@@ -175,6 +181,7 @@ export const mapDispatchToProps = (component) => {
       return (dispatch, ownProps) => {
         return {
           onSubmit(data) {
+            debugger;
             dispatch(
               sendNewComment(
                 ownProps.shopAddress,
@@ -282,20 +289,54 @@ export const mapDispatchToProps = (component) => {
         };
       };
     }
-    case SET_SHOP: {
-      return (dispatch, ownProps) => {
-        return {
-          onClick() {
-            dispatch(setShopThunk(ownProps.userAddress));
-          },
-        };
-      };
-    }
     case GUEST_BUTTON: {
       return (dispatch) => {
         return {
           onClick() {
             dispatch(guestEnter());
+          },
+        };
+      };
+    }
+    case ADD_SHOP_FORM: {
+      return (dispatch, ownProps) => {
+        return {
+          onSubmit(data) {
+            dispatch(
+              setShopThunk(
+                data.freeAddress,
+                data.login,
+                data.password,
+                data.city
+              )
+            );
+          },
+        };
+      };
+    }
+    case FREE_ADDRESSES: {
+      return (dispatch) => {
+        return {
+          loadFreeAddresses() {
+            dispatch(requestFreeAddresses());
+          },
+        };
+      };
+    }
+    case BANK_REQUEST_BUTTON: {
+      return (dispatch, ownProps) => {
+        return {
+          onClick() {
+            dispatch(sendBankRequest(ownProps.shopId));
+          },
+        };
+      };
+    }
+    case BANK_REQUESTS_LIST: {
+      return (dispatch) => {
+        return {
+          loadBankRequest(shopId) {
+            dispatch(requestBankRequest(shopId));
           },
         };
       };

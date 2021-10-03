@@ -8,9 +8,6 @@ import {
   CAS_ITEM,
   CAS_LIST,
   COMMENT_BUYER_CARD,
-  CAS_BUTTON,
-  MAIN,
-  MARK_FIELD,
   REGISTRATION,
   SALESMAN_CONTENT,
   SALESMAN_REQUESTS,
@@ -18,15 +15,36 @@ import {
   SHOPS_LIST,
   SHOP_CARD_BUYER,
   USERS_LIST,
+  LOGIN,
+  LOGIN_REDIRECT,
+  CONTENT_REDIRECT,
+  FREE_ADDRESSES,
+  SHOP_SALESMEN_LIST,
+  SET_BANK_REQUESTS,
+  SHOP_CAS_LIST,
+  BANK_REQUESTS_LIST,
 } from "../ComponentConstants";
 
 export const mapStateToProps = (component) => {
   switch (component) {
-    case MAIN: {
+    case LOGIN: {
+      return (state) => {
+        return {
+          isLoading: state.contract.isLoading,
+        };
+      };
+    }
+    case LOGIN_REDIRECT: {
       return (state) => {
         return {
           isLogin: state.login.isLogin,
-          isReg: state.registration.isReg,
+          isReg: state.registration.isLogin,
+        };
+      };
+    }
+    case CONTENT_REDIRECT: {
+      return (state) => {
+        return {
           role: state.user.role,
         };
       };
@@ -61,8 +79,8 @@ export const mapStateToProps = (component) => {
     }
     case SHOPS_LIST: {
       return (state) => {
-        const filters = getFormValues("shopsFilters")(state);
-        debugger;
+        const filters = getFormValues("shopsFilters")(state) ?? {};
+
         return {
           shops: state.shops.filter(
             (shop) =>
@@ -112,22 +130,6 @@ export const mapStateToProps = (component) => {
         };
       };
     }
-    case CAS_BUTTON: {
-      return (state) => {
-        return {
-          value: state.newMessage.comment,
-          required: true,
-        };
-      };
-    }
-    case MARK_FIELD: {
-      return (state) => {
-        return {
-          value: state.newMessage.mark,
-          required: true,
-        };
-      };
-    }
     case SALESMAN_CONTENT: {
       return (state) => {
         return {
@@ -151,13 +153,12 @@ export const mapStateToProps = (component) => {
     }
     case USERS_LIST: {
       return (state) => {
-        debugger;
-        const filter = getFormValues("usersFilters")(state);
+        const filter = getFormValues("usersFilters")(state) ?? {};
         return {
           users: state.users.filter(
             (user) =>
               user.address.includes(filter.address) &&
-              (filter.role === "-1" || +user.role === +filter.role) &&
+              (isNaN(filter.role) || +user.role === +filter.role) &&
               user.fio.includes(filter.fio)
           ),
         };
@@ -167,6 +168,42 @@ export const mapStateToProps = (component) => {
       return (state, ownProps) => {
         return {
           disabled: state.user.address === ownProps.userAddress,
+        };
+      };
+    }
+    case FREE_ADDRESSES: {
+      return (state) => {
+        return {
+          addresses: state.freeAddresses,
+        };
+      };
+    }
+    case SHOP_SALESMEN_LIST: {
+      return (state) => {
+        return {
+          salesmen: state.user.salesmen,
+        };
+      };
+    }
+    case SET_BANK_REQUESTS: {
+      return (state) => {
+        return {
+          shopId: state.user.id,
+          haveBankMoney: state.user.haveBankMoney,
+        };
+      };
+    }
+    case SHOP_CAS_LIST: {
+      return (state) => {
+        return {
+          address: state.user.address,
+        };
+      };
+    }
+    case BANK_REQUESTS_LIST: {
+      return (state) => {
+        return {
+          requests: state.requests.toBank,
         };
       };
     }

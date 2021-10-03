@@ -3,6 +3,7 @@ import { LikeButton } from "./Buttons/LikeButton";
 
 export const commentWithLikeAndDislike = (Component) => {
   return (props) => {
+
     return (
       <Component {...props}>
         <LikeButton

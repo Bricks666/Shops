@@ -10,8 +10,8 @@ export const subscribeNewComments = () => {
 
     if (notSubscribeEvent(contract.unsubscribeNames, unsubscribeName)) {
       const subscribe = contract.events.NewComment(
+        { fromBlock: "latest" },
         (error, { returnValues }) => {
-          debugger;
           dispatch(
             requestNewComment(
               returnValues.bookAddress,

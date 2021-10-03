@@ -3,7 +3,7 @@ export const toValidRequest = (request) => {
 
   for (let key in request) {
     if (isNaN(key)) {
-      if (key.includes("address")) {
+      if (key.toLowerCase().includes("address")) {
         newRequest["address"] = request[key];
         continue;
       }

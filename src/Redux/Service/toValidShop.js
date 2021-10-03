@@ -1,4 +1,5 @@
 export const toValidShop = (shop) => {
+  console.log(shop);
   const validShop = {};
   for (let key in shop) {
     if (isNaN(key)) {
@@ -7,7 +8,7 @@ export const toValidShop = (shop) => {
         continue;
       }
 
-      if (key === "addressShop") {
+      if (key === "shopAddress") {
         validShop.address = shop[key];
         continue;
       }

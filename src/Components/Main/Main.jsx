@@ -1,10 +1,10 @@
 import { Component } from "react";
-import { Redirect, Route, Switch } from "react-router";
+import { Route, Switch } from "react-router";
 import { LoginConnect } from "../Login/LoginConnect";
 import { AccountConnect } from "../Account/AccountConnect";
 import { RegistrationConnect } from "../Registration/RegistrationConnect";
-import { ContentRedirect } from "./ContentRedirect/ContentRedirect";
 import { Content } from "../Content/Content";
+import { LoginRedirectConnect } from "./LoginRedirect/LoginRedirectConnect";
 
 export class Main extends Component {
   componentDidMount() {
@@ -14,13 +14,7 @@ export class Main extends Component {
   render() {
     return (
       <main>
-        {this.props.isReg ? <Redirect from="/registration" to="/login" /> : ""}
-        {this.props.isLogin ? (
-          <Redirect from="/login" to="/" />
-        ) : (
-          <Redirect to="/login" />
-        )}
-        <ContentRedirect role={this.props.role} />
+        <LoginRedirectConnect />
         <Switch>
           <Route path="/login">
             <LoginConnect />

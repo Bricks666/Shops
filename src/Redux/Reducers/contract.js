@@ -16,6 +16,7 @@ export const contract = (state = initialState.contract, action) => {
       return {
         ...state,
         ...action.contract,
+        isLoading: false,
       };
     }
     case SET_UNSUBSCRIBE: {

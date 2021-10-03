@@ -18,6 +18,8 @@ export const withCASList = (CASCard) => {
       }
 
       render() {
+
+        console.log(this.props, "WITH CAS LIST");
         return (
           <Component {...this.props}>
             <Button onClick={this.toggleShowCAS.bind(this)}>

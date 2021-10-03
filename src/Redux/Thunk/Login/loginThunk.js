@@ -2,6 +2,7 @@ import { accountInfoThunk } from "../Account/accountInfoThunk";
 import { hashing } from "../../Service/hashing";
 import { reset, startSubmit } from "redux-form";
 import { dispatchSubmitError } from "../../Service/dispatchSubmitError";
+import { logged } from "../../Actions/Login/logged";
 
 export const loginThunk = (login, password) => {
   return async (dispatch, getState) => {
@@ -20,6 +21,7 @@ export const loginThunk = (login, password) => {
       }
 
       dispatch(accountInfoThunk());
+      dispatch(logged());
     } catch (e) {
       dispatchSubmitError(e, dispatch, "login");
     }

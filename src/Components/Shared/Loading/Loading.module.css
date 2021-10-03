@@ -1,0 +1,44 @@
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* WRAPPER */
+.wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background-color: #fff;
+}
+
+/* LOADING */
+.loading {
+  width: 150px;
+  height: 150px;
+
+  background-color: transparent;
+
+  border: 4px solid tomato;
+  border-bottom-width: 0;
+  border-left-width: 1px;
+  border-right-width: 7px;
+  border-radius: 50%;
+  border-style: dashed;
+
+  animation-name: spin;
+  animation-duration: 1s;
+  animation-fill-mode: both;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}

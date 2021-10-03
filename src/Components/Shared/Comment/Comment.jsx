@@ -1,5 +1,5 @@
 export const Comment = (props) => {
-  debugger;
+
   return (
     <li>
       <h4>{props.login}</h4>

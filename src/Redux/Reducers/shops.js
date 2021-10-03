@@ -1,8 +1,6 @@
 import {
   ADD_SALESMAN,
   ADD_SHOP,
-  CHANGE_ROLE,
-  NEW_ROLE,
   REMOVE_SALESMAN,
   REMOVE_SHOP,
   SET_ACCOUNT,
@@ -18,7 +16,6 @@ export const shops = (state = initialState.shops, action) => {
       return action.shops;
     }
     case SET_SALESMEN: {
-
       return state.map((shop) => {
         if (+shop.id === +action.shopId) {
           shop.salesmen = action.salesmen.map((salesman) =>
@@ -60,8 +57,6 @@ export const shops = (state = initialState.shops, action) => {
         return shop;
       });
     }
-    case CHANGE_ROLE:
-    case NEW_ROLE:
     case SET_ACCOUNT: {
       return [];
     }

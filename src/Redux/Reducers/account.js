@@ -1,9 +1,12 @@
 import {
   CHANGE_ROLE,
+  FINISH_BANK_REQUEST,
   GUEST_ENTER,
   NEW_ROLE,
   SET_ACCOUNT,
   SET_ACCOUNT_INFO,
+  SET_ACCOUNT_SALESMEN,
+  SET_ACCOUNT_SHOP,
   SET_BALANCE,
 } from "../ActionsConstants";
 import { initialState } from "../initialState";
@@ -15,6 +18,18 @@ export const account = (state = initialState.user, action) => {
       return {
         ...state,
         address: action.address,
+      };
+    }
+    case SET_ACCOUNT_SHOP: {
+      return {
+        ...state,
+        ...action.shop,
+      };
+    }
+    case SET_ACCOUNT_SALESMEN: {
+      return {
+        ...state,
+        salesmen: action.salesmen,
       };
     }
     case SET_BALANCE: {
@@ -46,7 +61,13 @@ export const account = (state = initialState.user, action) => {
     case GUEST_ENTER: {
       return {
         ...state,
-        role: "0",
+        role: "-1",
+      };
+    }
+    case FINISH_BANK_REQUEST: {
+      return {
+        ...state,
+        haveBankMoney: true,
       };
     }
     default: {

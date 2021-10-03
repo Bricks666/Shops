@@ -14,7 +14,7 @@ export const UsersFilters = (props) => {
       <ReduxField
         name="role"
         component={Selector}
-        values={["-1", "1", "2", "3"]}
+        values={["all", "1", "2", "3"]}
         names={["All", "Buyer", "Salesman", "Admin"]}
       >
         Роль

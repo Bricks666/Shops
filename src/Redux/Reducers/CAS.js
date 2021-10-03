@@ -19,7 +19,7 @@ export const CAS = (state = initialState.CAS, action) => {
     case SET_SHOPS: {
       const newState = { ...state };
       for (let shop of action.shops) {
-        newState[shop.addressShop] = [];
+        newState[shop.shopAddress] = [];
       }
 
       return newState;
@@ -28,14 +28,14 @@ export const CAS = (state = initialState.CAS, action) => {
       const newState = { ...state };
 
       for (let salesman of action.salesmen) {
-        newState[salesman.user_address] = [];
+        newState[salesman.userAddress] = [];
       }
 
       return newState;
     }
     case ADD_SHOP: {
       const newState = { ...state };
-      newState[action.newShop.addressShop] = [];
+      newState[action.newShop.shopAddress] = [];
 
       return newState;
     }

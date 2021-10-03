@@ -7,6 +7,7 @@ import {
   BE_SET_ADMIN_REQUESTS,
   BE_SET_BUYER_REQUESTS,
   BE_SET_SALESMAN_REQUESTS,
+  SET_BANK_REQUESTS,
 } from "../ActionsConstants";
 import { initialState } from "../initialState";
 
@@ -30,7 +31,11 @@ export const requests = (state = initialState.requests, action) => {
         beBuyer: action.requests,
       };
     }
+    case SET_BANK_REQUESTS: {
+      return { ...state, toBank: [action.request] };
+    }
     case ADD_REQUEST: {
+      debugger;
       if (action.requestType !== undefined) {
         const newState = { ...state };
 
@@ -50,7 +55,7 @@ export const requests = (state = initialState.requests, action) => {
             if (request.id === action.requestId) {
               return {
                 ...request,
-                finished: true,
+                isFinish: true,
               };
             }
             return request;
@@ -68,6 +73,7 @@ export const requests = (state = initialState.requests, action) => {
         beAdmin: [],
         beBuyer: [],
         beSalesman: [],
+        toBank: [],
       };
     }
     default: {

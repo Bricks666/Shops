@@ -10,8 +10,14 @@ export const Field = (props) => {
         min={props.min}
         max={props.max}
         step={props.step}
+        list={props.list}
       />
-      {props.meta.error !== undefined ? <span>{props.meta.error}</span> : ""}{" "}
+      {(props.meta.touched || props.meta.submitFailed) &&
+      props.meta.error !== undefined ? (
+        <span>{props.meta.error}</span>
+      ) : (
+        ""
+      )}{" "}
     </label>
   );
 };

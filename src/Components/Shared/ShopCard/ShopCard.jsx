@@ -6,7 +6,7 @@ import { Button } from "../Button/Button";
 export const ShopCard = (props) => {
   return (
     <article>
-      <h3>{props.addressShop}</h3>
+      <h3>{props.shopAddress}</h3>
       <p>{props.city}</p>
       {props.children}
     </article>
@@ -28,7 +28,7 @@ export class ShopCardWithSalesmen extends Component {
   render() {
     return (
       <ShopCard
-        addressShop={this.props.addressShop || this.props.address}
+        shopAddress={this.props.shopAddress || this.props.address}
         city={this.props.city}
       >
         <Button onClick={this.toggleShowSalesmen.bind(this)}>

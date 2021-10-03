@@ -16,8 +16,8 @@ export class CASItemCommentClass extends Component {
   toggleShowWindow() {
     this.setState({ showComment: !this.state.showComment });
   }
-
   render() {
+
     return (
       <CASItem
         login={this.props.login}

@@ -1,13 +1,32 @@
 export const initialState = {
   web3: null,
-  contract: { unsubscribe: [], unsubscribeNames: [] },
+  contract: { unsubscribe: [], unsubscribeNames: [], isLoading: false },
   dataForContract: {
-    address: "0x9E04C02aDBBc7e375cF9e8735bf087f88eA36ad8",
+    address: "0xdEb913dcd3b8aA626571bd64173BaB82679E85A1",
     abi: [
       {
         inputs: [],
         stateMutability: "nonpayable",
         type: "constructor",
+      },
+      {
+        anonymous: false,
+        inputs: [
+          {
+            indexed: false,
+            internalType: "address",
+            name: "freeAddress",
+            type: "address",
+          },
+          {
+            indexed: false,
+            internalType: "uint256",
+            name: "index",
+            type: "uint256",
+          },
+        ],
+        name: "AddFreeAddress",
+        type: "event",
       },
       {
         anonymous: false,
@@ -235,6 +254,19 @@ export const initialState = {
           {
             indexed: false,
             internalType: "address",
+            name: "freeAddress",
+            type: "address",
+          },
+        ],
+        name: "RemoveFreeAddress",
+        type: "event",
+      },
+      {
+        anonymous: false,
+        inputs: [
+          {
+            indexed: false,
+            internalType: "address",
             name: "salesman",
             type: "address",
           },
@@ -259,19 +291,6 @@ export const initialState = {
           },
         ],
         name: "RemoveShop",
-        type: "event",
-      },
-      {
-        anonymous: false,
-        inputs: [
-          {
-            indexed: false,
-            internalType: "address",
-            name: "user",
-            type: "address",
-          },
-        ],
-        name: "RemoveUser",
         type: "event",
       },
       {
@@ -336,7 +355,7 @@ export const initialState = {
         inputs: [
           {
             internalType: "address",
-            name: "addressShop",
+            name: "shopAddress",
             type: "address",
           },
           {
@@ -368,9 +387,9 @@ export const initialState = {
             type: "string",
           },
           {
-            internalType: "int256",
+            internalType: "uint256",
             name: "mark",
-            type: "int256",
+            type: "uint256",
           },
         ],
         name: "AddComplaints",
@@ -381,9 +400,9 @@ export const initialState = {
       {
         inputs: [
           {
-            internalType: "address payable",
-            name: "addressShop",
-            type: "address",
+            internalType: "uint256",
+            name: "freeAddressId",
+            type: "uint256",
           },
           {
             internalType: "string",
@@ -442,13 +461,6 @@ export const initialState = {
       {
         inputs: [],
         name: "BeShoper",
-        outputs: [],
-        stateMutability: "nonpayable",
-        type: "function",
-      },
-      {
-        inputs: [],
-        name: "BeShoperForSalesman",
         outputs: [],
         stateMutability: "nonpayable",
         type: "function",
@@ -653,6 +665,25 @@ export const initialState = {
       {
         inputs: [
           {
+            internalType: "uint256",
+            name: "",
+            type: "uint256",
+          },
+        ],
+        name: "bankRequestsIndexes",
+        outputs: [
+          {
+            internalType: "uint256",
+            name: "",
+            type: "uint256",
+          },
+        ],
+        stateMutability: "view",
+        type: "function",
+      },
+      {
+        inputs: [
+          {
             internalType: "address",
             name: "",
             type: "address",
@@ -671,11 +702,6 @@ export const initialState = {
             type: "uint256",
           },
           {
-            internalType: "uint8",
-            name: "shopId",
-            type: "uint8",
-          },
-          {
             internalType: "string",
             name: "login",
             type: "string",
@@ -686,9 +712,9 @@ export const initialState = {
             type: "string",
           },
           {
-            internalType: "int256",
+            internalType: "uint256",
             name: "mark",
-            type: "int256",
+            type: "uint256",
           },
         ],
         stateMutability: "view",
@@ -716,7 +742,7 @@ export const initialState = {
         outputs: [
           {
             internalType: "uint256",
-            name: "idComment",
+            name: "commentId",
             type: "uint256",
           },
           {
@@ -728,6 +754,38 @@ export const initialState = {
             internalType: "string",
             name: "comment",
             type: "string",
+          },
+        ],
+        stateMutability: "view",
+        type: "function",
+      },
+      {
+        inputs: [
+          {
+            internalType: "uint256",
+            name: "",
+            type: "uint256",
+          },
+        ],
+        name: "freeAddresses",
+        outputs: [
+          {
+            internalType: "address",
+            name: "",
+            type: "address",
+          },
+        ],
+        stateMutability: "view",
+        type: "function",
+      },
+      {
+        inputs: [],
+        name: "getBankRequestsIndexes",
+        outputs: [
+          {
+            internalType: "uint256[]",
+            name: "",
+            type: "uint256[]",
           },
         ],
         stateMutability: "view",
@@ -746,16 +804,31 @@ export const initialState = {
               },
               {
                 internalType: "address",
-                name: "addressSalesman",
+                name: "senderAddress",
                 type: "address",
               },
               {
+                internalType: "uint256",
+                name: "currentRole",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "newRole",
+                type: "uint256",
+              },
+              {
+                internalType: "int256",
+                name: "shopId",
+                type: "int256",
+              },
+              {
                 internalType: "bool",
-                name: "finished",
+                name: "isFinish",
                 type: "bool",
               },
             ],
-            internalType: "struct Shoping.RequestToShoper[]",
+            internalType: "struct Shoping.Request[]",
             name: "",
             type: "tuple[]",
           },
@@ -776,21 +849,31 @@ export const initialState = {
               },
               {
                 internalType: "address",
-                name: "addressShoper",
+                name: "senderAddress",
                 type: "address",
               },
               {
                 internalType: "uint256",
-                name: "shopId",
+                name: "currentRole",
                 type: "uint256",
               },
               {
+                internalType: "uint256",
+                name: "newRole",
+                type: "uint256",
+              },
+              {
+                internalType: "int256",
+                name: "shopId",
+                type: "int256",
+              },
+              {
                 internalType: "bool",
-                name: "finished",
+                name: "isFinish",
                 type: "bool",
               },
             ],
-            internalType: "struct Shoping.RequestToSalesman[]",
+            internalType: "struct Shoping.Request[]",
             name: "",
             type: "tuple[]",
           },
@@ -817,7 +900,7 @@ export const initialState = {
             components: [
               {
                 internalType: "uint256",
-                name: "idComment",
+                name: "commentId",
                 type: "uint256",
               },
               {
@@ -850,10 +933,23 @@ export const initialState = {
         type: "function",
       },
       {
+        inputs: [],
+        name: "getFreeAddresses",
+        outputs: [
+          {
+            internalType: "address[]",
+            name: "",
+            type: "address[]",
+          },
+        ],
+        stateMutability: "view",
+        type: "function",
+      },
+      {
         inputs: [
           {
             internalType: "address",
-            name: "addressShop",
+            name: "shopAddress",
             type: "address",
           },
         ],
@@ -867,11 +963,6 @@ export const initialState = {
                 type: "uint256",
               },
               {
-                internalType: "uint8",
-                name: "shopId",
-                type: "uint8",
-              },
-              {
                 internalType: "string",
                 name: "login",
                 type: "string",
@@ -882,18 +973,18 @@ export const initialState = {
                 type: "string",
               },
               {
-                internalType: "int256",
+                internalType: "uint256",
                 name: "mark",
-                type: "int256",
+                type: "uint256",
               },
               {
                 internalType: "address[]",
-                name: "like",
+                name: "likes",
                 type: "address[]",
               },
               {
                 internalType: "address[]",
-                name: "dislike",
+                name: "dislikes",
                 type: "address[]",
               },
             ],
@@ -918,7 +1009,7 @@ export const initialState = {
               },
               {
                 internalType: "address payable",
-                name: "addressShop",
+                name: "shopAddress",
                 type: "address",
               },
               {
@@ -933,12 +1024,7 @@ export const initialState = {
               },
               {
                 internalType: "bool",
-                name: "shopStatus",
-                type: "bool",
-              },
-              {
-                internalType: "bool",
-                name: "bankMoney",
+                name: "haveBankMoney",
                 type: "bool",
               },
             ],
@@ -1003,17 +1089,27 @@ export const initialState = {
           },
           {
             internalType: "address",
-            name: "addressShoper",
+            name: "senderAddress",
             type: "address",
           },
           {
             internalType: "uint256",
-            name: "shopId",
+            name: "currentRole",
             type: "uint256",
           },
           {
+            internalType: "uint256",
+            name: "newRole",
+            type: "uint256",
+          },
+          {
+            internalType: "int256",
+            name: "shopId",
+            type: "int256",
+          },
+          {
             internalType: "bool",
-            name: "finished",
+            name: "isFinish",
             type: "bool",
           },
         ],
@@ -1037,12 +1133,27 @@ export const initialState = {
           },
           {
             internalType: "address",
-            name: "addressSalesman",
+            name: "senderAddress",
             type: "address",
           },
           {
+            internalType: "uint256",
+            name: "currentRole",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "newRole",
+            type: "uint256",
+          },
+          {
+            internalType: "int256",
+            name: "shopId",
+            type: "int256",
+          },
+          {
             internalType: "bool",
-            name: "finished",
+            name: "isFinish",
             type: "bool",
           },
         ],
@@ -1066,7 +1177,7 @@ export const initialState = {
           },
           {
             internalType: "address payable",
-            name: "addressShop",
+            name: "shopAddress",
             type: "address",
           },
           {
@@ -1076,12 +1187,7 @@ export const initialState = {
           },
           {
             internalType: "bool",
-            name: "shopStatus",
-            type: "bool",
-          },
-          {
-            internalType: "bool",
-            name: "bankMoney",
+            name: "haveBankMoney",
             type: "bool",
           },
         ],
@@ -1113,7 +1219,7 @@ export const initialState = {
         outputs: [
           {
             internalType: "address",
-            name: "user_address",
+            name: "userAddress",
             type: "address",
           },
           {
@@ -1137,13 +1243,18 @@ export const initialState = {
             type: "uint256",
           },
           {
+            internalType: "int256",
+            name: "shopId",
+            type: "int256",
+          },
+          {
             internalType: "bool",
-            name: "admin",
+            name: "isSalesman",
             type: "bool",
           },
           {
             internalType: "bool",
-            name: "salesman",
+            name: "isAdmin",
             type: "bool",
           },
         ],
@@ -1193,8 +1304,9 @@ export const initialState = {
   user: {
     address: null,
     fio: null,
-    role: -1,
+    role: null,
     login: null,
+    salesmen: [],
     isAdmin: false,
     isSalesman: false,
     balance: null,
@@ -1211,6 +1323,8 @@ export const initialState = {
     beAdmin: [],
     beSalesman: [],
     beBuyer: [],
+    toBank: [],
   },
   users: [],
+  freeAddresses: [],
 };

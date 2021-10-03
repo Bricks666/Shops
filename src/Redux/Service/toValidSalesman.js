@@ -1,8 +1,8 @@
-export const toValidSalesman = (salesman, shopId) => {
+export const toValidSalesman = (salesman) => {
   return {
     fio: salesman.FIO,
-    address: salesman.user_address,
-    id: salesman.user_address,
+    address: salesman.userAddress,
+    id: salesman.userAddress,
     complainsAndSuggestions: [],
   };
 };

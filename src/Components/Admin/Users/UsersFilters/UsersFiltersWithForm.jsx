@@ -3,5 +3,5 @@ import { UsersFilters } from "./UsersFilters";
 
 export const UsersFiltersWithForm = reduxForm({
   form: "usersFilters",
-  initialValues: { address: "", fio: "", role: "-1" },
+  initialValues: { address: "", fio: "", role: "all" },
 })(UsersFilters);

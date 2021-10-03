@@ -15,6 +15,15 @@ export const Account = (props) => {
       <p>Your name is {props.user.fio}</p>
       <Role isAdmin={props.user.isAdmin} isSalesman={props.user.isSalesman} />
       <CurrentRole role={props.user.role} />
+      {props.user.role === "6" ? (
+        <p>
+          {props.user.haveBankMoney
+            ? "Мы в кредитах, сер"
+            : "Пока что у нас хватает денег"}
+        </p>
+      ) : (
+        ""
+      )}
       <Buttons
         isAdmin={props.user.isAdmin}
         isSalesman={props.user.isSalesman}

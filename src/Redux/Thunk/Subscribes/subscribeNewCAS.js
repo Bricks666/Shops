@@ -11,7 +11,7 @@ export const subscribeNewCAS = () => {
     if (notSubscribeEvent(contract.unsubscribeNames, unsubscribeName)) {
       const subscribe = contract.events.NewComplaint(
         (error, { returnValues }) => {
-          debugger;
+
           dispatch(
             requestNewCAS(returnValues.bookAddress, returnValues.complaintsId)
           );

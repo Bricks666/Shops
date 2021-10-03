@@ -10,6 +10,7 @@ export const subscribeRequestFinish = () => {
 
     if (notSubscribeEvent(contract.unsubscribeNames, unsubscribeName)) {
       const subscribe = contract.events.RequestFinished(
+        { filter: { requestType: ["beAdmin", "beSalesman", "beBuyer"] } },
         (error, { returnValues }) => {
           dispatch(finishRequest(returnValues.id, returnValues.requestType));
         }

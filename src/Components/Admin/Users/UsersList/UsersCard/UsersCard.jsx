@@ -18,7 +18,6 @@ const getRoleName = (role) => {
 };
 
 export const UsersCard = (props) => {
-  console.log(props);
   return (
     <li>
       <h4>{props.fio}</h4>
