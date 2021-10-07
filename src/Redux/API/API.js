@@ -55,7 +55,7 @@ export const api = {
       .send({ from: sender });
   },
   async sendBankRequest(shopId) {
-    debugger;
+
     return await methods.ToBankRequest(shopId).send({ from: sender });
   },
   async getBankRequest(shopId) {

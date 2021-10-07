@@ -12,7 +12,7 @@ export const subscribeFinishBankRequest = (shopId) => {
       const subscribe = contract.events.RequestFinished(
         { filter: { requestType: "toBank", id: shopId } },
         (error, { returnValues }) => {
-          debugger;
+
           dispatch(finishBankRequest());
         }
       );

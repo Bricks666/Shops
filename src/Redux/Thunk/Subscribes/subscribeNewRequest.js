@@ -12,7 +12,7 @@ export const subscribeNewRequest = (filter = {}) => {
       const subscribe = contract.events.NewRequest(
         { filter },
         (error, { returnValues }) => {
-          debugger;
+
           dispatch(loadNewRequest(returnValues.requestType, returnValues.id));
         }
       );

@@ -7,7 +7,7 @@ const renderCards = (requests, Component, haveBankMoney) => {
 };
 
 export const BankRequestsList = (props) => {
-  debugger;
+
   return (
     <ol>{renderCards(props.requests, BankRequestCard, props.haveBankMoney)}</ol>
   );

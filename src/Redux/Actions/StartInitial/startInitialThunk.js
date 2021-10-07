@@ -8,35 +8,37 @@ import { startLoading } from "../Contract/startLoading";
 import { api } from "../../API/API";
 
 export const startInitialThunk = () => {
-  return async (dispatch, getState) => {
-    const dataForContract = getState().dataForContract;
-    try {
-      dispatch(startLoading());
-      const web3 = new Web3(await Web3.givenProvider);
+	return async (dispatch, getState) => {
+		const dataForContract = getState().dataForContract;
+		try {
+			dispatch(startLoading());
+			const socket = new WebSocket("ws://localhost:8545");
+			socket.onerror = console.log.bind(console, "Error");
+			socket.onopen = console.log.bind(console, "Open");
+			const web3 = new Web3("ws://localhost:8545");
 
-      dispatch(setWeb3(web3));
+			dispatch(setWeb3(web3));
+			const address = (await web3.eth.getAccounts())[0];
+			const unlock = await web3.eth.personal.unlockAccount(address, "0000");
+			console.log(unlock);
+			dispatch(setAccount(address));
 
-      const address = (await web3.eth.getAccounts())[0];
+			const balance = (await web3.eth.getBalance(address)) / 10 ** 18;
 
-      dispatch(setAccount(address));
+			dispatch(setBalance(balance));
 
-      const balance = (await web3.eth.getBalance(address)) / 10 ** 18;
+			dispatch(refreshAccountThunk());
+			const contract = new web3.eth.Contract(dataForContract.abi);
+			const deploiedContract = await contract
+				.deploy({ data: dataForContract.bytecode })
+				.send({ from: address });
 
-      dispatch(setBalance(balance));
+			dispatch(setContract(deploiedContract));
 
-      dispatch(refreshAccountThunk());
-
-      const contract = new web3.eth.Contract(
-        dataForContract.abi,
-        dataForContract.address
-      );
-
-      dispatch(setContract(contract));
-
-      api.initialApi(contract, address);
-    } catch (e) {
-      console.log(e.message);
-      startInitialThunk();
-    }
-  };
+			api.initialApi(contract, address);
+		} catch (e) {
+			console.log(e.message);
+			startInitialThunk();
+		}
+	};
 };

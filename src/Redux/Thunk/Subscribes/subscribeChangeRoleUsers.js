@@ -11,7 +11,7 @@ export const subscribeChangeRoleUsers = () => {
     if (notSubscribeEvent(contract.unsubscribeNames, unsubscribeName)) {
       const subscribe = contract.events.ChangeRole(
         (error, { returnValues }) => {
-          debugger;
+
           dispatch(
             changeRoleUsers(returnValues.userAddress, returnValues.role)
           );

@@ -35,7 +35,7 @@ export const requests = (state = initialState.requests, action) => {
       return { ...state, toBank: [action.request] };
     }
     case ADD_REQUEST: {
-      debugger;
+
       if (action.requestType !== undefined) {
         const newState = { ...state };
 

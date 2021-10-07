@@ -5,7 +5,7 @@ export const loadNewRequest = (requestType, requestId) => {
   return async (dispatch, getState) => {
     const methods = getState().contract.methods;
     let request;
-    debugger;
+
     try {
       switch (requestType) {
         case "beBuyer": {
@@ -29,7 +29,7 @@ export const loadNewRequest = (requestType, requestId) => {
           break;
         }
       }
-      debugger;
+
       dispatch(addRequest(request, requestType));
     } catch (e) {
       console.log(e.message);

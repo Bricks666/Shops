@@ -5,7 +5,7 @@ import { dispatchSubmitError } from "../../Service/dispatchSubmitError";
 export const sendNewComment = (shopAddress, CASId, comment) => {
   return async (dispatch, getState) => {
     try {
-      debugger;
+
       dispatch(startSubmit("createNewComment"));
 
       await api.sendNewComment(shopAddress, CASId, comment);

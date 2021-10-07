@@ -181,7 +181,7 @@ export const mapDispatchToProps = (component) => {
       return (dispatch, ownProps) => {
         return {
           onSubmit(data) {
-            debugger;
+
             dispatch(
               sendNewComment(
                 ownProps.shopAddress,

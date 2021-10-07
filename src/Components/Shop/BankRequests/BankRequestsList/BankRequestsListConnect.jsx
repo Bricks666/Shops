@@ -8,7 +8,7 @@ import { BankRequestsList } from "./BankRequestsList";
 class BankRequestsListClass extends Component {
   componentDidMount() {
     if (this.props.requests.length === 0) {
-      debugger;
+
       this.props.loadBankRequest(this.props.id);
     }
   }

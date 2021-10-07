@@ -17,7 +17,7 @@ export const withCommentCreate = (Component) => {
     }
 
     render() {
-      debugger;
+
       return (
         <Component {...this.props}>
           <Button onClick={this.toggleShowCommentCreator.bind(this)}>
