@@ -48,8 +48,12 @@ contract Users is Utils {
 
     constructor() {}
 
+    function get_user_addresses() external view returns (address[] memory) {
+        return user_addresses;
+    }
+
     function registration(bytes32 password) external IsNotReg(msg.sender) {
-        create_user(msg.sender, password);
+        _create_user(msg.sender, password);
     }
 
     function login(bytes32 password)
@@ -66,7 +70,7 @@ contract Users is Utils {
         return true;
     }
 
-    function create_user(address login, bytes32 password) internal {
+    function _create_user(address login, bytes32 password) internal {
         users[msg.sender] = User({
             id: user_addresses.length,
             login: msg.sender,
@@ -78,7 +82,7 @@ contract Users is Utils {
         emit NewUser(login);
     }
 
-    function change_role(address login, Roles role)
+    function _change_role(address login, Roles role)
         internal
         IsReg(msg.sender)
         IsRole(msg.sender, Roles.admin)
@@ -88,7 +92,7 @@ contract Users is Utils {
         emit ChangeRole(login, role);
     }
 
-    function remove_user(address login)
+    function _remove_user(address login)
         internal
         IsReg(msg.sender)
         IsRole(msg.sender, Roles.admin)
@@ -105,17 +109,24 @@ contract Shops is Users {
         uint256 id;
         address login;
         string city;
-        address[] salesmen;
     }
 
+    mapping(uint256 => address[]) shop_salesmen_map;
+    mapping(address => uint256) salesman_id_map;
     Shop[] shops;
 
     event NewShop(address login);
     event RemoveShop(address indexed login);
+    event NewSalesman(uint256 indexed shopId, address salesman);
+    event RemoveSalesman(uint256 indexed shopId, address salesman);
 
     constructor() {}
 
-    function add_shop(
+    function get_shops() external view returns (Shop[] memory) {
+        return shops;
+    }
+
+    function create_shop(
         address login,
         bytes32 password,
         string memory city
@@ -125,7 +136,7 @@ contract Shops is Users {
         IsRole(msg.sender, Roles.admin)
         IsNotReg(login)
     {
-        create_shop(login, password, city);
+        _create_shop(login, password, city);
         return;
     }
 
@@ -137,32 +148,210 @@ contract Shops is Users {
         IsRole(shops[id].login, Roles.shop)
     {
         Shop memory shop = shops[id];
-        address[] memory salsmen = shop.salesmen;
+        address[] memory salsmen = shop_salesmen_map[id];
 
         for (uint256 i = 0; i < salsmen.length; i++) {
-            change_role(salsmen[i], Roles.user);
+            _change_role(salsmen[i], Roles.user);
+            _remove_salesman(id, salsmen[i]);
         }
 
         delete shops[id];
         emit RemoveShop(shop.login);
 
-        remove_user(shop.login);
+        _remove_user(shop.login);
     }
 
-    function create_shop(
+    function _add_salsman(uint256 shopId, address salesman)
+        internal
+        IsReg(msg.sender)
+        IsRole(msg.sender, Roles.admin)
+        IsReg(salesman)
+        IsRole(salesman, Roles.salesman)
+        IsReg(shops[shopId].login)
+        IsRole(shops[shopId].login, Roles.shop)
+    {
+        salesman_id_map[salesman] = shop_salesmen_map[shopId].length;
+        shop_salesmen_map[shopId].push(salesman);
+        emit NewSalesman(shopId, salesman);
+    }
+
+    function _remove_salesman(uint256 shopId, address salesman)
+        internal
+        IsReg(msg.sender)
+        IsRole(msg.sender, Roles.admin)
+        IsReg(salesman)
+        IsRole(salesman, Roles.salesman)
+        IsReg(shops[shopId].login)
+        IsRole(shops[shopId].login, Roles.shop)
+    {
+        uint256 salesmanId = salesman_id_map[salesman];
+        delete shop_salesmen_map[shopId][salesmanId];
+        delete salesman_id_map[salesman];
+        emit RemoveSalesman(shopId, salesman);
+    }
+
+    function _create_shop(
         address login,
         bytes32 password,
         string memory city
     ) internal {
-        shops.push(
-            Shop({
-                id: shops.length,
-                login: login,
-                city: city,
-                salesmen: zero_address_array
-            })
-        );
-        create_user(login, password);
+        shops.push(Shop({id: shops.length, login: login, city: city}));
+        _create_user(login, password);
         emit NewShop(login);
     }
 }
+
+contract Requests is Users, Shops {
+    enum Status {
+        pending,
+        success,
+        cancel
+    }
+
+    struct Request {
+        uint256 id;
+        address sender;
+        Roles role;
+        Status status;
+        uint256 shopId;
+    }
+
+    Request[] requests;
+
+    event NewRequest(uint256 id);
+    event ChangeStatus(uint256 id, Status status);
+
+    constructor() {}
+
+    function get_requests() external view returns (Request[] memory) {
+        return requests;
+    }
+
+    function create_request(Roles role, uint256 shopId)
+        external
+        IsReg(msg.sender)
+    {
+        requests.push(
+            Request({
+                id: requests.length,
+                sender: msg.sender,
+                role: role,
+                status: Status.pending,
+                shopId: shopId
+            })
+        );
+
+        emit NewRequest(requests.length - 1);
+    }
+
+    function aprove_request(uint256 id)
+        external
+        IsReg(msg.sender)
+        IsRole(msg.sender, Roles.admin)
+    {
+        Request memory request = requests[id];
+        _change_role(request.sender, request.role);
+        if (request.role == Roles.user) {
+            _remove_salesman(request.shopId, request.sender);
+        } else if (request.role == Roles.salesman) {
+            _add_salsman(request.shopId, request.sender);
+        }
+        request.status = Status.success;
+        emit ChangeStatus(id, Status.success);
+    }
+
+    function cancel_request(uint256 id)
+        external
+        IsReg(msg.sender)
+        IsRole(msg.sender, Roles.admin)
+    {
+        Request memory request = requests[id];
+        request.status = Status.cancel;
+        emit ChangeStatus(id, Status.cancel);
+    }
+}
+
+contract Reviews is Shops {
+    enum Reaction {
+        like,
+        dislike
+    }
+
+    struct Review {
+        uint256 id;
+        string content;
+        uint256 mark;
+        uint256 likes;
+        uint256 dislikes;
+        address[] reviewers;
+    }
+
+    mapping(uint256 => Review[]) reviews;
+
+    event NewReview(uint256 indexed shopId, uint256 reviewId);
+    event ReactionReview(
+        uint256 indexed shopId,
+        uint256 indexed reviewId,
+        Reaction reaction
+    );
+
+    modifier IsNotReaction(
+        address a,
+        uint256 shopId,
+        uint256 reviewId
+    ) {
+        bool flag = true;
+        Review memory review = reviews[shopId][reviewId];
+        for (uint256 i = 0; i < review.reviewers.length; i++) {
+            if (review.reviewers[i] == a) {
+                flag = false;
+                break;
+            }
+        }
+        require(flag, "You have already reacted");
+        _;
+    }
+
+    function get_reviews(uint256 shopId)
+        external
+        view
+        returns (Review[] memory)
+    {
+        return reviews[shopId];
+    }
+
+    function create_review(
+        uint256 shopId,
+        string memory content,
+        uint256 mark
+    ) external IsReg(msg.sender) {
+        reviews[shopId].push(
+            Review({
+                id: reviews[shopId].length,
+                content: content,
+                mark: mark,
+                likes: 0,
+                dislikes: 0,
+                reviewers: zero_address_array
+            })
+        );
+        emit NewReview(shopId, reviews[shopId].length - 1);
+    }
+
+    function reaction_review(
+        uint256 shopId,
+        uint256 reviewId,
+        Reaction reaction
+    ) external IsReg(msg.sender) IsNotReaction(msg.sender, shopId, reviewId) {
+        if (reaction == Reaction.like) {
+            reviews[shopId][reviewId].likes += 1;
+        } else if (reaction == Reaction.dislike) {
+            reviews[shopId][reviewId].dislikes += 1;
+        }
+        reviews[shopId][reviewId].reviewers.push(msg.sender);
+    }
+}
+
+contract Comments is Reviews {}
+
+contract TotalContract is Utils, Users, Shops, Requests, Reviews, Comments {}
