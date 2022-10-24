@@ -1,0 +1,1 @@
+export { browserRouter } from './router';

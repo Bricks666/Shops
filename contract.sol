@@ -60,14 +60,14 @@ contract Users is Utils {
         external
         view
         IsReg(msg.sender)
-        returns (bool)
+        returns (User memory)
     {
         require(
             users[msg.sender].password == password,
             "Password is incorrect"
         );
 
-        return true;
+        return users[msg.sender];
     }
 
     function _create_user(address login, bytes32 password) internal {
@@ -244,7 +244,7 @@ contract Requests is Users, Shops {
         emit NewRequest(requests.length - 1);
     }
 
-    function aprove_request(uint256 id)
+    function approve_request(uint256 id)
         external
         IsReg(msg.sender)
         IsRole(msg.sender, Roles.admin)
@@ -279,6 +279,7 @@ contract Reviews is Shops {
 
     struct Review {
         uint256 id;
+        address author;
         string content;
         uint256 mark;
         uint256 likes;
@@ -295,7 +296,7 @@ contract Reviews is Shops {
         Reaction reaction
     );
 
-    modifier IsNotReaction(
+    modifier ReviewIsNotReaction(
         address a,
         uint256 shopId,
         uint256 reviewId
@@ -328,6 +329,7 @@ contract Reviews is Shops {
         reviews[shopId].push(
             Review({
                 id: reviews[shopId].length,
+                author: msg.sender,
                 content: content,
                 mark: mark,
                 likes: 0,
@@ -342,16 +344,107 @@ contract Reviews is Shops {
         uint256 shopId,
         uint256 reviewId,
         Reaction reaction
-    ) external IsReg(msg.sender) IsNotReaction(msg.sender, shopId, reviewId) {
+    )
+        external
+        IsReg(msg.sender)
+        ReviewIsNotReaction(msg.sender, shopId, reviewId)
+    {
         if (reaction == Reaction.like) {
             reviews[shopId][reviewId].likes += 1;
         } else if (reaction == Reaction.dislike) {
             reviews[shopId][reviewId].dislikes += 1;
         }
         reviews[shopId][reviewId].reviewers.push(msg.sender);
+        emit ReactionReview(shopId, reviewId, reaction);
     }
 }
 
-contract Comments is Reviews {}
+contract Comments is Reviews {
+    struct Comment {
+        uint256 id;
+        address author;
+        string content;
+        uint256 likes;
+        uint256 dislikes;
+        address[] reviewers;
+    }
+
+    mapping(uint256 => mapping(uint256 => Comment[])) comments;
+
+    event NewComment(
+        uint256 indexed shopId,
+        uint256 indexed reviewId,
+        uint256 commentId
+    );
+    event ReactionComment(
+        uint256 indexed shopId,
+        uint256 indexed reviewId,
+        uint256 indexed commentId,
+        Reaction reaction
+    );
+
+    modifier CommentIsNotReaction(
+        address a,
+        uint256 shopId,
+        uint256 reviewId,
+        uint256 commentId
+    ) {
+        Comment memory comment = comments[shopId][reviewId][commentId];
+        bool flag = true;
+        for (uint256 i = 0; i < comment.reviewers.length; i++) {
+            if (comment.reviewers[i] == a) {
+                flag = false;
+                break;
+            }
+        }
+        require(flag, "You have already reacted");
+        _;
+    }
+
+    function get_comments(uint256 shopId, uint256 reviewId)
+        external
+        view
+        returns (Comment[] memory)
+    {
+        return comments[shopId][reviewId];
+    }
+
+    function create_comment(
+        uint256 shopId,
+        uint256 reviewId,
+        string memory content
+    ) external IsReg(msg.sender) {
+        comments[shopId][reviewId].push(
+            Comment({
+                id: comments[shopId][reviewId].length,
+                author: msg.sender,
+                content: content,
+                likes: 0,
+                dislikes: 0,
+                reviewers: zero_address_array
+            })
+        );
+        emit NewComment(
+            shopId,
+            reviewId,
+            comments[shopId][reviewId].length - 1
+        );
+    }
+
+    function reaction_comment(
+        uint256 shopId,
+        uint256 reviewId,
+        uint256 commentId,
+        Reaction reaction
+    ) external {
+        if (reaction == Reaction.like) {
+            comments[shopId][reviewId][commentId].likes += 1;
+        } else if (reaction == Reaction.dislike) {
+            comments[shopId][reviewId][commentId].dislikes += 1;
+        }
+        comments[shopId][reviewId][commentId].reviewers.push(msg.sender);
+        emit ReactionComment(shopId, reviewId, commentId, reaction);
+    }
+}
 
 contract TotalContract is Utils, Users, Shops, Requests, Reviews, Comments {}
